@@ -20,10 +20,11 @@ import type { AppEvent } from '../services/events/EventProvider';
 import { MockDataTeamProvider } from '../services/events/MockDataTeamProvider';
 import { useMap } from 'react-leaflet';
 
-interface MapProps {
-  aiLocation?: { name: string, lat: number, lng: number } | null;
-  onAskCipitio?: (placeName: string) => void;
-  onSaveToAgenda?: (placeName: string, lat: number, lng: number, visitDate: string | null) => void;
+interface InteractiveMapProps {
+  aiLocation: { name: string; lat: number; lng: number } | null;
+  onAskCipitio: (placeName: string) => void;
+  onSaveToAgenda: (placeName: string, lat: number, lng: number, visitDate: string | null) => void;
+  isAuthenticated?: boolean;
 }
 
 // Componente para actualizar el centro del mapa dinámicamente
@@ -37,7 +38,7 @@ const MapUpdater: React.FC<{ location?: { lat: number, lng: number } | null }> =
   return null;
 };
 
-const InteractiveMap: React.FC<MapProps> = ({ aiLocation, onAskCipitio, onSaveToAgenda }) => {
+const InteractiveMap: React.FC<InteractiveMapProps> = ({ aiLocation, onAskCipitio, onSaveToAgenda, isAuthenticated = false }) => {
   const position: [number, number] = [13.6929, -89.2182]; 
   const [events, setEvents] = React.useState<AppEvent[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<AppEvent | null>(null);
@@ -245,34 +246,48 @@ const InteractiveMap: React.FC<MapProps> = ({ aiLocation, onAskCipitio, onSaveTo
                   onChange={(e) => setPickedDate(e.target.value)}
                   className="w-full bg-zinc-900 border border-white/10 text-white text-sm px-3 py-2 rounded-lg focus:outline-none focus:border-purple-500"
                 />
-                <button
-                  onClick={handleDateConfirm}
-                  disabled={!pickedDate}
-                  className="w-full bg-amber-500 hover:bg-amber-400 disabled:bg-zinc-700 disabled:text-zinc-500 text-zinc-950 text-sm font-bold py-2 rounded-lg transition-colors flex items-center justify-center gap-2"
-                >
-                  <Check className="w-4 h-4" /> Confirmar y Guardar (+50 pts)
-                </button>
+                {isAuthenticated ? (
+                  <button
+                    onClick={handleDateConfirm}
+                    disabled={!pickedDate}
+                    className="w-full bg-amber-500 hover:bg-amber-400 disabled:bg-zinc-700 disabled:text-zinc-500 text-zinc-950 text-sm font-bold py-2 rounded-lg transition-colors flex items-center justify-center gap-2"
+                  >
+                    <Check className="w-4 h-4" /> Confirmar y Guardar (+50 pts)
+                  </button>
+                ) : (
+                  <div className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-zinc-800 text-zinc-500 text-sm font-bold rounded-lg border border-white/5 cursor-not-allowed">
+                    <Star className="w-4 h-4 opacity-50" />
+                    Inicia sesión para agendar
+                  </div>
+                )}
               </div>
             )}
 
             {/* Botones de acción */}
             {!showDatePicker && (
               <div className="flex flex-col gap-2 pt-2 border-t border-white/10">
-                <button 
-                  onClick={handleSaveClick}
-                  className="w-full flex items-center gap-2 px-3 py-2.5 bg-amber-500 hover:bg-amber-400 text-zinc-950 text-sm font-bold rounded-xl transition-all hover:scale-[1.02] active:scale-95 shadow-lg shadow-amber-500/20"
-                >
-                  <Star className="w-4 h-4" />
-                  {isEvent(selectedEvent) 
-                    ? `Agendar para ${selectedEvent.date} (+50 pts)` 
-                    : 'Guardar en Agenda (+50 pts)'}
-                </button>
+                {isAuthenticated ? (
+                  <button 
+                    onClick={handleSaveClick}
+                    className="w-full flex items-center gap-2 px-3 py-2.5 bg-amber-500 hover:bg-amber-400 text-zinc-950 text-sm font-bold rounded-xl transition-all hover:scale-[1.02] active:scale-95 shadow-lg shadow-amber-500/20"
+                  >
+                    <Star className="w-4 h-4" />
+                    {isEvent(selectedEvent) 
+                      ? `Agendar para ${selectedEvent.date} (+50 pts)` 
+                      : 'Guardar en Agenda (+50 pts)'}
+                  </button>
+                ) : (
+                  <div className="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-zinc-800 text-zinc-500 text-sm font-bold rounded-xl border border-white/5 cursor-not-allowed">
+                    <Star className="w-4 h-4 opacity-50" />
+                    Inicia sesión para agendar
+                  </div>
+                )}
                 <button 
                   onClick={handleAsk}
                   className="w-full flex items-center gap-2 px-3 py-2.5 bg-purple-600/20 hover:bg-purple-600/30 border border-purple-500/30 text-purple-200 text-sm font-bold rounded-xl transition-all hover:scale-[1.02] active:scale-95"
                 >
                   <MessageCircle className="w-4 h-4" />
-                  Preguntarle al Cipitío
+                  Preguntarle al Asistente
                 </button>
               </div>
             )}

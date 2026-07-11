@@ -212,7 +212,8 @@ const Home: React.FC = () => {
         {/* Right Panel: Map */}
         <div className="flex-1 relative bg-zinc-900 flex items-center justify-center">
            <InteractiveMap 
-             aiLocation={aiLocation} 
+             aiLocation={aiLocation}
+             isAuthenticated={!!user} 
              onAskCipitio={(placeName) => {
                handleSendMessage(`Háblame sobre ${placeName}`);
              }}
