@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect, useCallback } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
@@ -36,19 +36,110 @@ const MapUpdater: React.FC<{ location?: { lat: number, lng: number } | null }> =
   return null;
 };
 
+/**
+ * Componente de Popup que usa refs y listeners nativos del DOM
+ * para garantizar que los clicks funcionen dentro de los popups de Leaflet.
+ */
+interface EventPopupProps {
+  evt: AppEvent;
+  onSave: (title: string, lat: number, lng: number) => void;
+  onAsk: (title: string) => void;
+}
+
+const EventPopup: React.FC<EventPopupProps> = ({ evt, onSave, onAsk }) => {
+  const saveRef = useRef<HTMLButtonElement>(null);
+  const askRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    const saveBtn = saveRef.current;
+    const askBtn = askRef.current;
+
+    const handleSave = (e: Event) => {
+      e.stopPropagation();
+      onSave(evt.title, evt.lat, evt.lng);
+    };
+    const handleAsk = (e: Event) => {
+      e.stopPropagation();
+      onAsk(evt.title);
+    };
+
+    saveBtn?.addEventListener('click', handleSave);
+    askBtn?.addEventListener('click', handleAsk);
+
+    return () => {
+      saveBtn?.removeEventListener('click', handleSave);
+      askBtn?.removeEventListener('click', handleAsk);
+    };
+  }, [evt, onSave, onAsk]);
+
+  return (
+    <div className="text-zinc-900 font-sans" style={{ minWidth: '200px' }}>
+      <h3 className="font-bold text-sm text-purple-600">📅 {evt.title}</h3>
+      <p className="text-xs mt-1">{evt.description}</p>
+      <div className="flex items-center gap-2 mt-1">
+        <p className="text-xs text-zinc-500">{evt.date}</p>
+        {evt.hours && <p className="text-xs text-amber-600 font-medium">🕒 {evt.hours}</p>}
+      </div>
+      
+      <div style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid #e5e7eb', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+        <button 
+          ref={saveRef}
+          style={{
+            width: '100%',
+            textAlign: 'left',
+            padding: '6px 8px',
+            backgroundColor: '#fef3c7',
+            color: '#92400e',
+            fontSize: '12px',
+            fontWeight: 'bold',
+            borderRadius: '4px',
+            border: 'none',
+            cursor: 'pointer'
+          }}
+        >
+          ⭐ Guardar en Agenda (+50 pts)
+        </button>
+        <button 
+          ref={askRef}
+          style={{
+            width: '100%',
+            textAlign: 'left',
+            padding: '6px 8px',
+            backgroundColor: '#ede9fe',
+            color: '#6d28d9',
+            fontSize: '12px',
+            fontWeight: 'bold',
+            borderRadius: '4px',
+            border: 'none',
+            cursor: 'pointer'
+          }}
+        >
+          ✨ Preguntarle al Cipitío
+        </button>
+      </div>
+    </div>
+  );
+};
+
 const InteractiveMap: React.FC<MapProps> = ({ aiLocation, onAskCipitio, onSaveToAgenda }) => {
   // Centro inicial por defecto (El Salvador)
   const position: [number, number] = [13.6929, -89.2182]; 
   const [events, setEvents] = React.useState<AppEvent[]>([]);
 
   React.useEffect(() => {
-    // Configurable: se puede cambiar este provider por otro que llame a Supabase o cualquier API
     const eventProvider = new MockDataTeamProvider();
-    
     eventProvider.getEvents().then((data) => {
       setEvents(data);
     }).catch(err => console.error('Error fetching events', err));
   }, []);
+
+  const handleSave = useCallback((title: string, lat: number, lng: number) => {
+    onSaveToAgenda?.(title, lat, lng);
+  }, [onSaveToAgenda]);
+
+  const handleAsk = useCallback((title: string) => {
+    onAskCipitio?.(title);
+  }, [onAskCipitio]);
 
   return (
     <div className="w-full h-full relative z-0">
@@ -81,37 +172,14 @@ const InteractiveMap: React.FC<MapProps> = ({ aiLocation, onAskCipitio, onSaveTo
         {/* Renderizado dinámico de eventos */}
         {events.map((evt) => (
           <Marker key={evt.id} position={[evt.lat, evt.lng]}>
-            <Popup className="custom-popup min-w-[200px]">
-              <div className="text-zinc-900 font-sans">
-                <h3 className="font-bold text-sm text-purple-600">📅 {evt.title}</h3>
-                <p className="text-xs mt-1">{evt.description}</p>
-                <div className="flex items-center gap-2 mt-1">
-                  <p className="text-xs text-zinc-500">{evt.date}</p>
-                  {evt.hours && <p className="text-xs text-amber-600 font-medium">🕒 {evt.hours}</p>}
-                </div>
-                
-                {/* Interacciones directas */}
-                <div className="mt-3 flex flex-col gap-2 border-t border-zinc-200 pt-2">
-                  <button 
-                    onClick={() => onSaveToAgenda?.(evt.title, evt.lat, evt.lng)}
-                    className="w-full text-left px-2 py-1.5 bg-amber-100 hover:bg-amber-200 text-amber-700 text-xs font-bold rounded flex items-center gap-2 transition-colors"
-                  >
-                    ⭐ Guardar en Agenda (+50 pts)
-                  </button>
-                  <button 
-                    onClick={() => onAskCipitio?.(evt.title)}
-                    className="w-full text-left px-2 py-1.5 bg-purple-100 hover:bg-purple-200 text-purple-700 text-xs font-bold rounded flex items-center gap-2 transition-colors"
-                  >
-                    ✨ Preguntarle al Cipitío
-                  </button>
-                </div>
-              </div>
+            <Popup className="custom-popup">
+              <EventPopup evt={evt} onSave={handleSave} onAsk={handleAsk} />
             </Popup>
           </Marker>
         ))}
       </MapContainer>
       
-      {/* Overlay controls if needed */}
+      {/* Overlay controls */}
       <div className="absolute bottom-6 right-6 z-[400] flex gap-2 pointer-events-none">
          <span className="bg-zinc-900/80 backdrop-blur-md text-zinc-300 text-xs px-3 py-1.5 rounded-full border border-white/10 pointer-events-auto">
            Mapa Interactivo (Leaflet)
@@ -122,3 +190,4 @@ const InteractiveMap: React.FC<MapProps> = ({ aiLocation, onAskCipitio, onSaveTo
 };
 
 export default InteractiveMap;
+
