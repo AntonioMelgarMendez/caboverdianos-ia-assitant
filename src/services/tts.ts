@@ -36,12 +36,19 @@ export async function speakText(text: string): Promise<void> {
     
     // Configurar idioma español
     utterance.lang = 'es-ES';
-    utterance.rate = 1.0; // Velocidad normal
-    utterance.pitch = 1.1; // Tono ligeramente más agudo para sonar amigable
+    utterance.rate = 1.1; // Velocidad ligeramente más rápida
+    utterance.pitch = 1.4; // Tono más agudo
 
-    // Intentar buscar una voz en español de mejor calidad si está disponible
+    // Intentar buscar una voz en español de mejor calidad (femenina/niño si es posible)
     const voices = window.speechSynthesis.getVoices();
-    const spanishVoice = voices.find(voice => voice.lang.includes('es') && voice.name.includes('Google'));
+    const spanishVoice = voices.find(voice => 
+        voice.lang.includes('es') && 
+        (voice.name.toLowerCase().includes('google') || 
+         voice.name.toLowerCase().includes('female') || 
+         voice.name.toLowerCase().includes('monica') || 
+         voice.name.toLowerCase().includes('paula'))
+    ) || voices.find(voice => voice.lang.includes('es'));
+    
     if (spanishVoice) {
       utterance.voice = spanishVoice;
     }

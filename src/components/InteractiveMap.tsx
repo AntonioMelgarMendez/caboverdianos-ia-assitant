@@ -15,34 +15,49 @@ let DefaultIcon = L.icon({
 });
 L.Marker.prototype.options.icon = DefaultIcon;
 
+import { AppEvent } from '../services/events/EventProvider';
+import { MockDataTeamProvider } from '../services/events/MockDataTeamProvider';
+
 const InteractiveMap: React.FC = () => {
-  // Centro inicial por defecto (ej: Cabo Verde o un lugar turístico)
-  const position: [number, number] = [16.5388, -23.0418]; // Cabo Verde (Isla de Sal)
+  // Centro inicial por defecto (El Salvador)
+  const position: [number, number] = [13.6929, -89.2182]; 
+  const [events, setEvents] = React.useState<AppEvent[]>([]);
+
+  React.useEffect(() => {
+    // Configurable: se puede cambiar este provider por otro que llame a Supabase o cualquier API
+    const eventProvider = new MockDataTeamProvider();
+    
+    eventProvider.getEvents().then((data) => {
+      setEvents(data);
+    }).catch(err => console.error('Error fetching events', err));
+  }, []);
 
   return (
     <div className="w-full h-full relative z-0">
       <MapContainer 
         center={position} 
-        zoom={10} 
+        zoom={9} 
         scrollWheelZoom={true} 
         className="w-full h-full"
         zoomControl={false}
       >
-        {/* Usando CartoDB Dark Matter para que combine con el tema oscuro */}
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
           url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
         />
         
-        {/* Placeholder marker */}
-        <Marker position={position}>
-          <Popup className="custom-popup">
-            <div className="text-zinc-900 font-sans">
-              <h3 className="font-bold text-sm">Punto Turístico</h3>
-              <p className="text-xs">Ubicación recomendada por IA.</p>
-            </div>
-          </Popup>
-        </Marker>
+        {/* Renderizado dinámico de eventos */}
+        {events.map((evt) => (
+          <Marker key={evt.id} position={[evt.lat, evt.lng]}>
+            <Popup className="custom-popup">
+              <div className="text-zinc-900 font-sans">
+                <h3 className="font-bold text-sm text-purple-600">📅 {evt.title}</h3>
+                <p className="text-xs mt-1">{evt.description}</p>
+                <p className="text-xs text-zinc-500 mt-1">{evt.date}</p>
+              </div>
+            </Popup>
+          </Marker>
+        ))}
       </MapContainer>
       
       {/* Overlay controls if needed */}
