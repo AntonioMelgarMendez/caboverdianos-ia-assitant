@@ -2,8 +2,8 @@ import React, { useState, useCallback } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
-import { Star, MessageCircle, X, Clock, MapPin, Calendar, Check } from 'lucide-react';
-
+import { Star, MessageCircle, X, Clock, MapPin, Calendar, Check, Search, Filter, Tent, Mountain, Utensils, Landmark, Church, Waves } from 'lucide-react';
+import { renderToString } from 'react-dom/server';
 // Arreglo para los íconos de Leaflet en React
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
@@ -39,19 +39,62 @@ const MapUpdater: React.FC<{ location?: { lat: number, lng: number } | null }> =
   return null;
 };
 
+// Función para crear íconos de mapa personalizados
+const createCategoryIcon = (category?: string) => {
+  let IconComponent = MapPin;
+  let bgClass = "bg-purple-600";
+  
+  switch (category) {
+    case 'aventura': IconComponent = Tent; bgClass = "bg-amber-600"; break;
+    case 'naturaleza': IconComponent = Mountain; bgClass = "bg-green-600"; break;
+    case 'gastronomía': IconComponent = Utensils; bgClass = "bg-orange-600"; break;
+    case 'cultura': IconComponent = Landmark; bgClass = "bg-blue-600"; break;
+    case 'religioso': IconComponent = Church; bgClass = "bg-indigo-600"; break;
+    case 'deportes': IconComponent = Waves; bgClass = "bg-cyan-600"; break;
+  }
+
+  const iconHtml = renderToString(
+    <div className={`w-8 h-8 rounded-full ${bgClass} flex items-center justify-center border-2 border-white shadow-lg text-white`}>
+      <IconComponent className="w-4 h-4" />
+    </div>
+  );
+
+  return L.divIcon({
+    html: iconHtml,
+    className: 'custom-leaflet-icon',
+    iconSize: [32, 32],
+    iconAnchor: [16, 32],
+  });
+};
+
 const InteractiveMap: React.FC<InteractiveMapProps> = ({ aiLocation, onAskCipitio, onSaveToAgenda, isAuthenticated = false }) => {
   const position: [number, number] = [13.6929, -89.2182]; 
   const [events, setEvents] = React.useState<AppEvent[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<AppEvent | null>(null);
+  
+  // States for Search and Filter
+  const [searchQuery, setSearchQuery] = useState('');
+  const [maxPrice, setMaxPrice] = useState<number>(500);
+
+  // Filtrar eventos basados en búsqueda y precio
+  const filteredEvents = events.filter((evt) => {
+    const matchesSearch = evt.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                          evt.description.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesPrice = evt.price === null || evt.price === undefined || evt.price <= maxPrice;
+    return matchesSearch && matchesPrice;
+  });
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [pickedDate, setPickedDate] = useState('');
   const [savedFeedback, setSavedFeedback] = useState<string | null>(null);
 
+  // Cargar eventos al iniciar
   React.useEffect(() => {
-    const eventProvider = new MockDataTeamProvider();
-    eventProvider.getEvents().then((data) => {
-      setEvents(data);
-    }).catch(err => console.error('Error fetching events', err));
+    async function fetchEvents() {
+      const provider = new MockDataTeamProvider();
+      const fetchedEvents = await provider.getEvents();
+      setEvents(fetchedEvents);
+    }
+    fetchEvents();
   }, []);
 
   const isEvent = (evt: AppEvent) => !!evt.startTime;
@@ -96,6 +139,36 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({ aiLocation, onAskCipiti
 
   return (
     <div className="w-full h-full relative z-0">
+      {/* Buscador y Filtro */}
+      <div className="absolute top-4 left-4 z-[500] flex flex-col gap-2 w-72">
+        <div className="bg-zinc-900/95 backdrop-blur-md rounded-2xl border border-white/10 p-2 shadow-lg flex items-center gap-2">
+          <Search className="w-5 h-5 text-zinc-400 ml-2" />
+          <input 
+            type="text" 
+            placeholder="Buscar destino..." 
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="bg-transparent border-none outline-none text-white text-sm w-full placeholder-zinc-500"
+          />
+        </div>
+        
+        <div className="bg-zinc-900/95 backdrop-blur-md rounded-2xl border border-white/10 p-4 shadow-lg">
+          <div className="flex justify-between items-center mb-2">
+            <span className="text-xs font-bold text-zinc-400 flex items-center gap-1"><Filter className="w-3 h-3"/> Precio Máximo</span>
+            <span className="text-xs font-bold text-amber-500">${maxPrice}</span>
+          </div>
+          <input 
+            type="range" 
+            min="0" 
+            max="1000" 
+            step="10"
+            value={maxPrice}
+            onChange={(e) => setMaxPrice(Number(e.target.value))}
+            className="w-full accent-amber-500 h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer"
+          />
+        </div>
+      </div>
+
       <MapContainer 
         center={position} 
         zoom={9} 
@@ -123,10 +196,11 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({ aiLocation, onAskCipiti
         )}
         
         {/* Renderizado dinámico de eventos */}
-        {events.map((evt) => (
+        {filteredEvents.map((evt) => (
           <Marker 
             key={evt.id} 
             position={[evt.lat, evt.lng]}
+            icon={createCategoryIcon(evt.category)}
             eventHandlers={{
               click: () => {
                 setSelectedEvent(evt);

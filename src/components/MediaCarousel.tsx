@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import ReactDOM from 'react-dom';
 import { ChevronLeft, ChevronRight, Maximize2, X, Play } from 'lucide-react';
 
 interface MediaItem {
@@ -129,9 +130,9 @@ const MediaCarousel: React.FC<MediaCarouselProps> = ({ media, title = "Media" })
       </div>
 
       {/* Modal de Pantalla Completa */}
-      {isFullScreen && (
+      {isFullScreen && ReactDOM.createPortal(
         <div 
-          className="fixed inset-0 z-[9999] bg-black/95 backdrop-blur-xl flex items-center justify-center"
+          className="fixed inset-0 z-[99999] bg-black/95 backdrop-blur-xl flex items-center justify-center"
           onClick={() => setIsFullScreen(false)}
         >
           {/* Header del Modal */}
@@ -167,7 +168,8 @@ const MediaCarousel: React.FC<MediaCarouselProps> = ({ media, title = "Media" })
               </button>
             </>
           )}
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );
