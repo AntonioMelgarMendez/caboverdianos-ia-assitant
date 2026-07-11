@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { MapPin, Navigation, Trophy, CheckCircle2 } from 'lucide-react';
-import { getUserAgenda, markAgendaVisitedAndEarnPoints, AgendaItem } from '../services/gamification';
+import { getUserAgenda, markAgendaVisitedAndEarnPoints } from '../services/gamification';
+import type { AgendaItem } from '../services/gamification';
 
 interface LocationTrackerProps {
   userId: string;
