@@ -52,7 +52,7 @@ const InteractiveMap: React.FC<MapProps> = ({ aiLocation, onAskCipitio, onSaveTo
     }).catch(err => console.error('Error fetching events', err));
   }, []);
 
-  const isEvent = (evt: AppEvent) => !!evt.hours;
+  const isEvent = (evt: AppEvent) => !!evt.startTime;
 
   const handleSaveClick = useCallback(() => {
     if (!selectedEvent) return;
@@ -147,40 +147,90 @@ const InteractiveMap: React.FC<MapProps> = ({ aiLocation, onAskCipitio, onSaveTo
 
       {/* Panel lateral de React — FUERA de Leaflet */}
       {selectedEvent && !savedFeedback && (
-        <div className="absolute top-4 right-4 z-[500] w-72 bg-zinc-900/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl shadow-black/50 overflow-hidden">
+        <div className="absolute top-4 right-4 z-[500] w-80 max-h-[calc(100%-2rem)] bg-zinc-900/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl shadow-black/50 overflow-hidden flex flex-col">
           
-          {/* Header */}
-          <div className="relative bg-gradient-to-br from-purple-600/30 to-amber-600/20 p-4 border-b border-white/10">
-            <button 
-              onClick={closePanel}
-              className="absolute top-3 right-3 text-white/50 hover:text-white transition-colors"
-            >
-              <X className="w-4 h-4" />
-            </button>
-            <h3 className="font-bold text-white text-base pr-6">
-              {isEvent(selectedEvent) ? '📅' : '📍'} {selectedEvent.title}
-            </h3>
-            {isEvent(selectedEvent) && (
-              <span className="inline-block mt-1 text-[10px] bg-purple-500/30 text-purple-300 px-2 py-0.5 rounded-md font-bold uppercase tracking-wider">
-                Evento
-              </span>
-            )}
-          </div>
+          {/* Imagen */}
+          {selectedEvent.imageUrl && (
+            <div className="relative h-40 w-full overflow-hidden shrink-0">
+              <img src={selectedEvent.imageUrl} alt={selectedEvent.title} className="w-full h-full object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-transparent to-transparent"></div>
+              <button 
+                onClick={closePanel}
+                className="absolute top-2 right-2 bg-black/50 backdrop-blur-sm text-white p-1.5 rounded-full hover:bg-black/70 transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+              {/* Category badge */}
+              {selectedEvent.category && (
+                <span className="absolute top-2 left-2 text-[10px] font-bold uppercase tracking-wider bg-purple-600/80 backdrop-blur-sm text-white px-2 py-1 rounded-md">
+                  {selectedEvent.category}
+                </span>
+              )}
+            </div>
+          )}
 
-          {/* Body */}
-          <div className="p-4 space-y-3">
-            <p className="text-sm text-zinc-300">{selectedEvent.description}</p>
+          {/* Header (sin imagen) */}
+          {!selectedEvent.imageUrl && (
+            <div className="relative bg-gradient-to-br from-purple-600/30 to-amber-600/20 p-4 border-b border-white/10 shrink-0">
+              <button onClick={closePanel} className="absolute top-3 right-3 text-white/50 hover:text-white transition-colors">
+                <X className="w-4 h-4" />
+              </button>
+              <h3 className="font-bold text-white text-base pr-6">{selectedEvent.title}</h3>
+            </div>
+          )}
+
+          {/* Body — scrollable */}
+          <div className="p-4 space-y-3 overflow-y-auto custom-scrollbar flex-1">
+            <h3 className="font-bold text-white text-base">{selectedEvent.title}</h3>
+            <p className="text-sm text-zinc-300 leading-relaxed">{selectedEvent.description}</p>
             
+            {/* Metadatos */}
             <div className="flex flex-wrap gap-2">
               <span className="inline-flex items-center gap-1 text-xs text-zinc-400 bg-zinc-800 px-2 py-1 rounded-md">
                 📆 {selectedEvent.date}
               </span>
-              {selectedEvent.hours && (
+              {selectedEvent.startTime && selectedEvent.endTime && (
                 <span className="inline-flex items-center gap-1 text-xs text-amber-400 bg-amber-500/10 px-2 py-1 rounded-md">
-                  <Clock className="w-3 h-3" /> {selectedEvent.hours}
+                  <Clock className="w-3 h-3" /> {selectedEvent.startTime} — {selectedEvent.endTime}
+                </span>
+              )}
+              {selectedEvent.price !== undefined && (
+                <span className="inline-flex items-center gap-1 text-xs text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-md font-bold">
+                  {selectedEvent.price === null || selectedEvent.price === 0 ? '🎉 Gratis' : `💵 $${selectedEvent.price} ${selectedEvent.currency || ''}`}
+                </span>
+              )}
+              {selectedEvent.ageRange && (
+                <span className="inline-flex items-center gap-1 text-xs text-blue-400 bg-blue-500/10 px-2 py-1 rounded-md">
+                  👥 {selectedEvent.ageRange}
                 </span>
               )}
             </div>
+
+            {/* Actividades */}
+            {selectedEvent.activities && selectedEvent.activities.length > 0 && (
+              <div>
+                <h4 className="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-1.5">Actividades</h4>
+                <div className="flex flex-wrap gap-1.5">
+                  {selectedEvent.activities.map((act, i) => (
+                    <span key={i} className="text-[11px] bg-zinc-800 text-zinc-300 px-2 py-1 rounded-md">
+                      {act}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Itinerario */}
+            {selectedEvent.itinerary && selectedEvent.itinerary.length > 0 && (
+              <div>
+                <h4 className="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-1.5">Itinerario</h4>
+                <div className="space-y-1 pl-2 border-l-2 border-purple-500/30">
+                  {selectedEvent.itinerary.map((step, i) => (
+                    <p key={i} className="text-[11px] text-zinc-400 leading-snug">{step}</p>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Date Picker (solo para lugares sin fecha fija) */}
             {showDatePicker && (
@@ -214,7 +264,7 @@ const InteractiveMap: React.FC<MapProps> = ({ aiLocation, onAskCipitio, onSaveTo
                 >
                   <Star className="w-4 h-4" />
                   {isEvent(selectedEvent) 
-                    ? `Guardar en ${selectedEvent.date} (+50 pts)` 
+                    ? `Agendar para ${selectedEvent.date} (+50 pts)` 
                     : 'Guardar en Agenda (+50 pts)'}
                 </button>
                 <button 

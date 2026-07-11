@@ -151,14 +151,25 @@ const AgendaModal: React.FC<AgendaModalProps> = ({ isOpen, onClose, userId, onPo
             </div>
           ) : (
             <>
-              {/* Navegación del mes */}
+              {/* Navegación del mes y año */}
               <div className="flex items-center justify-between mb-4">
                 <button onClick={prevMonth} className="p-2 hover:bg-zinc-800 rounded-lg transition-colors text-zinc-400 hover:text-white">
                   <ChevronLeft className="w-5 h-5" />
                 </button>
-                <h3 className="text-white font-bold text-base">
-                  {MONTH_NAMES[currentMonth]} {currentYear}
-                </h3>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-white font-bold text-base">
+                    {MONTH_NAMES[currentMonth]}
+                  </h3>
+                  <select
+                    value={currentYear}
+                    onChange={(e) => { setCurrentYear(Number(e.target.value)); setSelectedDay(null); }}
+                    className="bg-zinc-800 border border-white/10 text-white text-sm px-2 py-1 rounded-lg focus:outline-none focus:border-purple-500 cursor-pointer"
+                  >
+                    {Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - 2 + i).map(y => (
+                      <option key={y} value={y}>{y}</option>
+                    ))}
+                  </select>
+                </div>
                 <button onClick={nextMonth} className="p-2 hover:bg-zinc-800 rounded-lg transition-colors text-zinc-400 hover:text-white">
                   <ChevronRight className="w-5 h-5" />
                 </button>
