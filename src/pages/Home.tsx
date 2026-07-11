@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Map, MessageSquare, Compass, Loader2 } from 'lucide-react';
 import Assistant3D from '../components/Assistant3D';
+import InteractiveMap from '../components/InteractiveMap';
 import { generateTravelResponse } from '../services/ai';
 import { speakText } from '../services/tts';
 
@@ -115,7 +116,7 @@ const Home: React.FC = () => {
 
         {/* Right Panel: Map */}
         <div className="flex-1 relative bg-zinc-900 flex items-center justify-center">
-           <p className="text-zinc-500 font-mono text-sm">Leaflet Integration (Phase 4)</p>
+           <InteractiveMap />
         </div>
       </main>
     </div>

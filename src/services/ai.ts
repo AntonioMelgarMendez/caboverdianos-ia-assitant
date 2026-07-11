@@ -1,10 +1,13 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import OpenAI from 'openai';
 
-const apiKey = import.meta.env.VITE_AI_API_KEY;
-let genAI: GoogleGenerativeAI | null = null;
+const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
+let openai: OpenAI | null = null;
 
 if (apiKey) {
-  genAI = new GoogleGenerativeAI(apiKey);
+  openai = new OpenAI({
+    apiKey: apiKey,
+    dangerouslyAllowBrowser: true // Solo para el MVP (lo ideal es usar Supabase Edge Functions)
+  });
 }
 
 const SYSTEM_PROMPT = `
@@ -16,19 +19,23 @@ Tus respuestas deben ser:
 `;
 
 export async function generateTravelResponse(userMessage: string): Promise<string> {
-  if (!genAI) {
-    console.warn("API Key de IA no configurada. Usando mock local.");
+  if (!openai) {
+    console.warn("API Key de OpenAI no configurada. Usando mock local.");
     return "No tengo mi clave de IA configurada, pero ¡te recomiendo visitar París!";
   }
 
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
-    const result = await model.generateContent([
-      { text: SYSTEM_PROMPT },
-      { text: `Usuario: ${userMessage}` }
-    ]);
-    const response = await result.response;
-    return response.text();
+    const response = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo", // o gpt-4o-mini
+      messages: [
+        { role: "system", content: SYSTEM_PROMPT },
+        { role: "user", content: userMessage }
+      ],
+      temperature: 0.7,
+      max_tokens: 150,
+    });
+    
+    return response.choices[0].message.content || "Lo siento, no pude formular una respuesta.";
   } catch (error) {
     console.error("Error al generar respuesta:", error);
     return "Lo siento, tuve un problema procesando tu solicitud.";
