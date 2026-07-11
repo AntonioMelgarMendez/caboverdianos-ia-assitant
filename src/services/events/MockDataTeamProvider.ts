@@ -16,6 +16,11 @@ export class MockDataTeamProvider implements EventProvider {
         startTime: '9:00 AM',
         endTime: '5:00 PM',
         imageUrl: 'https://images.unsplash.com/photo-1501426026826-31c667bdf23d?w=400&h=250&fit=crop',
+        media: [
+          { type: 'image', url: 'https://images.unsplash.com/photo-1501426026826-31c667bdf23d?w=800&h=600&fit=crop' },
+          { type: 'image', url: 'https://images.unsplash.com/photo-1473448912268-2022ce9509d8?w=800&h=600&fit=crop' },
+          { type: 'video', url: 'https://www.w3schools.com/html/mov_bbb.mp4' }
+        ],
         itinerary: [
           '9:00 AM — Apertura y bendición de cosechas',
           '10:00 AM — Concurso de la piña más grande',

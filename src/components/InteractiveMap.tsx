@@ -16,9 +16,10 @@ let DefaultIcon = L.icon({
 });
 L.Marker.prototype.options.icon = DefaultIcon;
 
-import type { AppEvent } from '../services/events/EventProvider';
+import { EventProvider, AppEvent } from '../services/events/EventProvider';
 import { MockDataTeamProvider } from '../services/events/MockDataTeamProvider';
 import { useMap } from 'react-leaflet';
+import MediaCarousel from './MediaCarousel';
 
 interface InteractiveMapProps {
   aiLocation: { name: string; lat: number; lng: number } | null;
@@ -150,20 +151,23 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({ aiLocation, onAskCipiti
       {selectedEvent && !savedFeedback && (
         <div className="absolute top-4 right-4 z-[500] w-80 max-h-[calc(100%-2rem)] bg-zinc-900/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl shadow-black/50 overflow-hidden flex flex-col">
           
-          {/* Imagen */}
-          {selectedEvent.imageUrl && (
-            <div className="relative h-40 w-full overflow-hidden shrink-0">
-              <img src={selectedEvent.imageUrl} alt={selectedEvent.title} className="w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-transparent to-transparent"></div>
+          {/* Media Carousel */}
+          {(selectedEvent.imageUrl || (selectedEvent.media && selectedEvent.media.length > 0)) && (
+            <div className="relative h-48 w-full overflow-hidden shrink-0">
+              <MediaCarousel 
+                title={selectedEvent.title}
+                media={selectedEvent.media || (selectedEvent.imageUrl ? [{ type: 'image', url: selectedEvent.imageUrl }] : [])} 
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-transparent to-transparent pointer-events-none"></div>
               <button 
                 onClick={closePanel}
-                className="absolute top-2 right-2 bg-black/50 backdrop-blur-sm text-white p-1.5 rounded-full hover:bg-black/70 transition-colors"
+                className="absolute top-2 right-2 z-20 bg-black/50 backdrop-blur-sm text-white p-1.5 rounded-full hover:bg-black/70 transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
               {/* Category badge */}
               {selectedEvent.category && (
-                <span className="absolute top-2 left-2 text-[10px] font-bold uppercase tracking-wider bg-purple-600/80 backdrop-blur-sm text-white px-2 py-1 rounded-md">
+                <span className="absolute top-2 left-2 z-10 text-[10px] font-bold uppercase tracking-wider bg-purple-600/80 backdrop-blur-sm text-white px-2 py-1 rounded-md">
                   {selectedEvent.category}
                 </span>
               )}

@@ -7,7 +7,8 @@ export interface AppEvent {
   date: string;
   startTime?: string;
   endTime?: string;
-  imageUrl?: string;
+  imageUrl?: string; // Mantenemos imageUrl por retrocompatibilidad
+  media?: { type: 'image' | 'video', url: string }[];
   itinerary?: string[];
   activities?: string[];
   price?: number | null;  // null = gratis
