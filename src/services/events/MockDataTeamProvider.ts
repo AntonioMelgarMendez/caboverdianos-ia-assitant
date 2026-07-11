@@ -1,4 +1,4 @@
-import { EventProvider, AppEvent } from './EventProvider';
+import type { EventProvider, AppEvent } from './EventProvider';
 
 export class MockDataTeamProvider implements EventProvider {
   async getEvents(): Promise<AppEvent[]> {

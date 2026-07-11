@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const API_KEY = process.env.VITE_ELEVENLABS_API_KEY;
-const AUDIO_FILE_PATH = process.argv[2]; // Pasa la ruta del audio por argumento
+const AUDIO_FILE_PATH = './scripts/videoplayback-online-audio-convertercom_gewILoDy.mp3';
 
 if (!API_KEY) {
   console.error('Error: No se encontró VITE_ELEVENLABS_API_KEY en .env');
@@ -11,8 +11,7 @@ if (!API_KEY) {
 }
 
 if (!AUDIO_FILE_PATH || !fs.existsSync(AUDIO_FILE_PATH)) {
-  console.error('Error: Debes proveer una ruta válida al archivo de audio.');
-  console.error('Uso: node scripts/add_voice.js ruta/al/audio.mp3');
+  console.error('Error: No se encontró el archivo de audio en:', AUDIO_FILE_PATH);
   process.exit(1);
 }
 
