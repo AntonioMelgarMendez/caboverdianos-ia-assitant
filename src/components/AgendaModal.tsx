@@ -289,25 +289,26 @@ const AgendaModal: React.FC<AgendaModalProps> = ({ isOpen, onClose, userId, onPo
               )}
 
               {viewMode === 'list' && (
-                <div className="space-y-6">
+                <div className="space-y-6 max-w-2xl mx-auto w-full">
                   {sortedDates.map(dateStr => {
                     const dateObj = new Date(dateStr + 'T00:00:00');
                     return (
                       <div key={dateStr}>
-                        <h4 className="text-sm font-bold text-amber-500 mb-3 border-b border-white/10 pb-1">
+                        <h4 className="text-sm font-bold text-amber-500 mb-3 border-b border-white/10 pb-1 flex items-center gap-2">
+                          <CalendarIcon className="w-4 h-4" />
                           {dateObj.getDate()} de {MONTH_NAMES[dateObj.getMonth()]} {dateObj.getFullYear()}
                         </h4>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div className="grid grid-cols-1 gap-3">
                           {itemsByDate[dateStr].map(item => (
-                            <div key={item.id} className="bg-zinc-900 border border-white/5 p-4 rounded-xl flex flex-col justify-between">
-                              <div>
-                                <h5 className="font-bold text-white text-base mb-2">{item.place_name}</h5>
+                            <div key={item.id} className="bg-zinc-900 border border-white/5 p-4 rounded-xl flex items-center justify-between gap-4">
+                              <div className="flex-1">
+                                <h5 className="font-bold text-white text-base mb-1">{item.place_name}</h5>
                                 {item.status === 'visited' ? (
                                   <span className="text-[10px] font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-md inline-flex items-center gap-1">
                                     <CheckCircle2 className="w-3 h-3" /> Visitado
                                   </span>
                                 ) : (
-                                  <span className="text-[10px] font-bold uppercase tracking-wider bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded-md">
+                                  <span className="text-[10px] font-bold uppercase tracking-wider bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded-md inline-flex">
                                     Pendiente
                                   </span>
                                 )}
@@ -316,10 +317,10 @@ const AgendaModal: React.FC<AgendaModalProps> = ({ isOpen, onClose, userId, onPo
                                 <button
                                   onClick={() => handleMarkVisited(item)}
                                   disabled={markingId === item.id}
-                                  className="mt-4 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-3 py-2 rounded-lg transition-colors flex items-center justify-center gap-1 disabled:opacity-50"
+                                  className="shrink-0 bg-emerald-600/30 hover:bg-emerald-600/50 border border-emerald-500/30 text-emerald-300 text-xs font-bold px-4 py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
                                 >
-                                  {markingId === item.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <CheckCircle2 className="w-3 h-3" />}
-                                  Visitado
+                                  {markingId === item.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
+                                  Marcar Visitado
                                 </button>
                               )}
                             </div>
@@ -334,17 +335,17 @@ const AgendaModal: React.FC<AgendaModalProps> = ({ isOpen, onClose, userId, onPo
                       <h4 className="text-sm font-bold text-zinc-500 mb-3 border-b border-white/10 pb-1 flex items-center gap-2">
                         <Clock className="w-4 h-4" /> Sin fecha asignada
                       </h4>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div className="grid grid-cols-1 gap-3">
                         {unscheduled.map(item => (
-                          <div key={item.id} className="bg-zinc-800/30 border border-white/5 p-4 rounded-xl flex flex-col justify-between">
-                            <div>
-                              <h5 className="font-bold text-white text-base mb-2">{item.place_name}</h5>
+                          <div key={item.id} className="bg-zinc-800/30 border border-white/5 p-4 rounded-xl flex items-center justify-between gap-4">
+                            <div className="flex-1">
+                              <h5 className="font-bold text-white text-base mb-1">{item.place_name}</h5>
                               {item.status === 'visited' ? (
                                 <span className="text-[10px] font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-md inline-flex items-center gap-1">
                                   <CheckCircle2 className="w-3 h-3" /> Visitado
                                 </span>
                               ) : (
-                                <span className="text-[10px] font-bold uppercase tracking-wider bg-zinc-700 text-zinc-400 px-2 py-0.5 rounded-md inline-block">
+                                <span className="text-[10px] font-bold uppercase tracking-wider bg-zinc-700 text-zinc-400 px-2 py-0.5 rounded-md inline-flex">
                                   Pendiente
                                 </span>
                               )}
@@ -353,10 +354,10 @@ const AgendaModal: React.FC<AgendaModalProps> = ({ isOpen, onClose, userId, onPo
                               <button
                                 onClick={() => handleMarkVisited(item)}
                                 disabled={markingId === item.id}
-                                className="mt-4 bg-emerald-600/30 hover:bg-emerald-600/50 border border-emerald-500/30 text-emerald-300 text-xs font-bold px-3 py-2 rounded-lg transition-colors flex items-center justify-center gap-1 disabled:opacity-50"
+                                className="shrink-0 bg-emerald-600/20 hover:bg-emerald-600/40 border border-emerald-500/30 text-emerald-300 text-xs font-bold px-4 py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
                               >
-                                {markingId === item.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <CheckCircle2 className="w-3 h-3" />}
-                                Visitado
+                                {markingId === item.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
+                                Marcar Visitado
                               </button>
                             )}
                           </div>

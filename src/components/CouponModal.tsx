@@ -99,22 +99,35 @@ const CouponModal: React.FC<CouponModalProps> = ({ isOpen, onClose, userId, user
                 const isProcessing = processingId === c.id;
 
                 return (
-                  <div key={c.id} className="bg-zinc-800/50 border border-white/5 rounded-xl p-4 flex items-center justify-between">
-                    <div>
-                      <h3 className="font-bold text-white text-lg">{c.title}</h3>
-                      <p className="text-sm text-zinc-400">Costo: {c.cost_points} pts</p>
+                  <div key={c.id} className="bg-zinc-800/50 border border-white/5 rounded-2xl overflow-hidden shadow-lg">
+                    {c.imageUrl && (
+                      <div className="h-28 w-full relative">
+                        <img src={c.imageUrl} alt={c.title} className="w-full h-full object-cover" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 to-transparent"></div>
+                        <div className="absolute bottom-2 left-3">
+                          <span className="bg-amber-500 text-zinc-950 text-xs font-black px-2 py-1 rounded-md uppercase tracking-wider">
+                            {c.discount_percentage}% DTO
+                          </span>
+                        </div>
+                      </div>
+                    )}
+                    <div className="p-4 flex items-center justify-between gap-4">
+                      <div className="flex-1">
+                        <h3 className="font-bold text-white text-base leading-tight">{c.title}</h3>
+                        <p className="text-sm text-amber-400/80 font-bold mt-1">{c.cost_points} pts</p>
+                      </div>
+                      <button 
+                        onClick={() => handleBuy(c)}
+                        disabled={!canAfford || isProcessing}
+                        className={`px-4 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 transition-transform active:scale-95 shrink-0
+                          ${canAfford 
+                            ? 'bg-amber-500 hover:bg-amber-400 text-zinc-950 shadow-lg shadow-amber-500/20' 
+                            : 'bg-zinc-700/50 text-zinc-500 cursor-not-allowed'}
+                        `}
+                      >
+                        {isProcessing ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Canjear'}
+                      </button>
                     </div>
-                    <button 
-                      onClick={() => handleBuy(c)}
-                      disabled={!canAfford || isProcessing}
-                      className={`px-4 py-2 rounded-lg font-bold text-sm flex items-center gap-2 transition-transform active:scale-95
-                        ${canAfford 
-                          ? 'bg-amber-500 hover:bg-amber-400 text-zinc-950 shadow-lg shadow-amber-500/20' 
-                          : 'bg-zinc-700 text-zinc-500 cursor-not-allowed'}
-                      `}
-                    >
-                      {isProcessing ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Comprar'}
-                    </button>
                   </div>
                 );
               })}
@@ -190,18 +203,26 @@ const CouponModal: React.FC<CouponModalProps> = ({ isOpen, onClose, userId, user
                         <button 
                           key={c.id} 
                           onClick={() => setSelectedCoupon(c)}
-                          className="w-full bg-gradient-to-r from-amber-500/10 to-transparent border border-amber-500/20 hover:border-amber-500/50 rounded-xl p-4 flex items-center justify-between text-left transition-all hover:scale-[1.02]"
+                          className="w-full bg-zinc-800/50 border border-white/5 hover:border-amber-500/50 rounded-xl p-3 flex items-center justify-between text-left transition-all hover:bg-zinc-800"
                         >
                           <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 rounded-full bg-amber-500/20 flex items-center justify-center shrink-0">
-                              <Ticket className="w-6 h-6 text-amber-500" />
-                            </div>
+                            {details.imageUrl ? (
+                              <div className="w-14 h-14 rounded-lg overflow-hidden shrink-0 shadow-md">
+                                <img src={details.imageUrl} alt={details.title} className="w-full h-full object-cover" />
+                              </div>
+                            ) : (
+                              <div className="w-14 h-14 rounded-lg bg-amber-500/10 flex items-center justify-center shrink-0 border border-amber-500/20">
+                                <Ticket className="w-6 h-6 text-amber-500" />
+                              </div>
+                            )}
                             <div>
-                              <h3 className="font-bold text-white text-base">{details.title}</h3>
-                              <p className="text-xs text-amber-500 mt-0.5">{c.discount_percentage}% DTO</p>
+                              <h3 className="font-bold text-white text-sm line-clamp-2 leading-tight">{details.title}</h3>
+                              <span className="inline-block mt-1 text-[10px] bg-amber-500 text-zinc-950 px-2 py-0.5 rounded font-black uppercase tracking-wider">
+                                {c.discount_percentage}% DTO
+                              </span>
                             </div>
                           </div>
-                          <ChevronRight className="w-5 h-5 text-zinc-500" />
+                          <ChevronRight className="w-5 h-5 text-zinc-500 shrink-0 ml-2" />
                         </button>
                       );
                     })}

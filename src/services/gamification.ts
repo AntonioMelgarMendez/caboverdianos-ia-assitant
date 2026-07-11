@@ -15,6 +15,7 @@ export interface StoreCoupon {
   title: string;
   discount_percentage: number;
   cost_points: number;
+  imageUrl?: string;
 }
 
 export interface UserCoupon {
@@ -26,9 +27,27 @@ export interface UserCoupon {
 
 // Mock store for MVP
 export const AVAILABLE_COUPONS: StoreCoupon[] = [
-  { id: 'c-1', title: 'Pupusas al 2x1', discount_percentage: 50, cost_points: 100 },
-  { id: 'c-2', title: '15% Dto en Hotel', discount_percentage: 15, cost_points: 300 },
-  { id: 'c-3', title: 'Entrada Gratis a Museo', discount_percentage: 100, cost_points: 500 },
+  { 
+    id: 'c1', 
+    title: 'Pupusas al 2x1', 
+    discount_percentage: 50, 
+    cost_points: 100,
+    imageUrl: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&h=200&fit=crop'
+  },
+  { 
+    id: 'c2', 
+    title: '15% Dto en Hotel de Playa', 
+    discount_percentage: 15, 
+    cost_points: 300,
+    imageUrl: 'https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=400&h=200&fit=crop'
+  },
+  { 
+    id: 'c3', 
+    title: 'Entrada Gratis a Museo MARTE', 
+    discount_percentage: 100, 
+    cost_points: 500,
+    imageUrl: 'https://images.unsplash.com/photo-1518998053401-878c735c0865?w=400&h=200&fit=crop'
+  },
 ];
 
 export async function getUserPoints(userId: string): Promise<number> {
