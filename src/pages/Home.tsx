@@ -213,10 +213,11 @@ const Home: React.FC = () => {
            <InteractiveMap aiLocation={aiLocation} />
            
            {/* Botón flotante para guardar en agenda */}
-           {aiLocation && user && (
-             <div className="absolute top-6 left-1/2 -translate-x-1/2 z-[400]">
+           {user && (
+             <div className="absolute top-6 left-1/2 -translate-x-1/2 z-[1000]">
                <button 
                  onClick={async () => {
+                   if (!aiLocation) return;
                    setIsSavingAgenda(true);
                    const res = await saveLocationToAgendaAndEarnPoints(user.id, aiLocation.name, aiLocation.lat, aiLocation.lng);
                    if (res.success) {
@@ -225,11 +226,15 @@ const Home: React.FC = () => {
                    }
                    setIsSavingAgenda(false);
                  }}
-                 disabled={isSavingAgenda}
-                 className="bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold py-2.5 px-6 rounded-full shadow-lg shadow-amber-500/20 flex items-center gap-2 transition-transform hover:scale-105 active:scale-95 disabled:opacity-50"
+                 disabled={isSavingAgenda || !aiLocation}
+                 className={`font-bold py-2.5 px-6 rounded-full shadow-lg flex items-center gap-2 transition-transform
+                   ${aiLocation 
+                     ? 'bg-amber-500 hover:bg-amber-400 text-zinc-950 shadow-amber-500/20 hover:scale-105 active:scale-95' 
+                     : 'bg-zinc-800 text-zinc-500 cursor-not-allowed opacity-80'}
+                 `}
                >
                  {isSavingAgenda ? <Loader2 className="w-4 h-4 animate-spin" /> : <Star className="w-4 h-4" />}
-                 Guardar en Agenda (+50 pts)
+                 {aiLocation ? `Guardar ${aiLocation.name} (+50 pts)` : 'Pregunta a la IA para guardar un lugar'}
                </button>
              </div>
            )}
