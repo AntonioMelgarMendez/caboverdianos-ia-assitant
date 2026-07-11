@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { X, MapPin, Loader2 } from 'lucide-react';
-import { getUserAgenda, AgendaItem } from '../services/gamification';
+import { getUserAgenda } from '../services/gamification';
+import type { AgendaItem } from '../services/gamification';
 
 interface AgendaModalProps {
   isOpen: boolean;
