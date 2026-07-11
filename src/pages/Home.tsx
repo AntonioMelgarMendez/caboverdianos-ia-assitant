@@ -1,5 +1,6 @@
 import React from 'react';
 import { Map, MessageSquare, Compass } from 'lucide-react';
+import Assistant3D from '../components/Assistant3D';
 
 const Home: React.FC = () => {
   return (
@@ -21,10 +22,10 @@ const Home: React.FC = () => {
       <main className="flex-1 flex overflow-hidden">
         {/* Left Panel: 3D Assistant & Chat */}
         <div className="w-1/3 flex flex-col border-r border-white/10 relative z-10 bg-zinc-950/80 backdrop-blur-sm">
-          {/* 3D Model Viewport Placeholder */}
+          {/* 3D Model Viewport */}
           <div className="h-1/2 border-b border-white/10 relative overflow-hidden bg-gradient-to-b from-zinc-900 to-zinc-950 flex items-center justify-center group">
-             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-purple-900/20 via-zinc-950/0 to-zinc-950/0"></div>
-             <p className="text-zinc-500 font-mono text-sm z-10">3D Model Viewport (Phase 2)</p>
+             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-purple-900/20 via-zinc-950/0 to-zinc-950/0 pointer-events-none"></div>
+             <Assistant3D />
           </div>
           
           {/* Chat Interface Placeholder */}
