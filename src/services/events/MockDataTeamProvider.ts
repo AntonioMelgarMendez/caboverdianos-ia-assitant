@@ -8,20 +8,31 @@ export class MockDataTeamProvider implements EventProvider {
     // Datos simulados del "otro equipo de datos"
     return [
       {
-        id: 'evt-1',
-        title: 'Festival de la Molienda',
-        description: 'Música, dulces tradicionales y molienda de caña.',
-        lat: 13.6443, // San Vicente aprox
-        lng: -88.7844,
-        date: '2026-08-15'
+        id: '1',
+        title: 'Festival de la Piña',
+        description: 'Música en vivo y gastronomía en Santa María Ostuma.',
+        lat: 13.6261,
+        lng: -88.9419,
+        date: '2023-11-15',
+        hours: '9:00 AM - 5:00 PM'
       },
       {
-        id: 'evt-2',
-        title: 'Fiestas Agostinas',
-        description: 'Celebración tradicional con desfiles y comida típica.',
-        lat: 13.6929, // San Salvador
-        lng: -89.2182,
-        date: '2026-08-01'
+        id: '2',
+        title: 'Torneo de Surf',
+        description: 'Competencia internacional en la Playa El Tunco.',
+        lat: 13.4936,
+        lng: -89.3828,
+        date: '2023-11-20',
+        hours: '7:00 AM - 1:00 PM'
+      },
+      {
+        id: '3',
+        title: 'Noche de Farolitos',
+        description: 'Tradición cultural en Concepción de Ataco.',
+        lat: 13.8711,
+        lng: -89.8483,
+        date: '2023-09-07',
+        hours: '6:00 PM - 11:00 PM'
       }
     ];
   }

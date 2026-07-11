@@ -65,7 +65,11 @@ export async function saveLocationToAgendaAndEarnPoints(
   lng: number
 ): Promise<{ success: boolean; newTotalPoints: number }> {
   
-  // 1. Insert into Agenda
+  // 1. Asegurarnos que el perfil existe ANTES de insertar en la agenda (Fix 409)
+  const currentPoints = await getUserPoints(userId);
+  await supabase.from('profiles').upsert({ id: userId, total_points: currentPoints });
+
+  // 2. Insert into Agenda
   const { error: agendaError } = await supabase
     .from('user_agenda')
     .insert([
@@ -74,20 +78,17 @@ export async function saveLocationToAgendaAndEarnPoints(
 
   if (agendaError) {
     console.error("Error saving to agenda:", agendaError);
-    return { success: false, newTotalPoints: 0 };
+    return { success: false, newTotalPoints: currentPoints };
   }
 
-  // 2. Add +50 points (Upsert para crear el perfil si el usuario es viejo y no lo tenía)
-  const currentPoints = await getUserPoints(userId);
+  // 3. Add +50 points
   const newPoints = currentPoints + 50;
-
   const { error: pointsError } = await supabase
     .from('profiles')
     .upsert({ id: userId, total_points: newPoints });
 
   if (pointsError) {
     console.error("Error updating points:", pointsError);
-    // Even if points fail, agenda was saved, but we return false to notify user
     return { success: false, newTotalPoints: currentPoints };
   }
 

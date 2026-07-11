@@ -5,6 +5,7 @@ export interface AppEvent {
   lat: number;
   lng: number;
   date: string;
+  hours?: string;
 }
 
 export interface EventProvider {

@@ -21,6 +21,8 @@ import { useMap } from 'react-leaflet';
 
 interface MapProps {
   aiLocation?: { name: string, lat: number, lng: number } | null;
+  onAskCipitio?: (placeName: string) => void;
+  onSaveToAgenda?: (placeName: string, lat: number, lng: number) => void;
 }
 
 // Componente para actualizar el centro del mapa dinámicamente
@@ -34,7 +36,7 @@ const MapUpdater: React.FC<{ location?: { lat: number, lng: number } | null }> =
   return null;
 };
 
-const InteractiveMap: React.FC<MapProps> = ({ aiLocation }) => {
+const InteractiveMap: React.FC<MapProps> = ({ aiLocation, onAskCipitio, onSaveToAgenda }) => {
   // Centro inicial por defecto (El Salvador)
   const position: [number, number] = [13.6929, -89.2182]; 
   const [events, setEvents] = React.useState<AppEvent[]>([]);
@@ -79,11 +81,30 @@ const InteractiveMap: React.FC<MapProps> = ({ aiLocation }) => {
         {/* Renderizado dinámico de eventos */}
         {events.map((evt) => (
           <Marker key={evt.id} position={[evt.lat, evt.lng]}>
-            <Popup className="custom-popup">
+            <Popup className="custom-popup min-w-[200px]">
               <div className="text-zinc-900 font-sans">
                 <h3 className="font-bold text-sm text-purple-600">📅 {evt.title}</h3>
                 <p className="text-xs mt-1">{evt.description}</p>
-                <p className="text-xs text-zinc-500 mt-1">{evt.date}</p>
+                <div className="flex items-center gap-2 mt-1">
+                  <p className="text-xs text-zinc-500">{evt.date}</p>
+                  {evt.hours && <p className="text-xs text-amber-600 font-medium">🕒 {evt.hours}</p>}
+                </div>
+                
+                {/* Interacciones directas */}
+                <div className="mt-3 flex flex-col gap-2 border-t border-zinc-200 pt-2">
+                  <button 
+                    onClick={() => onSaveToAgenda?.(evt.title, evt.lat, evt.lng)}
+                    className="w-full text-left px-2 py-1.5 bg-amber-100 hover:bg-amber-200 text-amber-700 text-xs font-bold rounded flex items-center gap-2 transition-colors"
+                  >
+                    ⭐ Guardar en Agenda (+50 pts)
+                  </button>
+                  <button 
+                    onClick={() => onAskCipitio?.(evt.title)}
+                    className="w-full text-left px-2 py-1.5 bg-purple-100 hover:bg-purple-200 text-purple-700 text-xs font-bold rounded flex items-center gap-2 transition-colors"
+                  >
+                    ✨ Preguntarle al Cipitío
+                  </button>
+                </div>
               </div>
             </Popup>
           </Marker>

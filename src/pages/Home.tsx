@@ -61,12 +61,13 @@ const Home: React.FC = () => {
     await supabase.auth.signOut();
   };
 
-  const handleSendMessage = async () => {
-    if (!input.trim() || isLoading) return;
+  const handleSendMessage = async (overrideText?: string) => {
+    const textToSend = overrideText || input.trim();
+    if (!textToSend || isLoading) return;
 
-    const userText = input.trim();
-    setInput('');
-    const newUserMsg: Message = { id: Date.now().toString(), text: userText, sender: 'user' };
+    if (!overrideText) setInput('');
+    
+    const newUserMsg: Message = { id: Date.now().toString(), text: textToSend, sender: 'user' };
     const updatedMessages = [...messages, newUserMsg];
     setMessages(updatedMessages);
     setIsLoading(true);
@@ -210,7 +211,23 @@ const Home: React.FC = () => {
 
         {/* Right Panel: Map */}
         <div className="flex-1 relative bg-zinc-900 flex items-center justify-center">
-           <InteractiveMap aiLocation={aiLocation} />
+           <InteractiveMap 
+             aiLocation={aiLocation} 
+             onAskCipitio={(placeName) => {
+               handleSendMessage(`Háblame sobre ${placeName}`);
+             }}
+             onSaveToAgenda={async (placeName, lat, lng) => {
+               if (!user) {
+                 alert("Inicia sesión primero para guardar en tu agenda.");
+                 return;
+               }
+               const res = await saveLocationToAgendaAndEarnPoints(user.id, placeName, lat, lng);
+               if (res.success) {
+                 setUserPoints(res.newTotalPoints);
+                 alert(`¡${placeName} guardado en tu Agenda (+50 pts)!`);
+               }
+             }}
+           />
            
            {/* Botón flotante para guardar en agenda */}
            {user && (
