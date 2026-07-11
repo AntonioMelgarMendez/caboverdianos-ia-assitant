@@ -4,9 +4,13 @@ import { ChevronLeft, ChevronRight, Maximize2, X, Play } from 'lucide-react';
 
 import type { AppEvent } from '../services/events/EventProvider';
 
+import GoogleStreetView from './GoogleStreetView';
+
 interface MediaItem {
-  type: 'image' | 'video';
-  url: string;
+  type: 'image' | 'video' | 'streetview';
+  url?: string;
+  lat?: number;
+  lng?: number;
 }
 
 interface MediaCarouselProps {
@@ -64,6 +68,43 @@ const MediaCarousel: React.FC<MediaCarouselProps> = ({ media, title = "Media", e
             playsInline
             className={`w-full h-full object-contain ${isFull ? '' : 'object-cover pointer-events-none'}`}
           />
+        </div>
+      );
+    }
+    if (item.type === 'streetview') {
+      if (!isFull) {
+        return (
+          <div 
+            className="relative w-full h-full flex flex-col items-center justify-center bg-zinc-900 overflow-hidden rounded-t-2xl cursor-pointer"
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsFullScreen(true);
+              setIsZoomed(false);
+            }}
+          >
+            {/* Street View Thumbnail Placeholder */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10" />
+            <img 
+              src={`https://maps.googleapis.com/maps/api/streetview?size=600x300&location=${item.lat},${item.lng}&fov=90&heading=235&pitch=10&key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY}`}
+              className="absolute inset-0 w-full h-full object-cover opacity-60"
+              alt="Street View Thumbnail"
+              onError={(e) => {
+                // Si la miniatura estática falla, ocultar la imagen
+                (e.target as HTMLImageElement).style.display = 'none';
+              }}
+            />
+            <div className="z-20 flex flex-col items-center justify-center">
+              <div className="w-12 h-12 bg-purple-600/80 rounded-full flex items-center justify-center mb-2 backdrop-blur-sm border border-white/20">
+                <span className="font-bold text-white text-xs">360°</span>
+              </div>
+              <span className="text-white text-xs font-medium">Explorar Street View</span>
+            </div>
+          </div>
+        );
+      }
+      return (
+        <div className="w-full h-full relative">
+          <GoogleStreetView lat={item.lat!} lng={item.lng!} />
         </div>
       );
     }
