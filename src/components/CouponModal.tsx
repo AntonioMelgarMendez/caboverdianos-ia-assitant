@@ -4,10 +4,9 @@ import { QRCodeSVG } from 'qrcode.react';
 import { 
   AVAILABLE_COUPONS, 
   getUserCoupons, 
-  buyCoupon, 
-  UserCoupon, 
-  StoreCoupon 
+  buyCoupon
 } from '../services/gamification';
+import type { UserCoupon, StoreCoupon } from '../services/gamification';
 
 interface CouponModalProps {
   isOpen: boolean;
