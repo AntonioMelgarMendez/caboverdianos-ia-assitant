@@ -11,24 +11,24 @@ const AIModel = () => {
   const { scene } = useGLTF(modelUrl);
   const modelRef = useRef<THREE.Group>(null);
 
-  // Simple idle animation (rotation)
+  // Quitamos la rotación continua
   useFrame((state, delta) => {
     if (modelRef.current) {
-      modelRef.current.rotation.y += delta * 0.2;
+      // modelRef.current.rotation.y += delta * 0.2;
     }
   });
 
   return (
     <Float
       speed={2} // Animation speed
-      rotationIntensity={0.2} // XYZ rotation intensity
+      rotationIntensity={0.1} // XYZ rotation intensity (solo el balanceo de Float)
       floatIntensity={0.5} // Up/down float intensity
     >
       <primitive 
         ref={modelRef} 
         object={scene} 
         position={[0, -1, 0]} 
-        scale={1.5} 
+        scale={0.015} // Escala muy reducida porque los modelos de Wii suelen venir en cm/mm
       />
     </Float>
   );
