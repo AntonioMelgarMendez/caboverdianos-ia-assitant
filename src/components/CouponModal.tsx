@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { X, Store, Ticket, Loader2, Star } from 'lucide-react';
+import { X, Store, Ticket, Loader2, Star, ChevronLeft, Download } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import { 
   AVAILABLE_COUPONS, 
@@ -21,6 +21,7 @@ const CouponModal: React.FC<CouponModalProps> = ({ isOpen, onClose, userId, user
   const [myCoupons, setMyCoupons] = useState<UserCoupon[]>([]);
   const [loading, setLoading] = useState(false);
   const [processingId, setProcessingId] = useState<string | null>(null);
+  const [selectedCoupon, setSelectedCoupon] = useState<UserCoupon | null>(null);
 
   useEffect(() => {
     if (isOpen && activeTab === 'wallet') {
@@ -41,11 +42,16 @@ const CouponModal: React.FC<CouponModalProps> = ({ isOpen, onClose, userId, user
     const res = await buyCoupon(userId, coupon);
     if (res.success) {
       onPointsUpdated(res.newTotalPoints);
-      setActiveTab('wallet'); // Cambiar a la billetera automáticamente
+      setActiveTab('wallet');
+      setSelectedCoupon(null);
     } else {
       alert("No se pudo comprar el cupón. Intenta de nuevo.");
     }
     setProcessingId(null);
+  };
+
+  const getStoreCouponDetails = (percentage: number) => {
+    return AVAILABLE_COUPONS.find(c => c.discount_percentage === percentage) || AVAILABLE_COUPONS[0];
   };
 
   return (
@@ -56,13 +62,13 @@ const CouponModal: React.FC<CouponModalProps> = ({ isOpen, onClose, userId, user
         <div className="flex items-center justify-between p-4 border-b border-white/10 bg-zinc-800/50">
           <div className="flex gap-4">
             <button 
-              onClick={() => setActiveTab('store')}
+              onClick={() => { setActiveTab('store'); setSelectedCoupon(null); }}
               className={`flex items-center gap-2 text-sm font-bold pb-1 transition-colors ${activeTab === 'store' ? 'text-amber-400 border-b-2 border-amber-400' : 'text-zinc-400 hover:text-zinc-200'}`}
             >
               <Store className="w-4 h-4" /> Tienda
             </button>
             <button 
-              onClick={() => setActiveTab('wallet')}
+              onClick={() => { setActiveTab('wallet'); setSelectedCoupon(null); }}
               className={`flex items-center gap-2 text-sm font-bold pb-1 transition-colors ${activeTab === 'wallet' ? 'text-purple-400 border-b-2 border-purple-400' : 'text-zinc-400 hover:text-zinc-200'}`}
             >
               <Ticket className="w-4 h-4" /> Mis Cupones
@@ -129,27 +135,77 @@ const CouponModal: React.FC<CouponModalProps> = ({ isOpen, onClose, userId, user
                   <p>Aún no tienes cupones.</p>
                   <p className="text-sm mt-2 text-zinc-500">Ve a la tienda y canjea tus puntos.</p>
                 </div>
-              ) : (
-                <div className="space-y-6">
-                  {myCoupons.map(c => (
-                    <div key={c.id} className="bg-white rounded-2xl p-6 flex flex-col items-center border-4 border-dashed border-zinc-200">
-                      <h3 className="font-black text-2xl text-zinc-900 mb-2">{c.discount_percentage}% DTO</h3>
-                      <p className="text-sm font-bold text-zinc-500 uppercase tracking-widest mb-6">Muestra este QR al cajero</p>
-                      
-                      <div className="bg-zinc-100 p-4 rounded-xl">
+              ) : selectedCoupon ? (
+                /* VISTA DETALLE DEL CUPÓN */
+                <div className="flex flex-col items-center">
+                  <div className="w-full flex justify-start mb-4">
+                    <button 
+                      onClick={() => setSelectedCoupon(null)}
+                      className="flex items-center gap-1 text-sm font-bold text-purple-400 hover:text-purple-300 transition-colors bg-purple-500/10 px-3 py-1.5 rounded-lg"
+                    >
+                      <ChevronLeft className="w-4 h-4" /> Volver
+                    </button>
+                  </div>
+                  
+                  <div className="w-full bg-white rounded-3xl p-6 shadow-xl relative overflow-hidden">
+                    <div className="absolute top-0 left-0 w-full h-3 bg-amber-400"></div>
+                    <div className="absolute top-1/2 -left-3 w-6 h-6 bg-zinc-950 rounded-full"></div>
+                    <div className="absolute top-1/2 -right-3 w-6 h-6 bg-zinc-950 rounded-full"></div>
+                    <div className="absolute top-1/2 left-4 right-4 h-0.5 border-t-2 border-dashed border-zinc-200"></div>
+                    
+                    <div className="text-center mb-8 pt-2">
+                      <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-1">Cupón Exclusivo</p>
+                      <h3 className="font-black text-3xl text-zinc-900">{getStoreCouponDetails(selectedCoupon.discount_percentage).title}</h3>
+                      <p className="text-amber-600 font-bold mt-1">Descuento del {selectedCoupon.discount_percentage}%</p>
+                    </div>
+                    
+                    <div className="flex flex-col items-center mt-8">
+                      <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-4">Muestra este QR al cajero</p>
+                      <div className="bg-white p-4 rounded-xl border border-zinc-200 shadow-sm">
                         <QRCodeSVG 
-                          value={c.coupon_code} 
-                          size={150}
+                          value={selectedCoupon.coupon_code} 
+                          size={180}
                           level="H"
                           includeMargin={true}
                         />
                       </div>
-                      
-                      <p className="font-mono text-zinc-400 mt-4 text-sm bg-zinc-100 px-3 py-1 rounded-md">
-                        {c.coupon_code}
+                      <p className="font-mono text-zinc-500 font-bold mt-4 text-base tracking-widest bg-zinc-100 px-4 py-2 rounded-lg">
+                        {selectedCoupon.coupon_code}
                       </p>
                     </div>
-                  ))}
+                  </div>
+                  
+                  <button className="mt-6 flex items-center gap-2 text-zinc-400 hover:text-white transition-colors text-sm font-bold">
+                    <Download className="w-4 h-4" /> Guardar como imagen
+                  </button>
+                </div>
+              ) : (
+                /* VISTA LISTA DE CUPONES */
+                <div className="space-y-3">
+                  <p className="text-sm text-zinc-400 mb-4 font-bold">Tienes {myCoupons.length} cupones disponibles:</p>
+                  <div className="grid grid-cols-1 gap-3">
+                    {myCoupons.map(c => {
+                      const details = getStoreCouponDetails(c.discount_percentage);
+                      return (
+                        <button 
+                          key={c.id} 
+                          onClick={() => setSelectedCoupon(c)}
+                          className="w-full bg-gradient-to-r from-amber-500/10 to-transparent border border-amber-500/20 hover:border-amber-500/50 rounded-xl p-4 flex items-center justify-between text-left transition-all hover:scale-[1.02]"
+                        >
+                          <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 rounded-full bg-amber-500/20 flex items-center justify-center shrink-0">
+                              <Ticket className="w-6 h-6 text-amber-500" />
+                            </div>
+                            <div>
+                              <h3 className="font-bold text-white text-base">{details.title}</h3>
+                              <p className="text-xs text-amber-500 mt-0.5">{c.discount_percentage}% DTO</p>
+                            </div>
+                          </div>
+                          <ChevronRight className="w-5 h-5 text-zinc-500" />
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
               )}
             </div>
