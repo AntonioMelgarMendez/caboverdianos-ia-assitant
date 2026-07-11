@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Map, MessageSquare, Compass, Loader2, LogIn, LogOut, Ticket, Star, MapPin, Search, Filter } from 'lucide-react';
+import { Map, MessageSquare, Compass, Loader2, LogIn, LogOut, Ticket, Star, MapPin, Search, Filter, X } from 'lucide-react';
 import Assistant3D from '../components/Assistant3D';
 import InteractiveMap from '../components/InteractiveMap';
 import AgendaModal from '../components/AgendaModal';
@@ -278,22 +278,23 @@ const Home: React.FC = () => {
 
         {/* Floating AI Assistant & Chat */}
         <div className="absolute bottom-6 left-6 z-[1000] flex items-end gap-4 pointer-events-none">
-          {/* 3D Model Bubble */}
-          <div className="relative pointer-events-auto">
-            <div className="w-32 h-32 rounded-full border-4 border-purple-500/30 overflow-hidden bg-gradient-to-b from-zinc-800 to-zinc-950 shadow-2xl relative flex items-center justify-center group cursor-pointer"
-                 onClick={() => setIsChatOpen(!isChatOpen)}>
-              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-purple-900/40 via-zinc-950/0 to-zinc-950/0 pointer-events-none"></div>
+          
+          {/* 3D Model Container (Bigger and Transparent) */}
+          <div className="relative pointer-events-auto flex items-end gap-2">
+            <div className="w-48 h-64 relative flex items-end justify-center drop-shadow-2xl">
               <Assistant3D />
-              
-              {/* Toggle Chat Button Overlay */}
-              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                <MessageSquare className="w-8 h-8 text-white drop-shadow-md" />
-              </div>
             </div>
-            {/* Notification Dot */}
-            {!isChatOpen && messages.length > 1 && (
-              <div className="absolute top-0 right-0 w-4 h-4 bg-red-500 rounded-full border-2 border-zinc-900 animate-pulse"></div>
-            )}
+
+            {/* Separate Chat Toggle Button */}
+            <button 
+              onClick={() => setIsChatOpen(!isChatOpen)}
+              className="relative w-14 h-14 bg-purple-600 hover:bg-purple-500 text-white rounded-full shadow-lg shadow-purple-600/30 flex items-center justify-center transition-transform hover:scale-105 mb-4"
+            >
+              {isChatOpen ? <X className="w-6 h-6" /> : <MessageSquare className="w-6 h-6" />}
+              {!isChatOpen && messages.length > 1 && (
+                <div className="absolute top-0 right-0 w-4 h-4 bg-red-500 rounded-full border-2 border-purple-600 animate-pulse"></div>
+              )}
+            </button>
           </div>
           
           {/* Chat Panel */}
