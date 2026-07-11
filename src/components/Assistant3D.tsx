@@ -11,12 +11,29 @@ const AIModel = () => {
   const { scene } = useGLTF(modelUrl);
   const modelRef = useRef<THREE.Group>(null);
 
-  // Quitamos la rotación continua
+  // Simple idle animation (rotation)
   useFrame((state, delta) => {
     if (modelRef.current) {
       // modelRef.current.rotation.y += delta * 0.2;
     }
   });
+
+  // Arreglar materiales (a veces los ojos se vuelven invisibles por problemas de alpha/transparencia)
+  React.useEffect(() => {
+    if (scene) {
+      scene.traverse((child) => {
+        if (child instanceof THREE.Mesh) {
+          const mat = child.material as THREE.MeshStandardMaterial;
+          if (mat) {
+            mat.transparent = false;
+            mat.alphaTest = 0.5;
+            mat.depthWrite = true;
+            mat.needsUpdate = true;
+          }
+        }
+      });
+    }
+  }, [scene]);
 
   return (
     <Float
