@@ -216,43 +216,58 @@ const Home: React.FC = () => {
              onAskCipitio={(placeName) => {
                handleSendMessage(`Háblame sobre ${placeName}`);
              }}
-             onSaveToAgenda={async (placeName, lat, lng) => {
+             onSaveToAgenda={async (placeName, lat, lng, visitDate) => {
                if (!user) {
                  alert("Inicia sesión primero para guardar en tu agenda.");
                  return;
                }
-               const res = await saveLocationToAgendaAndEarnPoints(user.id, placeName, lat, lng);
+               const res = await saveLocationToAgendaAndEarnPoints(user.id, placeName, lat, lng, visitDate);
                if (res.success) {
                  setUserPoints(res.newTotalPoints);
-                 alert(`¡${placeName} guardado en tu Agenda (+50 pts)!`);
                }
              }}
            />
            
-           {/* Botón flotante para guardar en agenda */}
-           {user && (
+           {/* Panel flotante para guardar AI location en agenda */}
+           {user && aiLocation && (
              <div className="absolute top-6 left-1/2 -translate-x-1/2 z-[1000]">
-               <button 
-                 onClick={async () => {
-                   if (!aiLocation) return;
-                   setIsSavingAgenda(true);
-                   const res = await saveLocationToAgendaAndEarnPoints(user.id, aiLocation.name, aiLocation.lat, aiLocation.lng);
-                   if (res.success) {
-                     setUserPoints(res.newTotalPoints);
-                     setAiLocation(null); // Ocultar después de guardar
-                   }
-                   setIsSavingAgenda(false);
-                 }}
-                 disabled={isSavingAgenda || !aiLocation}
-                 className={`font-bold py-2.5 px-6 rounded-full shadow-lg flex items-center gap-2 transition-transform
-                   ${aiLocation 
-                     ? 'bg-amber-500 hover:bg-amber-400 text-zinc-950 shadow-amber-500/20 hover:scale-105 active:scale-95' 
-                     : 'bg-zinc-800 text-zinc-500 cursor-not-allowed opacity-80'}
-                 `}
-               >
-                 {isSavingAgenda ? <Loader2 className="w-4 h-4 animate-spin" /> : <Star className="w-4 h-4" />}
-                 {aiLocation ? `Guardar ${aiLocation.name} (+50 pts)` : 'Pregunta a la IA para guardar un lugar'}
-               </button>
+               <div className="bg-zinc-900/95 backdrop-blur-xl border border-amber-500/30 rounded-2xl shadow-xl shadow-amber-500/10 p-4 w-72">
+                 <h4 className="text-sm font-bold text-white mb-1">✨ {aiLocation.name}</h4>
+                 <p className="text-xs text-zinc-400 mb-3">Recomendación del Cipitío</p>
+                 <label className="text-xs text-zinc-500 font-bold mb-1 block">¿Qué día quieres ir?</label>
+                 <input 
+                   type="date"
+                   min={new Date().toISOString().split('T')[0]}
+                   id="ai-date-picker"
+                   className="w-full bg-zinc-800 border border-white/10 text-white text-sm px-3 py-2 rounded-lg mb-3 focus:outline-none focus:border-purple-500"
+                 />
+                 <div className="flex gap-2">
+                   <button 
+                     onClick={async () => {
+                       const dateInput = document.getElementById('ai-date-picker') as HTMLInputElement;
+                       const visitDate = dateInput?.value || null;
+                       setIsSavingAgenda(true);
+                       const res = await saveLocationToAgendaAndEarnPoints(user.id, aiLocation.name, aiLocation.lat, aiLocation.lng, visitDate);
+                       if (res.success) {
+                         setUserPoints(res.newTotalPoints);
+                         setAiLocation(null);
+                       }
+                       setIsSavingAgenda(false);
+                     }}
+                     disabled={isSavingAgenda}
+                     className="flex-1 bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold py-2 px-4 rounded-xl text-sm flex items-center justify-center gap-2 transition-all active:scale-95 disabled:opacity-50"
+                   >
+                     {isSavingAgenda ? <Loader2 className="w-4 h-4 animate-spin" /> : <Star className="w-4 h-4" />}
+                     Guardar (+50 pts)
+                   </button>
+                   <button
+                     onClick={() => setAiLocation(null)}
+                     className="px-3 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-400 text-sm rounded-xl transition-colors"
+                   >
+                     ✕
+                   </button>
+                 </div>
+               </div>
              </div>
            )}
         </div>
@@ -263,7 +278,8 @@ const Home: React.FC = () => {
           <AgendaModal 
             isOpen={isAgendaOpen} 
             onClose={() => setIsAgendaOpen(false)} 
-            userId={user.id} 
+            userId={user.id}
+            onPointsUpdated={(pts) => setUserPoints(pts)}
           />
           <CouponModal
             isOpen={isCouponOpen}

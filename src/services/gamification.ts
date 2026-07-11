@@ -5,6 +5,7 @@ export interface AgendaItem {
   place_name: string;
   lat: number;
   lng: number;
+  visit_date: string | null;
   status: string;
   created_at: string;
 }
@@ -62,7 +63,8 @@ export async function saveLocationToAgendaAndEarnPoints(
   userId: string, 
   placeName: string, 
   lat: number, 
-  lng: number
+  lng: number,
+  visitDate?: string | null
 ): Promise<{ success: boolean; newTotalPoints: number }> {
   
   // 1. Asegurarnos que el perfil existe ANTES de insertar en la agenda (Fix 409)
@@ -70,11 +72,12 @@ export async function saveLocationToAgendaAndEarnPoints(
   await supabase.from('profiles').upsert({ id: userId, total_points: currentPoints });
 
   // 2. Insert into Agenda
+  const row: Record<string, unknown> = { user_id: userId, place_name: placeName, lat, lng };
+  if (visitDate) row.visit_date = visitDate;
+  
   const { error: agendaError } = await supabase
     .from('user_agenda')
-    .insert([
-      { user_id: userId, place_name: placeName, lat, lng }
-    ]);
+    .insert([row]);
 
   if (agendaError) {
     console.error("Error saving to agenda:", agendaError);
