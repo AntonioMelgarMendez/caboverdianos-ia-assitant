@@ -22,7 +22,7 @@ export async function generateTravelResponse(userMessage: string): Promise<strin
   }
 
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     const result = await model.generateContent([
       { text: SYSTEM_PROMPT },
       { text: `Usuario: ${userMessage}` }

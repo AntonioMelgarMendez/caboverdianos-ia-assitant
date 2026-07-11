@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
-import { Map, MessageSquare, Compass, Loader2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Map, MessageSquare, Compass, Loader2, LogIn, LogOut, Ticket, Star } from 'lucide-react';
 import Assistant3D from '../components/Assistant3D';
 import InteractiveMap from '../components/InteractiveMap';
 import { generateTravelResponse } from '../services/ai';
 import { speakText } from '../services/tts';
+import { supabase } from '../services/supabase';
+import { User } from '@supabase/supabase-js';
 
 type Message = {
   id: string;
@@ -17,6 +19,29 @@ const Home: React.FC = () => {
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    // Verificar sesión inicial
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    // Escuchar cambios de autenticación
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleLogin = async () => {
+    await supabase.auth.signInWithOAuth({ provider: 'google' });
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+  };
 
   const handleSendMessage = async () => {
     if (!input.trim() || isLoading) return;
@@ -28,13 +53,9 @@ const Home: React.FC = () => {
     setIsLoading(true);
 
     try {
-      // 1. Obtener respuesta de la IA
       const aiResponseText = await generateTravelResponse(userText);
-      
       const newAiMsg: Message = { id: (Date.now() + 1).toString(), text: aiResponseText, sender: 'ai' };
       setMessages(prev => [...prev, newAiMsg]);
-
-      // 2. Hablar la respuesta (TTS)
       await speakText(aiResponseText);
     } catch (error) {
       console.error("Error en el chat:", error);
@@ -52,10 +73,44 @@ const Home: React.FC = () => {
           <Compass className="w-6 h-6 text-purple-400" />
           <h1 className="text-xl font-medium tracking-tight text-white">AI Travel Assistant</h1>
         </div>
-        <div className="flex items-center gap-4">
-          <button className="text-sm font-medium text-zinc-400 hover:text-white transition-colors">
-            Login
-          </button>
+        
+        <div className="flex items-center gap-6">
+          {user ? (
+            <>
+              {/* Gamification Dashboard */}
+              <div className="flex items-center gap-4 bg-zinc-800/50 px-4 py-1.5 rounded-full border border-white/5">
+                <div className="flex items-center gap-1.5 text-amber-400" title="Mis Puntos">
+                  <Star className="w-4 h-4 fill-amber-400" />
+                  <span className="text-sm font-bold">0 pts</span>
+                </div>
+                <div className="w-px h-4 bg-white/10"></div>
+                <button className="flex items-center gap-1.5 text-purple-400 hover:text-purple-300 transition-colors" title="Mis Cupones">
+                  <Ticket className="w-4 h-4" />
+                  <span className="text-sm font-medium">Cupones</span>
+                </button>
+              </div>
+              
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center text-sm font-bold overflow-hidden border border-purple-400">
+                  {user.user_metadata?.avatar_url ? (
+                    <img src={user.user_metadata.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
+                  ) : (
+                    user.email?.charAt(0).toUpperCase()
+                  )}
+                </div>
+                <button onClick={handleLogout} className="text-sm font-medium text-zinc-400 hover:text-white transition-colors flex items-center gap-1">
+                  <LogOut className="w-4 h-4" /> Logout
+                </button>
+              </div>
+            </>
+          ) : (
+            <button 
+              onClick={handleLogin}
+              className="text-sm font-medium bg-white text-zinc-900 px-4 py-2 rounded-full hover:bg-zinc-200 transition-colors flex items-center gap-2"
+            >
+              <LogIn className="w-4 h-4" /> Sign in with Google
+            </button>
+          )}
         </div>
       </header>
 
