@@ -1,8 +1,11 @@
 import React, { Suspense, useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Float, ContactShadows, Environment, useGLTF } from '@react-three/drei';
+import { OrbitControls, Float, ContactShadows, Environment, useGLTF, Html } from '@react-three/drei';
 import * as THREE from 'three';
 import modelUrl from '../assets/nayib_bukele_3d.glb?url';
+
+// Preload the model to avoid lag on first render
+useGLTF.preload(modelUrl);
 
 const AIModel = () => {
   const { scene } = useGLTF(modelUrl);
@@ -31,6 +34,17 @@ const AIModel = () => {
   );
 };
 
+const ModelLoader = () => {
+  return (
+    <Html center>
+      <div className="flex flex-col items-center gap-2">
+        <div className="w-8 h-8 border-4 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
+        <span className="text-purple-400 font-mono text-xs whitespace-nowrap">Loading 3D Model...</span>
+      </div>
+    </Html>
+  );
+};
+
 const Assistant3D: React.FC = () => {
   return (
     <div className="w-full h-full relative">
@@ -40,7 +54,7 @@ const Assistant3D: React.FC = () => {
         <ambientLight intensity={0.5} />
         <directionalLight position={[10, 10, 5]} intensity={1} />
         
-        <Suspense fallback={null}>
+        <Suspense fallback={<ModelLoader />}>
           <AIModel />
           
           {/* Subtle shadow below the model */}
