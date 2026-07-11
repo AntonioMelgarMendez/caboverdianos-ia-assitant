@@ -14,10 +14,10 @@ export async function getUserPoints(userId: string): Promise<number> {
     .from('profiles')
     .select('total_points')
     .eq('id', userId)
-    .single();
+    .maybeSingle(); // maybeSingle evita el error 406 si no hay fila
 
   if (error) {
-    console.error("Error fetching points:", error);
+    console.warn("No se pudo obtener puntos (puede que el perfil no exista aún):", error);
     return 0;
   }
   return data?.total_points || 0;
@@ -56,14 +56,13 @@ export async function saveLocationToAgendaAndEarnPoints(
     return { success: false, newTotalPoints: 0 };
   }
 
-  // 2. Add +50 points
+  // 2. Add +50 points (Upsert para crear el perfil si el usuario es viejo y no lo tenía)
   const currentPoints = await getUserPoints(userId);
   const newPoints = currentPoints + 50;
 
   const { error: pointsError } = await supabase
     .from('profiles')
-    .update({ total_points: newPoints })
-    .eq('id', userId);
+    .upsert({ id: userId, total_points: newPoints });
 
   if (pointsError) {
     console.error("Error updating points:", pointsError);
