@@ -30,6 +30,28 @@ const loadGoogleMapsScript = (apiKey: string): Promise<void> => {
   return googleMapsScriptPromise;
 };
 
+export const checkStreetViewAvailability = async (lat: number, lng: number): Promise<boolean> => {
+  try {
+    const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+    if (!apiKey) return false;
+    await loadGoogleMapsScript(apiKey);
+    
+    return new Promise((resolve) => {
+      const svService = new google.maps.StreetViewService();
+      const location = new google.maps.LatLng(lat, lng);
+      svService.getPanorama({ location, radius: 200 }, (data, status) => {
+        if (status === google.maps.StreetViewStatus.OK && data && data.location && data.location.latLng) {
+          resolve(true);
+        } else {
+          resolve(false);
+        }
+      });
+    });
+  } catch (e) {
+    return false;
+  }
+};
+
 const GoogleStreetView: React.FC<GoogleStreetViewProps> = ({ lat, lng }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isLoading, setIsLoading] = useState(true);

@@ -4,7 +4,7 @@ import { ChevronLeft, ChevronRight, Maximize2, X, Play } from 'lucide-react';
 
 import type { AppEvent } from '../services/events/EventProvider';
 
-import GoogleStreetView from './GoogleStreetView';
+import GoogleStreetView, { checkStreetViewAvailability } from './GoogleStreetView';
 
 interface MediaItem {
   type: 'image' | 'video' | 'streetview';
@@ -23,28 +23,50 @@ const MediaCarousel: React.FC<MediaCarouselProps> = ({ media, title = "Media", e
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [isZoomed, setIsZoomed] = useState(false);
+  const [validMedia, setValidMedia] = useState<MediaItem[]>([]);
 
   React.useEffect(() => {
     setCurrentIndex(0);
     setIsFullScreen(false);
     setIsZoomed(false);
+    
+    let isMounted = true;
+    const validateMedia = async () => {
+      const validated: MediaItem[] = [];
+      for (const item of media) {
+        if (item.type === 'streetview' && item.lat && item.lng) {
+          const isAvailable = await checkStreetViewAvailability(item.lat, item.lng);
+          if (isAvailable) {
+            validated.push(item);
+          }
+        } else {
+          validated.push(item);
+        }
+      }
+      if (isMounted) {
+        setValidMedia(validated);
+      }
+    };
+    
+    validateMedia();
+    return () => { isMounted = false; };
   }, [media]);
 
-  if (!media || media.length === 0) return null;
+  if (!validMedia || validMedia.length === 0) return null;
 
   const nextSlide = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setCurrentIndex((prev) => (prev === media.length - 1 ? 0 : prev + 1));
+    setCurrentIndex((prev) => (prev === validMedia.length - 1 ? 0 : prev + 1));
   };
 
   const prevSlide = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setCurrentIndex((prev) => (prev === 0 ? media.length - 1 : prev - 1));
+    setCurrentIndex((prev) => (prev === 0 ? validMedia.length - 1 : prev - 1));
   };
 
   // Si la media cambia y el índice quedó fuera de rango, usamos el 0 de forma segura en este render
-  const safeIndex = currentIndex >= media.length ? 0 : currentIndex;
-  const currentItem = media[safeIndex];
+  const safeIndex = currentIndex >= validMedia.length ? 0 : currentIndex;
+  const currentItem = validMedia[safeIndex];
 
   const renderMediaContent = (item: MediaItem, isFull: boolean) => {
     if (!item) return null; // Prevención extra
@@ -103,7 +125,10 @@ const MediaCarousel: React.FC<MediaCarouselProps> = ({ media, title = "Media", e
         );
       }
       return (
-        <div className="w-full h-full relative">
+        <div 
+          className="w-full h-full relative"
+          onClick={(e) => e.stopPropagation()}
+        >
           <GoogleStreetView lat={item.lat!} lng={item.lng!} />
         </div>
       );
@@ -139,7 +164,7 @@ const MediaCarousel: React.FC<MediaCarouselProps> = ({ media, title = "Media", e
         {renderMediaContent(currentItem, false)}
         
         {/* Controles Miniatura */}
-        {media.length > 1 && (
+        {validMedia.length > 1 && (
           <>
             <button 
               onClick={prevSlide}
@@ -156,7 +181,7 @@ const MediaCarousel: React.FC<MediaCarouselProps> = ({ media, title = "Media", e
             
             {/* Indicadores */}
             <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-10 pointer-events-none">
-              {media.map((_, idx) => (
+              {validMedia.map((_, idx) => (
                 <div 
                   key={idx} 
                   className={`h-1.5 rounded-full transition-all ${idx === safeIndex ? 'w-4 bg-white' : 'w-1.5 bg-white/50'}`}
@@ -175,7 +200,7 @@ const MediaCarousel: React.FC<MediaCarouselProps> = ({ media, title = "Media", e
         >
           {/* Header del Modal */}
           <div className="absolute top-0 inset-x-0 p-4 flex items-center justify-between bg-gradient-to-b from-black/80 to-transparent z-50">
-            <h3 className="text-white font-medium text-sm truncate px-4">{title} - {safeIndex + 1} de {media.length}</h3>
+            <h3 className="text-white font-medium text-sm truncate px-4">{title} - {safeIndex + 1} de {validMedia.length}</h3>
             <button 
               onClick={() => setIsFullScreen(false)}
               className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
@@ -191,7 +216,7 @@ const MediaCarousel: React.FC<MediaCarouselProps> = ({ media, title = "Media", e
               {renderMediaContent(currentItem, true)}
 
               {/* Controles Modal */}
-              {media.length > 1 && (
+              {validMedia.length > 1 && (
                 <>
                   <button 
                     onClick={prevSlide}
