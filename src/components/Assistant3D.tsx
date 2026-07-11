@@ -2,7 +2,7 @@ import React, { Suspense, useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Float, ContactShadows, Environment, useGLTF, Html } from '@react-three/drei';
 import * as THREE from 'three';
-import modelUrl from '../assets/nayib_bukele_3d.glb?url';
+import modelUrl from '../assets/mario.glb?url';
 
 // Preload the model to avoid lag on first render
 useGLTF.preload(modelUrl);
