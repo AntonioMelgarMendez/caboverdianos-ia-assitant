@@ -1,34 +1,32 @@
 import React, { Suspense, useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Float, ContactShadows, Environment } from '@react-three/drei';
+import { OrbitControls, Float, ContactShadows, Environment, useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
+import modelUrl from '../assets/nayib_bukele_3d.glb?url';
 
-// Placeholder Component for the AI Generated Model
-// When you have the .glb file, we will replace this with useGLTF hook
-const PlaceholderModel = () => {
-  const meshRef = useRef<THREE.Mesh>(null);
+const AIModel = () => {
+  const { scene } = useGLTF(modelUrl);
+  const modelRef = useRef<THREE.Group>(null);
 
   // Simple idle animation (rotation)
   useFrame((state, delta) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.y += delta * 0.2;
+    if (modelRef.current) {
+      modelRef.current.rotation.y += delta * 0.2;
     }
   });
 
   return (
     <Float
       speed={2} // Animation speed
-      rotationIntensity={0.5} // XYZ rotation intensity
-      floatIntensity={1} // Up/down float intensity
+      rotationIntensity={0.2} // XYZ rotation intensity
+      floatIntensity={0.5} // Up/down float intensity
     >
-      <mesh ref={meshRef} position={[0, 0, 0]}>
-        <torusKnotGeometry args={[1, 0.3, 128, 16]} />
-        <meshStandardMaterial 
-          color="#aa3bff" 
-          roughness={0.1}
-          metalness={0.8}
-        />
-      </mesh>
+      <primitive 
+        ref={modelRef} 
+        object={scene} 
+        position={[0, -1, 0]} 
+        scale={1.5} 
+      />
     </Float>
   );
 };
@@ -43,7 +41,7 @@ const Assistant3D: React.FC = () => {
         <directionalLight position={[10, 10, 5]} intensity={1} />
         
         <Suspense fallback={null}>
-          <PlaceholderModel />
+          <AIModel />
           
           {/* Subtle shadow below the model */}
           <ContactShadows 

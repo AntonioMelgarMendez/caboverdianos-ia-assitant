@@ -5,7 +5,7 @@ import InteractiveMap from '../components/InteractiveMap';
 import { generateTravelResponse } from '../services/ai';
 import { speakText } from '../services/tts';
 import { supabase } from '../services/supabase';
-import { User } from '@supabase/supabase-js';
+import type { User } from '@supabase/supabase-js';
 
 type Message = {
   id: string;
