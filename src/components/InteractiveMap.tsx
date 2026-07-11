@@ -26,6 +26,9 @@ interface InteractiveMapProps {
   onAskCipitio: (placeName: string) => void;
   onSaveToAgenda: (placeName: string, lat: number, lng: number, visitDate: string | null) => void;
   isAuthenticated?: boolean;
+  searchQuery?: string;
+  maxPrice?: number;
+  selectedCategory?: string;
 }
 
 // Componente para actualizar el centro del mapa dinámicamente
@@ -67,21 +70,35 @@ const createCategoryIcon = (category?: string) => {
   });
 };
 
-const InteractiveMap: React.FC<InteractiveMapProps> = ({ aiLocation, onAskCipitio, onSaveToAgenda, isAuthenticated = false }) => {
+const InteractiveMap: React.FC<InteractiveMapProps> = ({ 
+  aiLocation, 
+  onAskCipitio, 
+  onSaveToAgenda, 
+  isAuthenticated = false,
+  searchQuery = '',
+  maxPrice = 1000,
+  selectedCategory = 'all'
+}) => {
   const position: [number, number] = [13.6929, -89.2182]; 
   const [events, setEvents] = React.useState<AppEvent[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<AppEvent | null>(null);
   
-  // States for Search and Filter
-  const [searchQuery, setSearchQuery] = useState('');
-  const [maxPrice, setMaxPrice] = useState<number>(500);
-
-  // Filtrar eventos basados en búsqueda y precio
+  // Filtrar eventos basados en búsqueda, precio y categoría
   const filteredEvents = events.filter((evt) => {
     const matchesSearch = evt.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           evt.description.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesPrice = evt.price === null || evt.price === undefined || evt.price <= maxPrice;
-    return matchesSearch && matchesPrice;
+    
+    // Si la categoría seleccionada es 'all', no filtramos por categoría
+    // Si la categoría seleccionada es un mapeo especial, ajustamos
+    let eventCategoryForMatch = evt.category || '';
+    if (eventCategoryForMatch === 'deportes') eventCategoryForMatch = 'playa'; // Mapeo si es necesario
+    const matchesCategory = selectedCategory === 'all' || 
+                            eventCategoryForMatch.toLowerCase() === selectedCategory.toLowerCase() ||
+                            (selectedCategory === 'playa' && evt.category === 'deportes') ||
+                            (selectedCategory === 'montaña' && evt.category === 'naturaleza');
+
+    return matchesSearch && matchesPrice && matchesCategory;
   });
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [pickedDate, setPickedDate] = useState('');
@@ -139,36 +156,6 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({ aiLocation, onAskCipiti
 
   return (
     <div className="w-full h-full relative z-0">
-      {/* Buscador y Filtro */}
-      <div className="absolute top-4 left-4 z-[500] flex flex-col gap-2 w-72">
-        <div className="bg-zinc-900/95 backdrop-blur-md rounded-2xl border border-white/10 p-2 shadow-lg flex items-center gap-2">
-          <Search className="w-5 h-5 text-zinc-400 ml-2" />
-          <input 
-            type="text" 
-            placeholder="Buscar destino..." 
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="bg-transparent border-none outline-none text-white text-sm w-full placeholder-zinc-500"
-          />
-        </div>
-        
-        <div className="bg-zinc-900/95 backdrop-blur-md rounded-2xl border border-white/10 p-4 shadow-lg">
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-xs font-bold text-zinc-400 flex items-center gap-1"><Filter className="w-3 h-3"/> Precio Máximo</span>
-            <span className="text-xs font-bold text-amber-500">${maxPrice}</span>
-          </div>
-          <input 
-            type="range" 
-            min="0" 
-            max="1000" 
-            step="10"
-            value={maxPrice}
-            onChange={(e) => setMaxPrice(Number(e.target.value))}
-            className="w-full accent-amber-500 h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer"
-          />
-        </div>
-      </div>
-
       <MapContainer 
         center={position} 
         zoom={9} 

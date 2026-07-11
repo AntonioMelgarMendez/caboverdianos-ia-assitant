@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Map, MessageSquare, Compass, Loader2, LogIn, LogOut, Ticket, Star, MapPin } from 'lucide-react';
+import { Map, MessageSquare, Compass, Loader2, LogIn, LogOut, Ticket, Star, MapPin, Search, Filter } from 'lucide-react';
 import Assistant3D from '../components/Assistant3D';
 import InteractiveMap from '../components/InteractiveMap';
 import AgendaModal from '../components/AgendaModal';
@@ -29,6 +29,12 @@ const Home: React.FC = () => {
   const [isSavingAgenda, setIsSavingAgenda] = useState(false);
   const [isAgendaOpen, setIsAgendaOpen] = useState(false);
   const [isCouponOpen, setIsCouponOpen] = useState(false);
+  
+  // Estados para Búsqueda y Filtros
+  const [searchQuery, setSearchQuery] = useState('');
+  const [maxPrice, setMaxPrice] = useState<number>(1000);
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+
   useEffect(() => {
     // Verificar sesión inicial
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -98,9 +104,55 @@ const Home: React.FC = () => {
       <header className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-zinc-900/50 backdrop-blur-md z-10">
         <div className="flex items-center gap-2">
           <Compass className="w-6 h-6 text-purple-400" />
-          <h1 className="text-xl font-medium tracking-tight text-white">AI Travel Assistant</h1>
+          <h1 className="text-xl font-medium tracking-tight text-white hidden md:block">AI Travel Assistant</h1>
         </div>
         
+        {/* Controles de Búsqueda Globales */}
+        <div className="flex-1 max-w-2xl mx-8 hidden sm:flex items-center gap-4">
+          <div className="flex-1 bg-zinc-800/50 rounded-full border border-white/10 px-4 py-2 flex items-center gap-2 focus-within:border-purple-500/50 transition-colors">
+            <Search className="w-4 h-4 text-zinc-400" />
+            <input 
+              type="text" 
+              placeholder="Buscar destinos, eventos..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="bg-transparent border-none outline-none text-white text-sm w-full placeholder-zinc-500"
+            />
+          </div>
+          
+          <div className="flex items-center gap-2 bg-zinc-800/50 rounded-full border border-white/10 px-4 py-2">
+            <Filter className="w-4 h-4 text-zinc-400" />
+            <select 
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              className="bg-transparent text-sm text-white outline-none cursor-pointer"
+            >
+              <option value="all" className="bg-zinc-800">Todas las categorías</option>
+              <option value="playa" className="bg-zinc-800">Playa / Deportes</option>
+              <option value="montaña" className="bg-zinc-800">Montaña / Naturaleza</option>
+              <option value="cultura" className="bg-zinc-800">Cultura / Historia</option>
+              <option value="gastronomía" className="bg-zinc-800">Gastronomía</option>
+              <option value="religioso" className="bg-zinc-800">Turismo Religioso</option>
+            </select>
+          </div>
+
+          <div className="flex items-center gap-2 bg-zinc-800/50 rounded-full border border-white/10 px-4 py-2 group relative cursor-pointer">
+            <span className="text-sm font-medium text-amber-500">${maxPrice}</span>
+            <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 bg-zinc-900 border border-white/10 rounded-xl p-4 shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-opacity z-50 w-48">
+              <label className="text-xs text-zinc-400 mb-2 block">Precio Máximo</label>
+              <input 
+                type="range" 
+                min="0" 
+                max="1000" 
+                step="10"
+                value={maxPrice}
+                onChange={(e) => setMaxPrice(Number(e.target.value))}
+                className="w-full accent-amber-500 h-1 bg-zinc-800 rounded-lg appearance-none"
+              />
+            </div>
+          </div>
+        </div>
+
         <div className="flex items-center gap-6">
           {user ? (
             <>
@@ -214,6 +266,9 @@ const Home: React.FC = () => {
            <InteractiveMap 
              aiLocation={aiLocation}
              isAuthenticated={!!user} 
+             searchQuery={searchQuery}
+             maxPrice={maxPrice}
+             selectedCategory={selectedCategory}
              onAskCipitio={(placeName) => {
                handleSendMessage(`Háblame sobre ${placeName}`);
              }}
