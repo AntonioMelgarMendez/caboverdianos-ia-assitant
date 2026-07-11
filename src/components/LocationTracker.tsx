@@ -147,16 +147,7 @@ const LocationTracker: React.FC<LocationTrackerProps> = ({ userId, onPointsEarne
         </div>
       )}
 
-      {/* Botón de Debug/Simulación (Solo visible si hay lugares pendientes) */}
-      {agenda.length > 0 && !activeItem && (
-        <button 
-          onClick={simulateTravel}
-          className="bg-purple-600/20 hover:bg-purple-600/40 border border-purple-500 text-purple-100 text-xs font-bold py-2 px-4 rounded-xl shadow-lg backdrop-blur-md flex items-center gap-2 transition-colors"
-        >
-          <Navigation className="w-3 h-3" />
-          Simular viaje al próximo destino
-        </button>
-      )}
+
     </div>
   );
 };
