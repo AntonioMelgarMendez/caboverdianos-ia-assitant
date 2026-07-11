@@ -17,8 +17,24 @@ L.Marker.prototype.options.icon = DefaultIcon;
 
 import { AppEvent } from '../services/events/EventProvider';
 import { MockDataTeamProvider } from '../services/events/MockDataTeamProvider';
+import { useMap } from 'react-leaflet';
 
-const InteractiveMap: React.FC = () => {
+interface MapProps {
+  aiLocation?: { name: string, lat: number, lng: number } | null;
+}
+
+// Componente para actualizar el centro del mapa dinámicamente
+const MapUpdater: React.FC<{ location?: { lat: number, lng: number } | null }> = ({ location }) => {
+  const map = useMap();
+  React.useEffect(() => {
+    if (location) {
+      map.flyTo([location.lat, location.lng], 12, { animate: true, duration: 2 });
+    }
+  }, [location, map]);
+  return null;
+};
+
+const InteractiveMap: React.FC<MapProps> = ({ aiLocation }) => {
   // Centro inicial por defecto (El Salvador)
   const position: [number, number] = [13.6929, -89.2182]; 
   const [events, setEvents] = React.useState<AppEvent[]>([]);
@@ -45,6 +61,20 @@ const InteractiveMap: React.FC = () => {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
           url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
         />
+
+        <MapUpdater location={aiLocation} />
+        
+        {/* Marcador dinámico de la IA */}
+        {aiLocation && (
+          <Marker position={[aiLocation.lat, aiLocation.lng]}>
+            <Popup className="custom-popup">
+              <div className="text-zinc-900 font-sans">
+                <h3 className="font-bold text-sm text-amber-600">✨ {aiLocation.name}</h3>
+                <p className="text-xs mt-1">Recomendación del Cipitío</p>
+              </div>
+            </Popup>
+          </Marker>
+        )}
         
         {/* Renderizado dinámico de eventos */}
         {events.map((evt) => (

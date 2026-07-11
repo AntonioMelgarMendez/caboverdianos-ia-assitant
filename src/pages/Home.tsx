@@ -20,6 +20,7 @@ const Home: React.FC = () => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  const [aiLocation, setAiLocation] = useState<{name: string, lat: number, lng: number} | null>(null);
 
   useEffect(() => {
     // Verificar sesión inicial
@@ -49,13 +50,21 @@ const Home: React.FC = () => {
     const userText = input.trim();
     setInput('');
     const newUserMsg: Message = { id: Date.now().toString(), text: userText, sender: 'user' };
-    setMessages(prev => [...prev, newUserMsg]);
+    const updatedMessages = [...messages, newUserMsg];
+    setMessages(updatedMessages);
     setIsLoading(true);
 
     try {
-      const aiResponseText = await generateTravelResponse(userText);
+      const aiResponse = await generateTravelResponse(updatedMessages);
+      const aiResponseText = aiResponse.text;
+      
       const newAiMsg: Message = { id: (Date.now() + 1).toString(), text: aiResponseText, sender: 'ai' };
       setMessages(prev => [...prev, newAiMsg]);
+      
+      if (aiResponse.suggestedLocation) {
+        setAiLocation(aiResponse.suggestedLocation);
+      }
+
       await speakText(aiResponseText);
     } catch (error) {
       console.error("Error en el chat:", error);
@@ -171,7 +180,7 @@ const Home: React.FC = () => {
 
         {/* Right Panel: Map */}
         <div className="flex-1 relative bg-zinc-900 flex items-center justify-center">
-           <InteractiveMap />
+           <InteractiveMap aiLocation={aiLocation} />
         </div>
       </main>
     </div>

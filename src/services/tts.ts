@@ -1,24 +1,40 @@
 // TTS Service
 
 export async function speakText(text: string): Promise<void> {
-  const apiKey = import.meta.env.VITE_VOICE_API_KEY;
+  const elevenLabsApiKey = import.meta.env.VITE_ELEVENLABS_API_KEY;
+  const elevenLabsVoiceId = import.meta.env.VITE_ELEVENLABS_VOICE_ID;
 
-  if (apiKey) {
-    // Aquí se implementaría la lógica para una API externa (ej. ElevenLabs)
-    // Ejemplo comentado:
-    /*
-    const response = await fetch('https://api.elevenlabs.io/v1/text-to-speech/voice_id', {
-      method: 'POST',
-      headers: { 'xi-api-key': apiKey, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text, model_id: 'eleven_multilingual_v2' })
-    });
-    const audioBlob = await response.blob();
-    const audioUrl = URL.createObjectURL(audioBlob);
-    const audio = new Audio(audioUrl);
-    await audio.play();
-    return;
-    */
-    console.log("VITE_VOICE_API_KEY detectada, pero integración externa pendiente. Usando Web Speech API...");
+  if (elevenLabsApiKey && elevenLabsVoiceId) {
+    try {
+      const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${elevenLabsVoiceId}?output_format=mp3_44100_128`, {
+        method: 'POST',
+        headers: {
+          'xi-api-key': elevenLabsApiKey,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          text,
+          model_id: "eleven_multilingual_v2",
+        })
+      });
+
+      if (response.ok) {
+        const audioBlob = await response.blob();
+        const audioUrl = URL.createObjectURL(audioBlob);
+        const audio = new Audio(audioUrl);
+        return new Promise((resolve) => {
+          audio.onended = () => resolve();
+          audio.play().catch(e => {
+            console.error("Error al reproducir audio:", e);
+            resolve();
+          });
+        });
+      } else {
+        console.warn("Error en ElevenLabs API, usando fallback nativo.");
+      }
+    } catch (e) {
+      console.warn("Error de red con ElevenLabs, usando fallback nativo.", e);
+    }
   }
 
   // Fallback: Web Speech API (Nativo del navegador y gratuito)
@@ -54,7 +70,10 @@ export async function speakText(text: string): Promise<void> {
     }
 
     utterance.onend = () => resolve();
-    utterance.onerror = (e) => reject(e);
+    utterance.onerror = (e) => {
+      console.error("Error en TTS:", e);
+      resolve(); // Resolvemos de todos modos para que el flujo de la app no se bloquee
+    };
 
     window.speechSynthesis.speak(utterance);
   });
