@@ -3,6 +3,8 @@ import { Map, MessageSquare, Compass, Loader2, LogIn, LogOut, Ticket, Star, MapP
 import Assistant3D from '../components/Assistant3D';
 import InteractiveMap from '../components/InteractiveMap';
 import AgendaModal from '../components/AgendaModal';
+import CouponModal from '../components/CouponModal';
+import LocationTracker from '../components/LocationTracker';
 import { generateTravelResponse } from '../services/ai';
 import { speakText } from '../services/tts';
 import { supabase } from '../services/supabase';
@@ -26,6 +28,7 @@ const Home: React.FC = () => {
   const [userPoints, setUserPoints] = useState<number>(0);
   const [isSavingAgenda, setIsSavingAgenda] = useState(false);
   const [isAgendaOpen, setIsAgendaOpen] = useState(false);
+  const [isCouponOpen, setIsCouponOpen] = useState(false);
   useEffect(() => {
     // Verificar sesión inicial
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -116,7 +119,11 @@ const Home: React.FC = () => {
                   <span className="text-sm font-medium">Agenda</span>
                 </button>
                 <div className="w-px h-4 bg-white/10"></div>
-                <button className="flex items-center gap-1.5 text-purple-400 hover:text-purple-300 transition-colors" title="Mis Cupones">
+                <button 
+                  onClick={() => setIsCouponOpen(true)}
+                  className="flex items-center gap-1.5 text-purple-400 hover:text-purple-300 transition-colors" 
+                  title="Mis Cupones"
+                >
                   <Ticket className="w-4 h-4" />
                   <span className="text-sm font-medium">Cupones</span>
                 </button>
@@ -230,11 +237,24 @@ const Home: React.FC = () => {
       </main>
 
       {user && (
-        <AgendaModal 
-          isOpen={isAgendaOpen} 
-          onClose={() => setIsAgendaOpen(false)} 
-          userId={user.id} 
-        />
+        <>
+          <AgendaModal 
+            isOpen={isAgendaOpen} 
+            onClose={() => setIsAgendaOpen(false)} 
+            userId={user.id} 
+          />
+          <CouponModal
+            isOpen={isCouponOpen}
+            onClose={() => setIsCouponOpen(false)}
+            userId={user.id}
+            userPoints={userPoints}
+            onPointsUpdated={(pts) => setUserPoints(pts)}
+          />
+          <LocationTracker 
+            userId={user.id} 
+            onPointsEarned={(pts) => setUserPoints(pts)} 
+          />
+        </>
       )}
     </div>
   );
