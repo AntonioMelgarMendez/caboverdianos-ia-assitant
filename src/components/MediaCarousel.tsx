@@ -16,6 +16,12 @@ const MediaCarousel: React.FC<MediaCarouselProps> = ({ media, title = "Media" })
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [isZoomed, setIsZoomed] = useState(false);
 
+  React.useEffect(() => {
+    setCurrentIndex(0);
+    setIsFullScreen(false);
+    setIsZoomed(false);
+  }, [media]);
+
   if (!media || media.length === 0) return null;
 
   const nextSlide = (e: React.MouseEvent) => {
@@ -28,9 +34,12 @@ const MediaCarousel: React.FC<MediaCarouselProps> = ({ media, title = "Media" })
     setCurrentIndex((prev) => (prev === 0 ? media.length - 1 : prev - 1));
   };
 
-  const currentItem = media[currentIndex];
+  // Si la media cambia y el índice quedó fuera de rango, usamos el 0 de forma segura en este render
+  const safeIndex = currentIndex >= media.length ? 0 : currentIndex;
+  const currentItem = media[safeIndex];
 
   const renderMediaContent = (item: MediaItem, isFull: boolean) => {
+    if (!item) return null; // Prevención extra
     if (item.type === 'video') {
       return (
         <div className={`relative w-full h-full flex items-center justify-center bg-black ${isFull ? '' : 'overflow-hidden rounded-t-2xl'}`}>
@@ -99,7 +108,7 @@ const MediaCarousel: React.FC<MediaCarouselProps> = ({ media, title = "Media" })
               {media.map((_, idx) => (
                 <div 
                   key={idx} 
-                  className={`h-1.5 rounded-full transition-all ${idx === currentIndex ? 'w-4 bg-white' : 'w-1.5 bg-white/50'}`}
+                  className={`h-1.5 rounded-full transition-all ${idx === safeIndex ? 'w-4 bg-white' : 'w-1.5 bg-white/50'}`}
                 />
               ))}
             </div>
@@ -127,7 +136,7 @@ const MediaCarousel: React.FC<MediaCarouselProps> = ({ media, title = "Media" })
         >
           {/* Header del Modal */}
           <div className="absolute top-0 inset-x-0 p-4 flex items-center justify-between bg-gradient-to-b from-black/80 to-transparent z-50">
-            <h3 className="text-white font-medium text-sm truncate px-4">{title} - {currentIndex + 1} de {media.length}</h3>
+            <h3 className="text-white font-medium text-sm truncate px-4">{title} - {safeIndex + 1} de {media.length}</h3>
             <button 
               onClick={() => setIsFullScreen(false)}
               className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
