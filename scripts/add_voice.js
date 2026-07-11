@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const API_KEY = process.env.VITE_ELEVENLABS_API_KEY;
-const AUDIO_FILE_PATH = './scripts/videoplayback-online-audio-convertercom_gewILoDy.mp3';
+const AUDIO_FILE_PATH = './scripts/YTDown (mp3cut.net).mp3';
 
 if (!API_KEY) {
   console.error('Error: No se encontró VITE_ELEVENLABS_API_KEY en .env');

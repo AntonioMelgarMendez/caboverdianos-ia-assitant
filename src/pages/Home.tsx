@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Map, MessageSquare, Compass, Loader2, LogIn, LogOut, Ticket, Star } from 'lucide-react';
+import { Map, MessageSquare, Compass, Loader2, LogIn, LogOut, Ticket, Star, MapPin } from 'lucide-react';
 import Assistant3D from '../components/Assistant3D';
 import InteractiveMap from '../components/InteractiveMap';
+import AgendaModal from '../components/AgendaModal';
 import { generateTravelResponse } from '../services/ai';
 import { speakText } from '../services/tts';
 import { supabase } from '../services/supabase';
+import { getUserPoints, saveLocationToAgendaAndEarnPoints } from '../services/gamification';
 import type { User } from '@supabase/supabase-js';
 
 type Message = {
@@ -21,16 +23,28 @@ const Home: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [aiLocation, setAiLocation] = useState<{name: string, lat: number, lng: number} | null>(null);
-
+  const [userPoints, setUserPoints] = useState<number>(0);
+  const [isSavingAgenda, setIsSavingAgenda] = useState(false);
+  const [isAgendaOpen, setIsAgendaOpen] = useState(false);
   useEffect(() => {
     // Verificar sesión inicial
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
+      const currentUser = session?.user ?? null;
+      setUser(currentUser);
+      if (currentUser) {
+        getUserPoints(currentUser.id).then(setUserPoints);
+      }
     });
 
     // Escuchar cambios de autenticación
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
+      const currentUser = session?.user ?? null;
+      setUser(currentUser);
+      if (currentUser) {
+        getUserPoints(currentUser.id).then(setUserPoints);
+      } else {
+        setUserPoints(0);
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -90,8 +104,17 @@ const Home: React.FC = () => {
               <div className="flex items-center gap-4 bg-zinc-800/50 px-4 py-1.5 rounded-full border border-white/5">
                 <div className="flex items-center gap-1.5 text-amber-400" title="Mis Puntos">
                   <Star className="w-4 h-4 fill-amber-400" />
-                  <span className="text-sm font-bold">0 pts</span>
+                  <span className="text-sm font-bold">{userPoints} pts</span>
                 </div>
+                <div className="w-px h-4 bg-white/10"></div>
+                <button 
+                  onClick={() => setIsAgendaOpen(true)}
+                  className="flex items-center gap-1.5 text-purple-400 hover:text-purple-300 transition-colors" 
+                  title="Mi Agenda"
+                >
+                  <MapPin className="w-4 h-4" />
+                  <span className="text-sm font-medium">Agenda</span>
+                </button>
                 <div className="w-px h-4 bg-white/10"></div>
                 <button className="flex items-center gap-1.5 text-purple-400 hover:text-purple-300 transition-colors" title="Mis Cupones">
                   <Ticket className="w-4 h-4" />
@@ -181,8 +204,38 @@ const Home: React.FC = () => {
         {/* Right Panel: Map */}
         <div className="flex-1 relative bg-zinc-900 flex items-center justify-center">
            <InteractiveMap aiLocation={aiLocation} />
+           
+           {/* Botón flotante para guardar en agenda */}
+           {aiLocation && user && (
+             <div className="absolute top-6 left-1/2 -translate-x-1/2 z-[400]">
+               <button 
+                 onClick={async () => {
+                   setIsSavingAgenda(true);
+                   const res = await saveLocationToAgendaAndEarnPoints(user.id, aiLocation.name, aiLocation.lat, aiLocation.lng);
+                   if (res.success) {
+                     setUserPoints(res.newTotalPoints);
+                     setAiLocation(null); // Ocultar después de guardar
+                   }
+                   setIsSavingAgenda(false);
+                 }}
+                 disabled={isSavingAgenda}
+                 className="bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold py-2.5 px-6 rounded-full shadow-lg shadow-amber-500/20 flex items-center gap-2 transition-transform hover:scale-105 active:scale-95 disabled:opacity-50"
+               >
+                 {isSavingAgenda ? <Loader2 className="w-4 h-4 animate-spin" /> : <Star className="w-4 h-4" />}
+                 Guardar en Agenda (+50 pts)
+               </button>
+             </div>
+           )}
         </div>
       </main>
+
+      {user && (
+        <AgendaModal 
+          isOpen={isAgendaOpen} 
+          onClose={() => setIsAgendaOpen(false)} 
+          userId={user.id} 
+        />
+      )}
     </div>
   );
 };
