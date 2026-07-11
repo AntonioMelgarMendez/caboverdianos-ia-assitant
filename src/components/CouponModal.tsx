@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { X, Store, Ticket, Loader2, Star, ChevronLeft, Download } from 'lucide-react';
+import { X, Store, Ticket, Loader2, Star, ChevronLeft, ChevronRight, Download } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import { 
   AVAILABLE_COUPONS, 
