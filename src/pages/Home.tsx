@@ -29,6 +29,7 @@ const Home: React.FC = () => {
   const [isSavingAgenda, setIsSavingAgenda] = useState(false);
   const [isAgendaOpen, setIsAgendaOpen] = useState(false);
   const [isCouponOpen, setIsCouponOpen] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
   
   // Estados para Búsqueda y Filtros
   const [searchQuery, setSearchQuery] = useState('');
@@ -207,62 +208,9 @@ const Home: React.FC = () => {
       </header>
 
       {/* Main Content Area */}
-      <main className="flex-1 flex overflow-hidden">
-        {/* Left Panel: 3D Assistant & Chat */}
-        <div className="w-1/3 flex flex-col border-r border-white/10 relative z-10 bg-zinc-950/80 backdrop-blur-sm">
-          {/* 3D Model Viewport */}
-          <div className="h-1/2 border-b border-white/10 relative overflow-hidden bg-gradient-to-b from-zinc-900 to-zinc-950 flex items-center justify-center group">
-             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-purple-900/20 via-zinc-950/0 to-zinc-950/0 pointer-events-none"></div>
-             <Assistant3D />
-          </div>
-          
-          {/* Chat Interface */}
-          <div className="flex-1 flex flex-col p-4 overflow-hidden">
-            <div className="flex-1 overflow-y-auto mb-4 space-y-4 pr-2 custom-scrollbar">
-              {messages.map((msg) => (
-                <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  <div className={`p-3 rounded-2xl max-w-[85%] ${
-                    msg.sender === 'user' 
-                      ? 'bg-zinc-800 text-zinc-100 rounded-tr-sm' 
-                      : 'bg-purple-600/20 border border-purple-500/30 text-purple-50 rounded-tl-sm'
-                  }`}>
-                    <p className="text-sm">{msg.text}</p>
-                  </div>
-                </div>
-              ))}
-              {isLoading && (
-                <div className="flex justify-start">
-                  <div className="bg-purple-600/20 border border-purple-500/30 p-3 rounded-2xl rounded-tl-sm">
-                    <Loader2 className="w-4 h-4 text-purple-400 animate-spin" />
-                  </div>
-                </div>
-              )}
-            </div>
-            
-            {/* Input Area */}
-            <div className="relative">
-              <input 
-                type="text" 
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-                placeholder="Ask for recommendations..." 
-                disabled={isLoading}
-                className="w-full bg-zinc-900 border border-white/10 rounded-full py-3 px-5 pr-12 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/50 transition-all disabled:opacity-50"
-              />
-              <button 
-                onClick={handleSendMessage}
-                disabled={isLoading || !input.trim()}
-                className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-purple-600 hover:bg-purple-500 disabled:bg-zinc-700 disabled:text-zinc-500 rounded-full text-white transition-colors"
-              >
-                <MessageSquare className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Right Panel: Map */}
-        <div className="flex-1 relative bg-zinc-900 flex items-center justify-center">
+      <main className="flex-1 relative overflow-hidden">
+        {/* Fullscreen Map */}
+        <div className="absolute inset-0 bg-zinc-900 z-0">
            <InteractiveMap 
              aiLocation={aiLocation}
              isAuthenticated={!!user} 
@@ -271,6 +219,7 @@ const Home: React.FC = () => {
              selectedCategory={selectedCategory}
              onAskCipitio={(placeName) => {
                handleSendMessage(`Háblame sobre ${placeName}`);
+               setIsChatOpen(true);
              }}
              onSaveToAgenda={async (placeName, lat, lng, visitDate) => {
                if (!user) {
@@ -304,28 +253,105 @@ const Home: React.FC = () => {
                        const visitDate = dateInput?.value || null;
                        setIsSavingAgenda(true);
                        const res = await saveLocationToAgendaAndEarnPoints(user.id, aiLocation.name, aiLocation.lat, aiLocation.lng, visitDate);
+                       setIsSavingAgenda(false);
                        if (res.success) {
                          setUserPoints(res.newTotalPoints);
                          setAiLocation(null);
                        }
-                       setIsSavingAgenda(false);
                      }}
                      disabled={isSavingAgenda}
-                     className="flex-1 bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold py-2 px-4 rounded-xl text-sm flex items-center justify-center gap-2 transition-all active:scale-95 disabled:opacity-50"
+                     className="flex-1 bg-amber-500 hover:bg-amber-600 disabled:bg-amber-500/50 text-white text-xs font-bold py-2 rounded-lg transition-colors flex items-center justify-center"
                    >
-                     {isSavingAgenda ? <Loader2 className="w-4 h-4 animate-spin" /> : <Star className="w-4 h-4" />}
-                     Guardar (+50 pts)
+                     {isSavingAgenda ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Guardar y ganar pts'}
                    </button>
-                   <button
+                   <button 
                      onClick={() => setAiLocation(null)}
-                     className="px-3 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-400 text-sm rounded-xl transition-colors"
+                     className="px-3 bg-zinc-800 hover:bg-zinc-700 text-zinc-400 rounded-lg transition-colors"
                    >
-                     ✕
+                     <X className="w-4 h-4" />
                    </button>
                  </div>
                </div>
              </div>
            )}
+        </div>
+
+        {/* Floating AI Assistant & Chat */}
+        <div className="absolute bottom-6 left-6 z-[1000] flex items-end gap-4 pointer-events-none">
+          {/* 3D Model Bubble */}
+          <div className="relative pointer-events-auto">
+            <div className="w-32 h-32 rounded-full border-4 border-purple-500/30 overflow-hidden bg-gradient-to-b from-zinc-800 to-zinc-950 shadow-2xl relative flex items-center justify-center group cursor-pointer"
+                 onClick={() => setIsChatOpen(!isChatOpen)}>
+              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-purple-900/40 via-zinc-950/0 to-zinc-950/0 pointer-events-none"></div>
+              <Assistant3D />
+              
+              {/* Toggle Chat Button Overlay */}
+              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                <MessageSquare className="w-8 h-8 text-white drop-shadow-md" />
+              </div>
+            </div>
+            {/* Notification Dot */}
+            {!isChatOpen && messages.length > 1 && (
+              <div className="absolute top-0 right-0 w-4 h-4 bg-red-500 rounded-full border-2 border-zinc-900 animate-pulse"></div>
+            )}
+          </div>
+          
+          {/* Chat Panel */}
+          {isChatOpen && (
+            <div className="w-80 h-[500px] max-h-[70vh] bg-zinc-950/90 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl flex flex-col overflow-hidden pointer-events-auto transition-all animate-in slide-in-from-bottom-10 fade-in">
+              <div className="p-3 border-b border-white/10 bg-zinc-900/50 flex justify-between items-center">
+                <h3 className="text-sm font-medium text-white flex items-center gap-2">
+                  <MessageSquare className="w-4 h-4 text-purple-400" /> Chat con Cipitío
+                </h3>
+                <button onClick={() => setIsChatOpen(false)} className="text-zinc-400 hover:text-white transition-colors">
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
+                {messages.map((msg) => (
+                  <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+                    <div className={`p-3 rounded-2xl max-w-[85%] ${
+                      msg.sender === 'user' 
+                        ? 'bg-zinc-800 text-zinc-100 rounded-tr-sm' 
+                        : 'bg-purple-600/20 border border-purple-500/30 text-purple-50 rounded-tl-sm'
+                    }`}>
+                      <p className="text-sm">{msg.text}</p>
+                    </div>
+                  </div>
+                ))}
+                {isLoading && (
+                  <div className="flex justify-start">
+                    <div className="bg-purple-600/20 border border-purple-500/30 p-3 rounded-2xl rounded-tl-sm">
+                      <Loader2 className="w-4 h-4 text-purple-400 animate-spin" />
+                    </div>
+                  </div>
+                )}
+              </div>
+              
+              {/* Input Area */}
+              <div className="p-3 border-t border-white/10 bg-zinc-900/50">
+                <div className="relative">
+                  <input 
+                    type="text" 
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+                    placeholder="Escribe aquí..." 
+                    disabled={isLoading}
+                    className="w-full bg-zinc-950 border border-white/10 rounded-full py-2 px-4 pr-10 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/50 transition-all disabled:opacity-50"
+                  />
+                  <button 
+                    onClick={handleSendMessage}
+                    disabled={isLoading || !input.trim()}
+                    className="absolute right-1 top-1/2 -translate-y-1/2 p-1.5 bg-purple-600 hover:bg-purple-500 disabled:bg-zinc-800 disabled:text-zinc-600 rounded-full text-white transition-colors"
+                  >
+                    <MessageSquare className="w-3 h-3" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </main>
 

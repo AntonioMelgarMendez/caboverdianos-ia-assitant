@@ -70,6 +70,26 @@ const createCategoryIcon = (category?: string) => {
   });
 };
 
+// Subcomponente para Marker que usa useMap para volar hacia él
+const EventMarker: React.FC<{ 
+  evt: AppEvent, 
+  onClick: (e: AppEvent) => void 
+}> = ({ evt, onClick }) => {
+  const map = useMap();
+  return (
+    <Marker 
+      position={[evt.lat, evt.lng]}
+      icon={createCategoryIcon(evt.category)}
+      eventHandlers={{
+        click: () => {
+          map.flyTo([evt.lat, evt.lng], 15, { animate: true, duration: 1.5 });
+          onClick(evt);
+        }
+      }}
+    />
+  );
+};
+
 const InteractiveMap: React.FC<InteractiveMapProps> = ({ 
   aiLocation, 
   onAskCipitio, 
@@ -184,17 +204,14 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
         
         {/* Renderizado dinámico de eventos */}
         {filteredEvents.map((evt) => (
-          <Marker 
+          <EventMarker 
             key={evt.id} 
-            position={[evt.lat, evt.lng]}
-            icon={createCategoryIcon(evt.category)}
-            eventHandlers={{
-              click: () => {
-                setSelectedEvent(evt);
-                setShowDatePicker(false);
-                setPickedDate('');
-                setSavedFeedback(null);
-              }
+            evt={evt}
+            onClick={(e) => {
+              setSelectedEvent(e);
+              setShowDatePicker(false);
+              setPickedDate('');
+              setSavedFeedback(null);
             }}
           />
         ))}
