@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import { ChevronLeft, ChevronRight, Maximize2, X, Play } from 'lucide-react';
 
+import type { AppEvent } from '../services/events/EventProvider';
+
 interface MediaItem {
   type: 'image' | 'video';
   url: string;
@@ -10,9 +12,10 @@ interface MediaItem {
 interface MediaCarouselProps {
   media: MediaItem[];
   title?: string;
+  event?: AppEvent;
 }
 
-const MediaCarousel: React.FC<MediaCarouselProps> = ({ media, title = "Media" }) => {
+const MediaCarousel: React.FC<MediaCarouselProps> = ({ media, title = "Media", event }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [isZoomed, setIsZoomed] = useState(false);
@@ -43,22 +46,24 @@ const MediaCarousel: React.FC<MediaCarouselProps> = ({ media, title = "Media" })
     if (!item) return null; // Prevención extra
     if (item.type === 'video') {
       return (
-        <div className={`relative w-full h-full flex items-center justify-center bg-black ${isFull ? '' : 'overflow-hidden rounded-t-2xl'}`}>
+        <div className={`relative w-full h-full flex items-center justify-center bg-black ${isFull ? '' : 'overflow-hidden rounded-t-2xl cursor-pointer'}`}
+             onClick={(e) => {
+               if (!isFull) {
+                 e.stopPropagation();
+                 setIsFullScreen(true);
+                 setIsZoomed(false);
+               }
+             }}
+        >
           <video 
             src={item.url} 
             controls={isFull} 
-            autoPlay={isFull}
+            autoPlay={true}
             muted={!isFull}
-            loop={!isFull}
+            loop={true}
+            playsInline
             className={`w-full h-full object-contain ${isFull ? '' : 'object-cover pointer-events-none'}`}
           />
-          {!isFull && (
-            <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-              <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center">
-                <Play className="w-5 h-5 text-white fill-white ml-1" />
-              </div>
-            </div>
-          )}
         </div>
       );
     }
@@ -70,12 +75,16 @@ const MediaCarousel: React.FC<MediaCarouselProps> = ({ media, title = "Media" })
         className={`w-full h-full ${
           isFull 
             ? `object-contain transition-transform duration-300 ${isZoomed ? 'scale-150 cursor-zoom-out' : 'cursor-zoom-in'}` 
-            : 'object-cover rounded-t-2xl'
+            : 'object-cover rounded-t-2xl cursor-pointer'
         }`}
         onClick={(e) => {
           if (isFull) {
             e.stopPropagation();
             setIsZoomed(!isZoomed);
+          } else {
+            e.stopPropagation();
+            setIsFullScreen(true);
+            setIsZoomed(false);
           }
         }}
       />
@@ -105,7 +114,7 @@ const MediaCarousel: React.FC<MediaCarouselProps> = ({ media, title = "Media" })
             </button>
             
             {/* Indicadores */}
-            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-10 pointer-events-none">
               {media.map((_, idx) => (
                 <div 
                   key={idx} 
@@ -115,18 +124,6 @@ const MediaCarousel: React.FC<MediaCarouselProps> = ({ media, title = "Media" })
             </div>
           </>
         )}
-        
-        {/* Botón Pantalla Completa */}
-        <button 
-          onClick={(e) => {
-            e.stopPropagation();
-            setIsFullScreen(true);
-            setIsZoomed(false);
-          }}
-          className="absolute top-2 right-2 w-8 h-8 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center text-white hover:bg-black/60 transition-colors z-10"
-        >
-          <Maximize2 className="w-4 h-4" />
-        </button>
       </div>
 
       {/* Modal de Pantalla Completa */}
@@ -147,27 +144,81 @@ const MediaCarousel: React.FC<MediaCarouselProps> = ({ media, title = "Media" })
           </div>
 
           {/* Contenido Principal Modal */}
-          <div className="w-full h-full flex items-center justify-center p-4 md:p-12 overflow-hidden">
-            {renderMediaContent(currentItem, true)}
-          </div>
+          <div className="w-full h-full pt-16 pb-4 px-4 md:px-12 flex flex-col md:flex-row gap-6 overflow-hidden">
+            {/* Contenedor de Media */}
+            <div className={`relative flex items-center justify-center overflow-hidden ${event ? 'w-full md:w-2/3 lg:w-3/4' : 'w-full'} h-1/2 md:h-full`}>
+              {renderMediaContent(currentItem, true)}
 
-          {/* Controles Modal */}
-          {media.length > 1 && (
-            <>
-              <button 
-                onClick={prevSlide}
-                className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md flex items-center justify-center text-white transition-colors z-50"
+              {/* Controles Modal */}
+              {media.length > 1 && (
+                <>
+                  <button 
+                    onClick={prevSlide}
+                    className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-md flex items-center justify-center text-white transition-colors z-50"
+                  >
+                    <ChevronLeft className="w-6 h-6" />
+                  </button>
+                  <button 
+                    onClick={nextSlide}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-md flex items-center justify-center text-white transition-colors z-50"
+                  >
+                    <ChevronRight className="w-6 h-6" />
+                  </button>
+                </>
+              )}
+            </div>
+
+            {/* Detalles del Evento */}
+            {event && (
+              <div 
+                className="w-full md:w-1/3 lg:w-1/4 h-1/2 md:h-full overflow-y-auto bg-zinc-900/50 rounded-2xl border border-white/10 p-6 flex flex-col gap-4"
+                onClick={(e) => e.stopPropagation()}
               >
-                <ChevronLeft className="w-6 h-6" />
-              </button>
-              <button 
-                onClick={nextSlide}
-                className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md flex items-center justify-center text-white transition-colors z-50"
-              >
-                <ChevronRight className="w-6 h-6" />
-              </button>
-            </>
-          )}
+                <div>
+                  <h2 className="text-2xl font-bold text-white mb-2">{event.title}</h2>
+                  <p className="text-zinc-300 text-sm leading-relaxed">{event.description}</p>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-3 mt-2">
+                  <div className="bg-black/40 p-3 rounded-xl border border-white/5">
+                    <p className="text-xs text-zinc-500 font-bold uppercase">Precio</p>
+                    <p className="text-amber-500 font-bold text-lg">{event.price ? `$${event.price}` : 'Gratis'}</p>
+                  </div>
+                  <div className="bg-black/40 p-3 rounded-xl border border-white/5">
+                    <p className="text-xs text-zinc-500 font-bold uppercase">Categoría</p>
+                    <p className="text-white font-medium capitalize">{event.category || 'General'}</p>
+                  </div>
+                </div>
+
+                {event.itinerary && event.itinerary.length > 0 && (
+                  <div className="mt-2">
+                    <h3 className="text-sm font-bold text-purple-400 mb-2 uppercase tracking-wider">Itinerario</h3>
+                    <ul className="space-y-2">
+                      {event.itinerary.map((item, idx) => (
+                        <li key={idx} className="text-sm text-zinc-300 flex items-start gap-2">
+                          <span className="text-purple-500 mt-1">•</span>
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {event.activities && event.activities.length > 0 && (
+                  <div className="mt-2">
+                    <h3 className="text-sm font-bold text-emerald-400 mb-2 uppercase tracking-wider">Actividades</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {event.activities.map((act, idx) => (
+                        <span key={idx} className="text-xs bg-emerald-500/20 text-emerald-300 px-2 py-1 rounded-md border border-emerald-500/30">
+                          {act}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>,
         document.body
       )}

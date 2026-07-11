@@ -230,6 +230,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({ aiLocation, onAskCipiti
             <div className="relative h-48 w-full overflow-hidden shrink-0">
               <MediaCarousel 
                 title={selectedEvent.title}
+                event={selectedEvent}
                 media={selectedEvent.media || (selectedEvent.imageUrl ? [{ type: 'image', url: selectedEvent.imageUrl }] : [])} 
               />
               <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-transparent to-transparent pointer-events-none"></div>
