@@ -44,11 +44,17 @@ const MapUpdater: React.FC<{ location?: { lat: number, lng: number } | null }> =
 };
 
 // Función para crear íconos de mapa personalizados
+// Caché para evitar crear iconos y llamar a renderToString en cada re-render (mejora dramática del rendimiento)
+const iconCache: Record<string, L.DivIcon> = {};
+
 const createCategoryIcon = (category?: string) => {
+  const cat = category || 'general';
+  if (iconCache[cat]) return iconCache[cat];
+
   let IconComponent = MapPin;
   let bgClass = "bg-purple-600";
   
-  switch (category) {
+  switch (cat) {
     case 'aventura': IconComponent = Tent; bgClass = "bg-amber-600"; break;
     case 'naturaleza': IconComponent = Mountain; bgClass = "bg-green-600"; break;
     case 'gastronomía': IconComponent = Utensils; bgClass = "bg-orange-600"; break;
@@ -63,12 +69,15 @@ const createCategoryIcon = (category?: string) => {
     </div>
   );
 
-  return L.divIcon({
+  const icon = L.divIcon({
     html: iconHtml,
     className: 'custom-leaflet-icon',
     iconSize: [32, 32],
     iconAnchor: [16, 32],
   });
+
+  iconCache[cat] = icon;
+  return icon;
 };
 
 // Subcomponente para Marker que usa useMap para volar hacia él
@@ -182,6 +191,8 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
           url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+          updateWhenZooming={false}
+          keepBuffer={4}
         />
 
         <MapUpdater location={aiLocation} />
