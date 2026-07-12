@@ -1,4 +1,4 @@
-import { EventProvider, AppEvent } from './EventProvider';
+import type { EventProvider, AppEvent } from './EventProvider';
 import { supabase } from '../supabase';
 
 export class SupabaseEventProvider implements EventProvider {
