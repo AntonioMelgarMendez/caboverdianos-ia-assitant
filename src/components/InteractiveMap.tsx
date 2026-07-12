@@ -1,8 +1,8 @@
 import React, { useState, useCallback } from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap, Polyline } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
-import { Star, MessageCircle, X, Clock, MapPin, Calendar, Check, Search, Filter, Tent, Mountain, Utensils, Landmark, Church, Waves } from 'lucide-react';
+import { Star, MessageCircle, X, Clock, MapPin, Calendar, Check, Search, Filter, Tent, Mountain, Utensils, Landmark, Church, Waves, Navigation2 } from 'lucide-react';
 import { renderToString } from 'react-dom/server';
 // Arreglo para los íconos de Leaflet en React
 import icon from 'leaflet/dist/images/marker-icon.png';
@@ -31,16 +31,18 @@ interface InteractiveMapProps {
   maxPrice?: number;
   selectedCategories?: string[];
   userLocation?: { lat: number; lng: number } | null;
+  events?: AppEvent[];
+  forceSelectedEventId?: string | null;
 }
 
 // Componente para actualizar el centro del mapa dinámicamente
-const MapUpdater: React.FC<{ location?: { lat: number, lng: number } | null }> = ({ location }) => {
+const MapUpdater: React.FC<{ location?: { lat: number, lng: number } | null, zoom?: number }> = ({ location, zoom = 12 }) => {
   const map = useMap();
   React.useEffect(() => {
     if (location) {
-      map.flyTo([location.lat, location.lng], 12, { animate: true, duration: 2 });
+      map.flyTo([location.lat, location.lng], zoom, { animate: true, duration: 2 });
     }
-  }, [location, map]);
+  }, [location, map, zoom]);
   return null;
 };
 
@@ -109,11 +111,13 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
   searchQuery = '',
   maxPrice = 1000,
   selectedCategories = [],
-  userLocation = null
+  userLocation = null,
+  events = [],
+  forceSelectedEventId = null
 }) => {
   const position: [number, number] = [13.6929, -89.2182]; 
-  const [events, setEvents] = React.useState<AppEvent[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<AppEvent | null>(null);
+  const [showRoute, setShowRoute] = useState(false);
   
   // Filtrar eventos basados en búsqueda, precio y categoría
   const filteredEvents = events.filter((evt) => {
@@ -131,15 +135,15 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
   const [pickedDate, setPickedDate] = useState('');
   const [savedFeedback, setSavedFeedback] = useState<string | null>(null);
 
-  // Cargar eventos al iniciar
   React.useEffect(() => {
-    async function fetchEvents() {
-      const provider = new SupabaseEventProvider();
-      const fetchedEvents = await provider.getEvents();
-      setEvents(fetchedEvents);
+    if (forceSelectedEventId && events.length > 0) {
+      const target = events.find(e => e.id === forceSelectedEventId);
+      if (target) {
+        setSelectedEvent(target);
+        setShowRoute(false);
+      }
     }
-    fetchEvents();
-  }, []);
+  }, [forceSelectedEventId, events]);
 
   const isEvent = (evt: AppEvent) => !!evt.startTime;
 
@@ -215,6 +219,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
         {userLocation && (
           <Marker 
             position={[userLocation.lat, userLocation.lng]}
+            zIndexOffset={1000}
             icon={L.divIcon({
               html: '<div class="w-6 h-6 rounded-full bg-blue-500 border-2 border-white shadow-[0_0_15px_rgba(59,130,246,0.6)] flex items-center justify-center"><div class="w-2 h-2 rounded-full bg-white"></div></div>',
               className: 'custom-leaflet-icon',
@@ -269,12 +274,27 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
             evt={evt}
             onClick={(e) => {
               setSelectedEvent(e);
+              setShowRoute(false);
               setShowDatePicker(false);
               setPickedDate('');
               setSavedFeedback(null);
             }}
           />
         ))}
+
+        {/* Ruta Trazada */}
+        {showRoute && userLocation && selectedEvent?.lat && selectedEvent?.lng && (
+          <Polyline 
+            positions={[
+              [userLocation.lat, userLocation.lng],
+              [selectedEvent.lat, selectedEvent.lng]
+            ]}
+            color="#3b82f6"
+            weight={4}
+            dashArray="10, 10"
+            className="animate-pulse"
+          />
+        )}
       </MapContainer>
 
       {/* Feedback de guardado */}
@@ -299,7 +319,10 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
               />
               <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-transparent to-transparent pointer-events-none"></div>
               <button 
-                onClick={closePanel}
+                onClick={() => {
+                  closePanel();
+                  setShowRoute(false);
+                }}
                 className="absolute top-2 right-2 z-20 bg-black/50 backdrop-blur-sm text-white p-1.5 rounded-full hover:bg-black/70 transition-colors"
               >
                 <X className="w-4 h-4" />
@@ -316,17 +339,16 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
           {/* Header (sin imagen) */}
           {!selectedEvent.imageUrl && (!selectedEvent.media || selectedEvent.media.length === 0) && (
             <div className="relative bg-gradient-to-br from-purple-600/30 to-amber-600/20 p-4 border-b border-white/10 shrink-0">
-              <button onClick={closePanel} className="absolute top-3 right-3 text-white/50 hover:text-white transition-colors">
+              <button 
+                onClick={() => {
+                  closePanel();
+                  setShowRoute(false);
+                }} 
+                className="absolute top-3 right-3 text-white/50 hover:text-white transition-colors"
+              >
                 <X className="w-4 h-4" />
               </button>
-              <h3 className="text-xl font-bold text-white leading-tight">{selectedEvent.title}</h3>
-              
-              {userLocation && selectedEvent.lat && selectedEvent.lng && (
-                <div className="flex items-center gap-1.5 text-xs font-semibold text-emerald-400 mt-2 bg-emerald-400/10 w-fit px-2 py-1 rounded-md border border-emerald-400/20">
-                  <MapPin className="w-3 h-3" />
-                  A {(L.latLng(userLocation.lat, userLocation.lng).distanceTo(L.latLng(selectedEvent.lat, selectedEvent.lng)) / 1000).toFixed(1)} km de ti
-                </div>
-              )}
+              <h3 className="text-xl font-bold text-white leading-tight pr-6">{selectedEvent.title}</h3>
             </div>
           )}
 
@@ -334,10 +356,22 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
           <div className="p-4 space-y-3 overflow-y-auto custom-scrollbar flex-1">
             <div className="flex flex-col gap-1">
               <h3 className="font-bold text-white text-base leading-tight">{selectedEvent.title}</h3>
-              {userLocation && selectedEvent.lat && selectedEvent.lng && (selectedEvent.imageUrl || (selectedEvent.media && selectedEvent.media.length > 0)) && (
-                <div className="flex items-center gap-1.5 text-[11px] font-semibold text-emerald-400 bg-emerald-400/10 w-fit px-2 py-0.5 rounded-md border border-emerald-400/20">
-                  <MapPin className="w-3 h-3" />
-                  A {(L.latLng(userLocation.lat, userLocation.lng).distanceTo(L.latLng(selectedEvent.lat, selectedEvent.lng)) / 1000).toFixed(1)} km
+              {userLocation && selectedEvent.lat && selectedEvent.lng && (
+                <div className="flex items-center justify-between mt-1">
+                  <div className="flex items-center gap-1.5 text-[11px] font-semibold text-emerald-400 bg-emerald-400/10 w-fit px-2 py-0.5 rounded-md border border-emerald-400/20">
+                    <MapPin className="w-3 h-3" />
+                    A {(L.latLng(userLocation.lat, userLocation.lng).distanceTo(L.latLng(selectedEvent.lat, selectedEvent.lng)) / 1000).toFixed(1)} km
+                  </div>
+                  
+                  {!showRoute && (
+                    <button 
+                      onClick={() => setShowRoute(true)}
+                      className="flex items-center gap-1 text-[11px] font-bold text-blue-400 bg-blue-400/10 hover:bg-blue-400/20 px-2 py-1 rounded-md transition-colors border border-blue-400/20"
+                    >
+                      <Navigation2 className="w-3 h-3" />
+                      Trazar Ruta
+                    </button>
+                  )}
                 </div>
               )}
             </div>

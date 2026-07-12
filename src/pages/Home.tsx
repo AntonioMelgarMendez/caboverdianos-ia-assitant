@@ -11,6 +11,8 @@ import { speakText } from '../services/tts';
 import { supabase } from '../services/supabase';
 import { getUserPoints, saveLocationToAgendaAndEarnPoints } from '../services/gamification';
 import type { User } from '@supabase/supabase-js';
+import { SupabaseEventProvider } from '../services/events/SupabaseEventProvider';
+import type { AppEvent } from '../types/AppEvent';
 
 type Message = {
   id: string;
@@ -41,6 +43,25 @@ const Home: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [maxPrice, setMaxPrice] = useState<number>(1000);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [events, setEvents] = useState<AppEvent[]>([]);
+  const [forceSelectedEventId, setForceSelectedEventId] = useState<string | null>(null);
+  const [showPreview, setShowPreview] = useState(false);
+
+  useEffect(() => {
+    async function fetchEvents() {
+      const provider = new SupabaseEventProvider();
+      const fetchedEvents = await provider.getEvents();
+      setEvents(fetchedEvents);
+    }
+    fetchEvents();
+  }, []);
+
+  const previewResults = React.useMemo(() => {
+    if (!searchQuery.trim()) return [];
+    return events
+      .filter(e => e.title.toLowerCase().includes(searchQuery.toLowerCase()) || e.description.toLowerCase().includes(searchQuery.toLowerCase()))
+      .slice(0, 5);
+  }, [searchQuery, events]);
 
   useEffect(() => {
     localStorage.setItem('ai_assistant_chat', JSON.stringify(messages));
@@ -120,15 +141,44 @@ const Home: React.FC = () => {
         
         {/* Controles de Búsqueda Globales */}
         <div className="flex-1 max-w-2xl mx-8 hidden sm:flex items-center gap-4">
-          <div className="flex items-center bg-zinc-800/50 rounded-full border border-white/10 px-4 py-2 w-full md:w-80 group focus-within:border-purple-500 focus-within:bg-zinc-800 transition-colors">
+          <div className="relative flex items-center bg-zinc-800/50 rounded-full border border-white/10 px-4 py-2 w-full md:w-80 group focus-within:border-purple-500 focus-within:bg-zinc-800 transition-colors">
             <Search className="w-4 h-4 text-zinc-400 group-focus-within:text-purple-400" />
             <input 
               type="text"
               placeholder="Buscar un evento, lugar..." 
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setShowPreview(true);
+              }}
+              onFocus={() => setShowPreview(true)}
+              onBlur={() => setTimeout(() => setShowPreview(false), 200)}
               className="bg-transparent border-none outline-none text-white text-sm w-full placeholder-zinc-500 ml-2"
             />
+            {/* Predictive Preview Dropdown */}
+            {showPreview && previewResults.length > 0 && (
+              <div className="absolute top-[110%] left-0 w-full bg-zinc-900 border border-white/10 rounded-xl shadow-2xl overflow-hidden z-50">
+                {previewResults.map(evt => (
+                  <div 
+                    key={evt.id} 
+                    className="flex flex-col px-4 py-3 hover:bg-white/5 cursor-pointer border-b border-white/5 last:border-0"
+                    onClick={() => {
+                      setForceSelectedEventId(evt.id);
+                      setSearchQuery('');
+                      setShowPreview(false);
+                    }}
+                  >
+                    <div className="flex items-center gap-2">
+                      <MapPin className="w-4 h-4 text-purple-400 shrink-0" />
+                      <span className="text-white font-medium text-sm truncate">{evt.title}</span>
+                    </div>
+                    {evt.category && (
+                      <span className="text-[10px] text-zinc-500 uppercase tracking-wider ml-6">{evt.category}</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
           
           <CustomFilterDropdown 
@@ -197,6 +247,8 @@ const Home: React.FC = () => {
         {/* Fullscreen Map */}
         <div className="absolute inset-0 bg-zinc-900 z-0">
            <InteractiveMap 
+             events={events}
+             forceSelectedEventId={forceSelectedEventId}
              aiLocation={aiLocation}
              userLocation={userLocation}
              isAuthenticated={!!user} 
