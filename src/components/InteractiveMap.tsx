@@ -16,8 +16,9 @@ let DefaultIcon = L.icon({
 });
 L.Marker.prototype.options.icon = DefaultIcon;
 
-import type { EventProvider, AppEvent } from '../services/events/EventProvider';
+import { EventProvider, AppEvent } from '../services/events/EventProvider';
 import { MockDataTeamProvider } from '../services/events/MockDataTeamProvider';
+import { SupabaseEventProvider } from '../services/events/SupabaseEventProvider';
 import { useMap } from 'react-leaflet';
 import MediaCarousel from './MediaCarousel';
 
@@ -127,7 +128,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
   // Cargar eventos al iniciar
   React.useEffect(() => {
     async function fetchEvents() {
-      const provider = new MockDataTeamProvider();
+      const provider = new SupabaseEventProvider();
       const fetchedEvents = await provider.getEvents();
       setEvents(fetchedEvents);
     }
