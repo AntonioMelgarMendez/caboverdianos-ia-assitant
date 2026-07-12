@@ -9,12 +9,12 @@ interface CategoryOption {
 }
 
 export const CATEGORIES: CategoryOption[] = [
-  { id: 'playa', label: 'Playas y Lagos', icon: <Palmtree className="w-4 h-4" />, color: 'text-cyan-400 bg-cyan-400/10 border-cyan-400/30' },
-  { id: 'montaña', label: 'Montañas y Volcanes', icon: <Mountain className="w-4 h-4" />, color: 'text-emerald-400 bg-emerald-400/10 border-emerald-400/30' },
+  { id: 'deportes', label: 'Playas y Deportes', icon: <Palmtree className="w-4 h-4" />, color: 'text-cyan-400 bg-cyan-400/10 border-cyan-400/30' },
+  { id: 'aventura', label: 'Montañas y Aventura', icon: <Mountain className="w-4 h-4" />, color: 'text-emerald-400 bg-emerald-400/10 border-emerald-400/30' },
+  { id: 'naturaleza', label: 'Parques y Reservas', icon: <MapPin className="w-4 h-4" />, color: 'text-green-400 bg-green-400/10 border-green-400/30' },
   { id: 'cultura', label: 'Cultura e Historia', icon: <BookOpen className="w-4 h-4" />, color: 'text-amber-400 bg-amber-400/10 border-amber-400/30' },
   { id: 'gastronomía', label: 'Gastronomía', icon: <Utensils className="w-4 h-4" />, color: 'text-orange-400 bg-orange-400/10 border-orange-400/30' },
-  { id: 'religioso', label: 'Religioso', icon: <Church className="w-4 h-4" />, color: 'text-purple-400 bg-purple-400/10 border-purple-400/30' },
-  { id: 'naturaleza', label: 'Parques y Reservas', icon: <MapPin className="w-4 h-4" />, color: 'text-green-400 bg-green-400/10 border-green-400/30' }
+  { id: 'religioso', label: 'Turismo Religioso', icon: <Church className="w-4 h-4" />, color: 'text-purple-400 bg-purple-400/10 border-purple-400/30' }
 ];
 
 interface CustomFilterDropdownProps {
