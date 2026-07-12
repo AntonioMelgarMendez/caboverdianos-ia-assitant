@@ -22,6 +22,44 @@ type Message = {
   id: string;
   text: string;
   sender: 'user' | 'ai';
+  slangDictionary?: { word: string; meaning: string }[];
+};
+
+const renderMessageWithSlang = (text: string, slangDictionary?: { word: string; meaning: string }[]) => {
+  if (!slangDictionary || slangDictionary.length === 0) {
+    return <p className="text-sm whitespace-pre-wrap">{text}</p>;
+  }
+
+  // Sort by length descending to match longest phrases first
+  const sortedDictionary = [...slangDictionary].sort((a, b) => b.word.length - a.word.length);
+  const escapedWords = sortedDictionary.map(item => item.word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+  
+  // Create a case-insensitive regex that matches whole words only
+  const regex = new RegExp(`\\b(${escapedWords.join('|')})\\b`, 'gi');
+  
+  const parts = text.split(regex);
+
+  return (
+    <p className="text-sm whitespace-pre-wrap leading-relaxed">
+      {parts.map((part, i) => {
+        const slangMatch = sortedDictionary.find(item => item.word.toLowerCase() === part.toLowerCase());
+        
+        if (slangMatch) {
+          return (
+            <span key={i} className="group relative inline-block text-purple-300 font-semibold cursor-help border-b border-dashed border-purple-400/50 hover:bg-purple-500/20 rounded px-0.5 transition-colors">
+              {part}
+              <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max max-w-[200px] bg-zinc-900 text-white text-xs p-2 rounded-lg shadow-xl border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
+                {slangMatch.meaning}
+                {/* Arrow */}
+                <span className="absolute top-full left-1/2 -translate-x-1/2 border-[5px] border-transparent border-t-zinc-900"></span>
+              </span>
+            </span>
+          );
+        }
+        return <span key={i}>{part}</span>;
+      })}
+    </p>
+  );
 };
 
 const Home: React.FC = () => {
@@ -132,7 +170,12 @@ const Home: React.FC = () => {
       const aiResponse = await generateTravelResponse(updatedMessages);
       const aiResponseText = aiResponse.text;
       
-      const newAiMsg: Message = { id: (Date.now() + 1).toString(), text: aiResponseText, sender: 'ai' };
+      const newAiMsg: Message = { 
+        id: (Date.now() + 1).toString(), 
+        text: aiResponseText, 
+        sender: 'ai',
+        slangDictionary: aiResponse.slangDictionary 
+      };
       setMessages(prev => [...prev, newAiMsg]);
       
       if (aiResponse.suggestedLocation) {
@@ -386,7 +429,7 @@ const Home: React.FC = () => {
                         ? 'bg-zinc-800 text-zinc-100 rounded-tr-sm' 
                         : 'bg-purple-600/20 border border-purple-500/30 text-purple-50 rounded-tl-sm'
                     }`}>
-                      <p className="text-sm">{msg.text}</p>
+                      {msg.sender === 'ai' ? renderMessageWithSlang(msg.text, msg.slangDictionary) : <p className="text-sm whitespace-pre-wrap">{msg.text}</p>}
                     </div>
                   </div>
                 ))}

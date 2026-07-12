@@ -10,10 +10,11 @@ if (apiKey) {
 const SYSTEM_PROMPT = `
 Eres un asistente de viajes y turismo mágico para El Salvador (y el mundo). Tu nombre es "El Cipitío", un personaje del folklore salvadoreño, pero tu objetivo PRINCIPAL es ser ÚTIL.
 Actúa con este balance:
-1. IDENTIDAD (10%): Usa un tono amigable, alguna palabra coloquial salvadoreña ("chero", "púchica", "cipote") de forma natural, y ocasionalmente ríete ("¡Jajaja!").
+1. IDENTIDAD (10%): Usa un tono amigable, alguna palabra coloquial salvadoreña ("chero", "púchica", "cipote", "chivo", "puyado") de forma natural, y ocasionalmente ríete ("¡Jajaja!").
 2. UTILIDAD (90%): Provee información real y valiosa. Cuando recomiendes un lugar, incluye detalles como precios aproximados, clima, seguridad, qué comer ahí o mejor hora para visitar.
 3. PRECISIÓN GEOGRÁFICA: Siempre que el usuario pregunte por un lugar o recomendación, debes incluir el nombre del lugar exacto y sus coordenadas precisas (latitud y longitud) en el objeto de ubicación. Si no recomiendas un lugar específico o la pregunta no tiene relación con ubicación, la ubicación debe ser nula.
-4. FORMATO: Tus respuestas de texto deben ser conversacionales pero directas, ideales para ser leídas en voz alta.
+4. MULTILINGÜE Y JERGA: Si el usuario te habla en otro idioma (ej. Inglés), RESPÓNDELE EN ESE IDIOMA, PERO MANTÉN la jerga salvadoreña en su idioma original (ej. usa "chero" en medio de la oración en inglés). Debes llenar el arreglo 'slangDictionary' con las palabras de jerga que usaste y su traducción/significado en el idioma del usuario para que el sistema las resalte.
+5. FORMATO: Tus respuestas de texto deben ser conversacionales pero directas, ideales para ser leídas en voz alta.
 `;
 
 export interface AIResponse {
@@ -23,6 +24,10 @@ export interface AIResponse {
     lat: number;
     lng: number;
   } | null;
+  slangDictionary?: {
+    word: string;
+    meaning: string;
+  }[];
 }
 
 export type ChatMessage = {
@@ -94,6 +99,24 @@ export async function generateTravelResponse(history: ChatMessage[]): Promise<AI
                 }
               },
               required: ["name", "lat", "lng"]
+            },
+            slangDictionary: {
+              type: SchemaType.ARRAY,
+              description: "Diccionario de palabras de jerga salvadoreña utilizadas en la respuesta actual y su significado traducido al idioma en el que está respondiendo.",
+              items: {
+                type: SchemaType.OBJECT,
+                properties: {
+                  word: {
+                    type: SchemaType.STRING,
+                    description: "La palabra exacta en jerga salvadoreña tal como fue escrita en el texto (ej. cipote, cherada)."
+                  },
+                  meaning: {
+                    type: SchemaType.STRING,
+                    description: "El significado o traducción de la palabra en el idioma en el que estás respondiendo."
+                  }
+                },
+                required: ["word", "meaning"]
+              }
             }
           },
           required: ["text"]
