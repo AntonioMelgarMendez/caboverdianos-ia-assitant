@@ -33,6 +33,7 @@ const ImageWithSkeleton = ({ src, alt, className, onClick }: { src: string, alt:
         alt={alt}
         className={`absolute inset-0 w-full h-full ${className} ${loaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500`}
         onLoad={() => setLoaded(true)}
+        referrerPolicy="no-referrer-when-downgrade"
       />
     </div>
   );
