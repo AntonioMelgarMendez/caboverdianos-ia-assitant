@@ -17,16 +17,14 @@ interface AIModelProps {
 
 const AIModel: React.FC<AIModelProps> = ({ animation = 'Waving' }) => {
   const { scene, animations } = useGLTF(modelUrl);
-  const [phase, setPhase] = useState<'running' | 'transitioning' | 'idle'>('running');
+  const [hasArrived, setHasArrived] = useState(false);
   const groupRef = useRef<THREE.Group>(null);
-  const scaleRef = useRef(1);
-  const transitionTimer = useRef(0);
+  const rotGroupRef = useRef<THREE.Group>(null);
 
-  // Determine which animation name to use for the model child
-  const activeAnimName = phase === 'running' ? 'Running' : animation;
+  // Pick the correct scene child based on whether the entrance is done
+  const animName = hasArrived ? animation : 'Running';
+  const targetName = animations.find(a => a.name === animName) ? animName : animations[0]?.name;
 
-  // Find the model child matching the active animation
-  const targetName = animations.find(a => a.name === activeAnimName) ? activeAnimName : animations[0]?.name;
   const model = useMemo(() => {
     if (!scene) return null;
     return scene.children.find(c => c.name === targetName) || scene.children[0];
@@ -45,42 +43,21 @@ const AIModel: React.FC<AIModelProps> = ({ animation = 'Waving' }) => {
     if (!mixer || !clip) return;
     const action = mixer.clipAction(clip);
     action.play();
-    return () => {
-      action.stop();
-    };
+    return () => { action.stop(); };
   }, [mixer, clip]);
 
   useFrame((_, delta) => {
     if (mixer) mixer.update(delta);
-
     if (!groupRef.current) return;
 
-    if (phase === 'running') {
-      // Slide from left to center
+    if (!hasArrived) {
       groupRef.current.position.x += delta * 2.5;
       if (groupRef.current.position.x >= 0) {
         groupRef.current.position.x = 0;
-        // Begin transition: shrink briefly to mask model swap
-        setPhase('transitioning');
-        transitionTimer.current = 0;
+        // Straighten rotation before swapping model
+        if (rotGroupRef.current) rotGroupRef.current.rotation.y = 0;
+        setHasArrived(true);
       }
-    }
-
-    if (phase === 'transitioning') {
-      transitionTimer.current += delta;
-      // Quick scale down over 0.15s, then React will swap to the idle model
-      const t = Math.min(transitionTimer.current / 0.15, 1);
-      scaleRef.current = 1 - t * 0.3; // Shrink to 70%
-      groupRef.current.scale.setScalar(scaleRef.current);
-      if (t >= 1) {
-        setPhase('idle');
-      }
-    }
-
-    if (phase === 'idle' && scaleRef.current < 1) {
-      // Scale back up smoothly
-      scaleRef.current = Math.min(scaleRef.current + delta * 4, 1);
-      groupRef.current.scale.setScalar(scaleRef.current);
     }
   });
 
@@ -110,8 +87,9 @@ const AIModel: React.FC<AIModelProps> = ({ animation = 'Waving' }) => {
       floatIntensity={0.2}
     >
       <group ref={groupRef} position={[-2.5, 0, 0]}>
-        <group rotation={phase === 'running' ? [0, Math.PI / 2, 0] : [0, 0, 0]}>
+        <group ref={rotGroupRef} rotation={!hasArrived ? [0, Math.PI / 2, 0] : [0, 0, 0]}>
           <primitive
+            key={targetName}
             object={model}
             position={[0, -1.8, 0]}
             scale={1.8}
