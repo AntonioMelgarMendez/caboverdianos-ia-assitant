@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Map, MessageSquare, Compass, Loader2, LogIn, LogOut, Ticket, Star, MapPin, Search, Filter, X } from 'lucide-react';
 import Assistant3D from '../components/Assistant3D';
+import type { CipitioAnimation } from '../components/Assistant3D';
 import InteractiveMap from '../components/InteractiveMap';
 import AgendaModal from '../components/AgendaModal';
 import CouponModal from '../components/CouponModal';
@@ -50,6 +51,7 @@ const Home: React.FC = () => {
   const [showPreview, setShowPreview] = useState(false);
   const [isMapEventSelected, setIsMapEventSelected] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [cipitioAnimation, setCipitioAnimation] = useState<CipitioAnimation>('Waving');
 
   useEffect(() => {
     async function fetchEvents() {
@@ -118,6 +120,7 @@ const Home: React.FC = () => {
     const updatedMessages = [...messages, newUserMsg];
     setMessages(updatedMessages);
     setIsLoading(true);
+    setCipitioAnimation('Sitting'); // Thinking/listening
 
     try {
       const aiResponse = await generateTravelResponse(updatedMessages);
@@ -130,10 +133,16 @@ const Home: React.FC = () => {
         setAiLocation(aiResponse.suggestedLocation);
       }
 
+      setCipitioAnimation('Dancing'); // Happy response!
       speakText(aiResponseText).catch(err => console.error("Error TTS:", err));
+      
+      // Volver a Waving después de unos segundos
+      setTimeout(() => setCipitioAnimation('Waving'), 8000);
     } catch (error) {
       console.error("Error en el chat:", error);
       setMessages(prev => [...prev, { id: Date.now().toString(), text: "Lo siento, tuve un problema de conexión.", sender: 'ai' }]);
+      setCipitioAnimation('Sad'); // Error
+      setTimeout(() => setCipitioAnimation('Waving'), 5000);
     } finally {
       setIsLoading(false);
     }
@@ -337,7 +346,7 @@ const Home: React.FC = () => {
           {/* 3D Model Container (Bigger and Transparent) */}
           <div className="relative pointer-events-auto flex items-end gap-2">
             <div className="w-24 h-32 md:w-48 md:h-64 relative flex items-end justify-center drop-shadow-2xl transition-all">
-              <Assistant3D />
+              <Assistant3D animation={cipitioAnimation} />
             </div>
 
             {/* Separate Chat Toggle Button */}

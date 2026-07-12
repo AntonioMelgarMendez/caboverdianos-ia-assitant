@@ -2,7 +2,7 @@ import React, { Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { Float, Environment, useGLTF, Html, useAnimations } from '@react-three/drei';
 import * as THREE from 'three';
-import modelUrl from '../assets/Dancing.glb?url';
+import modelUrl from '../assets/Cipitio.glb?url';
 
 useGLTF.preload(modelUrl);
 
@@ -10,14 +10,13 @@ const HeroCharacterModel = () => {
   const { scene, animations } = useGLTF(modelUrl);
   const { actions } = useAnimations(animations, scene);
 
-  // Play the default animation on loop
+  // Play "Waving" animation for a friendly greeting
   React.useEffect(() => {
-    if (actions && Object.keys(actions).length > 0) {
-      const firstActionName = Object.keys(actions)[0];
-      const action = actions[firstActionName];
-      if (action) {
-        action.reset().fadeIn(0.5).play();
-      }
+    if (actions && actions['Waving']) {
+      actions['Waving'].reset().fadeIn(0.5).play();
+    } else if (actions && Object.keys(actions).length > 0) {
+      const firstAction = actions[Object.keys(actions)[0]];
+      if (firstAction) firstAction.reset().fadeIn(0.5).play();
     }
   }, [actions]);
 

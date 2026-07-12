@@ -1,30 +1,49 @@
-import React, { Suspense, useRef } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
+import React, { Suspense, useRef, useEffect } from 'react';
+import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Float, ContactShadows, Environment, useGLTF, Html, useAnimations } from '@react-three/drei';
 import * as THREE from 'three';
-import modelUrl from '../assets/Dancing.glb?url';
+import modelUrl from '../assets/Cipitio.glb?url';
 
 // Preload the model to avoid lag on first render
 useGLTF.preload(modelUrl);
 
-const AIModel = () => {
+// Animaciones disponibles en Cipitio.glb:
+// Dancing, Running, Sad, Sitting, Walking, Waving
+export type CipitioAnimation = 'Dancing' | 'Running' | 'Sad' | 'Sitting' | 'Walking' | 'Waving';
+
+interface AIModelProps {
+  animation?: CipitioAnimation;
+}
+
+const AIModel: React.FC<AIModelProps> = ({ animation = 'Waving' }) => {
   const { scene, animations } = useGLTF(modelUrl);
   const { actions } = useAnimations(animations, scene);
-  const modelRef = useRef<THREE.Group>(null);
+  const currentAction = useRef<string | null>(null);
 
-  // Reproducir la animación por defecto en bucle
-  React.useEffect(() => {
-    if (actions && Object.keys(actions).length > 0) {
-      const firstActionName = Object.keys(actions)[0];
-      const action = actions[firstActionName];
-      if (action) {
-        action.reset().fadeIn(0.5).play();
-      }
+  // Cambiar animación suavemente con crossfade
+  useEffect(() => {
+    if (!actions || Object.keys(actions).length === 0) return;
+
+    // Si la animación solicitada no existe, usar la primera disponible
+    const targetName = actions[animation] ? animation : Object.keys(actions)[0];
+    
+    if (currentAction.current === targetName) return;
+
+    // Fade out de la animación actual
+    if (currentAction.current && actions[currentAction.current]) {
+      actions[currentAction.current]!.fadeOut(0.4);
     }
-  }, [actions]);
 
-  // Arreglar materiales (a veces los ojos se vuelven invisibles por problemas de alpha/transparencia)
-  React.useEffect(() => {
+    // Fade in de la nueva animación
+    const newAction = actions[targetName];
+    if (newAction) {
+      newAction.reset().fadeIn(0.4).play();
+      currentAction.current = targetName;
+    }
+  }, [animation, actions]);
+
+  // Arreglar materiales
+  useEffect(() => {
     if (scene) {
       scene.traverse((child) => {
         if (child instanceof THREE.Mesh) {
@@ -42,15 +61,14 @@ const AIModel = () => {
 
   return (
     <Float
-      speed={2} // Animation speed
-      rotationIntensity={0.1} // XYZ rotation intensity (solo el balanceo de Float)
-      floatIntensity={0.2} // Up/down float intensity (reducido para que no flote demasiado alto)
+      speed={2}
+      rotationIntensity={0.1}
+      floatIntensity={0.2}
     >
       <primitive 
-        ref={modelRef} 
         object={scene} 
         position={[0, -1.8, 0]} 
-        scale={1.8} // Ajuste estándar para modelos de Mixamo (suele ser 1, pero 1.8 lo hace un buen tamaño)
+        scale={1.8}
       />
     </Float>
   );
@@ -67,7 +85,11 @@ const ModelLoader = () => {
   );
 };
 
-const Assistant3D: React.FC = () => {
+interface Assistant3DProps {
+  animation?: CipitioAnimation;
+}
+
+const Assistant3D: React.FC<Assistant3DProps> = ({ animation = 'Waving' }) => {
   return (
     <div className="w-full h-full relative">
       <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
@@ -77,7 +99,7 @@ const Assistant3D: React.FC = () => {
         <directionalLight position={[10, 10, 5]} intensity={1} />
         
         <Suspense fallback={<ModelLoader />}>
-          <AIModel />
+          <AIModel animation={animation} />
           
           {/* Subtle shadow below the model */}
           <ContactShadows 
