@@ -333,16 +333,12 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
         <LocateUserButton location={userLocation} />
 
         {/* Ruta Trazada */}
-        {showRoute && userLocation && selectedEvent?.lat && selectedEvent?.lng && (
+        {showRoute && routeCoordinates && userLocation && selectedEvent?.lat && selectedEvent?.lng && (
           <Polyline 
-            positions={routeCoordinates || [
-              [userLocation.lat, userLocation.lng],
-              [selectedEvent.lat, selectedEvent.lng]
-            ]}
+            positions={routeCoordinates}
             color="#3b82f6"
             weight={4}
-            dashArray={routeCoordinates ? undefined : "10, 10"} // Animación punteada solo si es línea recta de fallback
-            className={routeCoordinates ? "opacity-80" : "animate-pulse"}
+            className="opacity-80"
           />
         )}
       </MapContainer>
@@ -413,13 +409,23 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
                     A {(L.latLng(userLocation.lat, userLocation.lng).distanceTo(L.latLng(selectedEvent.lat, selectedEvent.lng)) / 1000).toFixed(1)} km
                   </div>
                   
-                  {!showRoute && (
+                  {(!showRoute || !routeCoordinates) && (
                     <button 
                       onClick={() => setShowRoute(true)}
-                      className="flex items-center gap-1 text-[11px] font-bold text-blue-400 bg-blue-400/10 hover:bg-blue-400/20 px-2 py-1 rounded-md transition-colors border border-blue-400/20"
+                      disabled={showRoute}
+                      className="text-[10px] uppercase tracking-wider font-bold text-blue-400 bg-blue-500/10 hover:bg-blue-500/20 px-2 py-1 rounded-md transition-colors flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <Navigation2 className="w-3 h-3" />
-                      Trazar Ruta
+                      {showRoute ? (
+                        <>
+                          <div className="w-3 h-3 border-2 border-blue-400 border-t-transparent rounded-full animate-spin" />
+                          Calculando...
+                        </>
+                      ) : (
+                        <>
+                          <Navigation2 className="w-3 h-3" />
+                          Trazar Ruta
+                        </>
+                      )}
                     </button>
                   )}
                 </div>
