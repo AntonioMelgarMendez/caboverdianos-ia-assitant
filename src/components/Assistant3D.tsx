@@ -1,5 +1,5 @@
 import React, { Suspense, useRef, useEffect, useMemo } from 'react';
-import { Canvas } from '@react-three/fiber';
+import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Float, ContactShadows, Environment, useGLTF, Html, useAnimations } from '@react-three/drei';
 import * as THREE from 'three';
 import { SkeletonUtils } from 'three-stdlib';
@@ -18,34 +18,42 @@ interface AIModelProps {
 
 const AIModel: React.FC<AIModelProps> = ({ animation = 'Waving' }) => {
   const { scene, animations } = useGLTF(modelUrl);
-  const { ref, actions } = useAnimations(animations);
-  const currentAction = useRef<string | null>(null);
+  
+  // Find the specific model and clip for the current animation
+  const targetName = animations.find(a => a.name === animation) ? animation : animations[0]?.name;
+  const model = useMemo(() => {
+    if (!scene) return null;
+    return scene.children.find(c => c.name === targetName) || scene.children[0];
+  }, [scene, targetName]);
+  
+  const clip = useMemo(() => {
+    return animations.find(a => a.name === targetName);
+  }, [animations, targetName]);
 
-  // Cambiar animación suavemente con crossfade
+  const mixer = useMemo(() => {
+    if (!model) return null;
+    return new THREE.AnimationMixer(model);
+  }, [model]);
+
   useEffect(() => {
-    if (!actions || Object.keys(actions).length === 0) return;
+    if (!mixer || !clip) return;
+    const action = mixer.clipAction(clip);
+    action.reset().fadeIn(0.4).play();
+    return () => {
+      action.fadeOut(0.4);
+      // Wait for fadeout before stopping
+      setTimeout(() => action.stop(), 400);
+    };
+  }, [mixer, clip]);
 
-    const targetName = actions[animation] ? animation : Object.keys(actions)[0];
-    
-    if (currentAction.current === targetName) return;
-
-    // Fade out de la animación actual
-    if (currentAction.current && actions[currentAction.current]) {
-      actions[currentAction.current]!.fadeOut(0.4);
-    }
-
-    // Fade in de la nueva animación
-    const newAction = actions[targetName];
-    if (newAction) {
-      newAction.reset().fadeIn(0.4).play();
-      currentAction.current = targetName;
-    }
-  }, [animation, actions, scene]);
+  useFrame((_, delta) => {
+    if (mixer) mixer.update(delta);
+  });
 
   // Arreglar materiales
   useEffect(() => {
-    if (scene) {
-      scene.traverse((child) => {
+    if (model) {
+      model.traverse((child) => {
         if (child instanceof THREE.Mesh) {
           const mat = child.material as THREE.MeshStandardMaterial;
           if (mat) {
@@ -57,7 +65,9 @@ const AIModel: React.FC<AIModelProps> = ({ animation = 'Waving' }) => {
         }
       });
     }
-  }, [scene]);
+  }, [model]);
+
+  if (!model) return null;
 
   return (
     <Float
@@ -66,8 +76,7 @@ const AIModel: React.FC<AIModelProps> = ({ animation = 'Waving' }) => {
       floatIntensity={0.2}
     >
       <primitive 
-        ref={ref}
-        object={scene} 
+        object={model} 
         position={[0, -1.8, 0]} 
         scale={1.8}
       />

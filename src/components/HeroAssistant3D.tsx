@@ -1,5 +1,5 @@
 import React, { Suspense, useMemo, useRef } from 'react';
-import { Canvas } from '@react-three/fiber';
+import { Canvas, useFrame } from '@react-three/fiber';
 import { Float, Environment, useGLTF, Html, useAnimations } from '@react-three/drei';
 import * as THREE from 'three';
 import { SkeletonUtils } from 'three-stdlib';
@@ -10,45 +10,52 @@ useGLTF.preload(modelUrl);
 const HeroCharacterModel = () => {
   const { scene, animations } = useGLTF(modelUrl);
   
-  const { ref, actions } = useAnimations(animations);
-  const currentAction = useRef<string | null>(null);
+  const cycle = useMemo(() => ['Waving', 'Dancing', 'Sitting'], []);
+  const [currentAnimName, setCurrentAnimName] = React.useState(cycle[0]);
 
-  // Cycle animations to make it look alive
+  // Cycle animations every 8 seconds
   React.useEffect(() => {
-    if (!actions || Object.keys(actions).length === 0) return;
-
-    const cycle = ['Waving', 'Dancing', 'Sitting'];
     let currentIndex = 0;
-    
-    const playAnimation = (name: string) => {
-      const action = actions[name];
-      if (!action) return;
-      
-      if (currentAction.current && actions[currentAction.current]) {
-        actions[currentAction.current]!.fadeOut(0.5);
-      }
-      
-      action.reset().fadeIn(0.5).play();
-      currentAction.current = name;
-    };
-
-    // Initial animation
-    playAnimation(cycle[currentIndex]);
-
-    // Change animation every 8 seconds
     const interval = setInterval(() => {
       currentIndex = (currentIndex + 1) % cycle.length;
-      const nextAnim = cycle[currentIndex];
-      playAnimation(nextAnim);
+      setCurrentAnimName(cycle[currentIndex]);
     }, 8000);
-
     return () => clearInterval(interval);
-  }, [actions]);
+  }, [cycle]);
 
+  // Extract specific model and clip
+  const model = useMemo(() => {
+    if (!scene) return null;
+    return scene.children.find(c => c.name === currentAnimName) || scene.children[0];
+  }, [scene, currentAnimName]);
+
+  const clip = useMemo(() => {
+    return animations.find(a => a.name === currentAnimName);
+  }, [animations, currentAnimName]);
+
+  const mixer = useMemo(() => {
+    if (!model) return null;
+    return new THREE.AnimationMixer(model);
+  }, [model]);
+
+  React.useEffect(() => {
+    if (!mixer || !clip) return;
+    const action = mixer.clipAction(clip);
+    action.reset().fadeIn(0.4).play();
+    return () => {
+      action.fadeOut(0.4);
+      setTimeout(() => action.stop(), 400);
+    };
+  }, [mixer, clip]);
+
+  useFrame((_, delta) => {
+    if (mixer) mixer.update(delta);
+  });
+  
   // Fix materials
   React.useEffect(() => {
-    if (scene) {
-      scene.traverse((child) => {
+    if (model) {
+      model.traverse((child) => {
         if (child instanceof THREE.Mesh) {
           const mat = child.material as THREE.MeshStandardMaterial;
           if (mat) {
@@ -60,13 +67,14 @@ const HeroCharacterModel = () => {
         }
       });
     }
-  }, [scene]);
+  }, [model]);
+
+  if (!model) return null;
 
   return (
     <Float speed={1.8} rotationIntensity={0.08} floatIntensity={0.15}>
       <primitive 
-        ref={ref}
-        object={scene} 
+        object={model} 
         position={[0, -2.2, 0]} 
         scale={2.2} 
         rotation={[0.05, -0.2, 0]} 
