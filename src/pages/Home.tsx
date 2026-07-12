@@ -140,8 +140,8 @@ const Home: React.FC = () => {
         </div>
         
         {/* Controles de Búsqueda Globales */}
-        <div className="flex-1 max-w-2xl mx-8 hidden sm:flex items-center gap-4">
-          <div className="relative flex items-center bg-zinc-800/50 rounded-full border border-white/10 px-4 py-2 w-full md:w-80 group focus-within:border-purple-500 focus-within:bg-zinc-800 transition-colors">
+        <div className="flex-1 max-w-2xl mx-2 md:mx-8 flex items-center gap-2 md:gap-4">
+          <div className="relative flex items-center bg-zinc-800/50 rounded-full border border-white/10 px-3 md:px-4 py-2 w-full md:w-80 group focus-within:border-purple-500 focus-within:bg-zinc-800 transition-colors">
             <Search className="w-4 h-4 text-zinc-400 group-focus-within:text-purple-400" />
             <input 
               type="text"
@@ -153,7 +153,7 @@ const Home: React.FC = () => {
               }}
               onFocus={() => setShowPreview(true)}
               onBlur={() => setTimeout(() => setShowPreview(false), 200)}
-              className="bg-transparent border-none outline-none text-white text-sm w-full placeholder-zinc-500 ml-2"
+              className="bg-transparent border-none outline-none text-white text-xs md:text-sm w-full placeholder-zinc-500 ml-2"
             />
             {/* Predictive Preview Dropdown */}
             {showPreview && previewResults.length > 0 && (
@@ -193,7 +193,7 @@ const Home: React.FC = () => {
           {user ? (
             <>
               {/* Gamification Dashboard */}
-              <div className="flex items-center gap-4 bg-zinc-800/50 px-4 py-1.5 rounded-full border border-white/5">
+              <div className="flex items-center gap-3 md:gap-4 bg-zinc-800/50 px-3 md:px-4 py-1.5 rounded-full border border-white/5">
                 <div className="flex items-center gap-1.5 text-amber-400" title="Mis Puntos">
                   <Star className="w-4 h-4 fill-amber-400" />
                   <span className="text-sm font-bold">{userPoints} pts</span>
@@ -205,7 +205,7 @@ const Home: React.FC = () => {
                   title="Mi Agenda"
                 >
                   <MapPin className="w-4 h-4" />
-                  <span className="text-sm font-medium">Agenda</span>
+                  <span className="hidden md:inline text-sm font-medium">Agenda</span>
                 </button>
                 <div className="w-px h-4 bg-white/10"></div>
                 <button 
@@ -214,7 +214,7 @@ const Home: React.FC = () => {
                   title="Mis Cupones"
                 >
                   <Ticket className="w-4 h-4" />
-                  <span className="text-sm font-medium">Cupones</span>
+                  <span className="hidden md:inline text-sm font-medium">Cupones</span>
                 </button>
               </div>
               
@@ -226,7 +226,7 @@ const Home: React.FC = () => {
                     user.email?.charAt(0).toUpperCase()
                   )}
                 </div>
-                <button onClick={handleLogout} className="text-sm font-medium text-zinc-400 hover:text-white transition-colors flex items-center gap-1">
+                <button onClick={handleLogout} className="text-sm font-medium text-zinc-400 hover:text-white transition-colors hidden md:flex items-center gap-1">
                   <LogOut className="w-4 h-4" /> Logout
                 </button>
               </div>
@@ -234,9 +234,9 @@ const Home: React.FC = () => {
           ) : (
             <button 
               onClick={handleLogin}
-              className="text-sm font-medium bg-white text-zinc-900 px-4 py-2 rounded-full hover:bg-zinc-200 transition-colors flex items-center gap-2"
+              className="text-xs md:text-sm font-medium bg-white text-zinc-900 px-3 md:px-4 py-2 rounded-full hover:bg-zinc-200 transition-colors flex items-center gap-2 whitespace-nowrap"
             >
-              <LogIn className="w-4 h-4" /> Sign in with Google
+              <LogIn className="w-4 h-4" /> <span className="hidden sm:inline">Sign in with Google</span><span className="sm:hidden">Sign in</span>
             </button>
           )}
         </div>
@@ -319,7 +319,7 @@ const Home: React.FC = () => {
           
           {/* 3D Model Container (Bigger and Transparent) */}
           <div className="relative pointer-events-auto flex items-end gap-2">
-            <div className="w-48 h-64 relative flex items-end justify-center drop-shadow-2xl">
+            <div className="w-24 h-32 md:w-48 md:h-64 relative flex items-end justify-center drop-shadow-2xl transition-all">
               <Assistant3D />
             </div>
 
@@ -337,7 +337,7 @@ const Home: React.FC = () => {
           
           {/* Chat Panel */}
           {isChatOpen && (
-            <div className="w-80 h-[500px] max-h-[70vh] bg-zinc-950/90 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl flex flex-col overflow-hidden pointer-events-auto transition-all animate-in slide-in-from-bottom-10 fade-in">
+            <div className="w-[calc(100vw-4rem)] md:w-80 h-[400px] md:h-[500px] max-h-[60vh] md:max-h-[70vh] bg-zinc-950/90 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl flex flex-col overflow-hidden pointer-events-auto transition-all animate-in slide-in-from-bottom-10 fade-in">
               <div className="p-3 border-b border-white/10 bg-zinc-900/50 flex justify-between items-center">
                 <h3 className="text-sm font-medium text-white flex items-center gap-2">
                   <MessageSquare className="w-4 h-4 text-purple-400" /> Chat con Cipitío

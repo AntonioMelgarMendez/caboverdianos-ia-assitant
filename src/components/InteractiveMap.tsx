@@ -49,7 +49,7 @@ const MapUpdater: React.FC<{ location?: { lat: number, lng: number } | null, zoo
 const LocateUserButton: React.FC<{ location?: { lat: number, lng: number } | null }> = ({ location }) => {
   const map = useMap();
   return (
-    <div className="absolute bottom-6 right-6 z-[1000]">
+    <div className="absolute bottom-24 md:bottom-6 right-4 md:right-6 z-[1000] transition-all">
       <button
         onClick={(e) => {
           e.stopPropagation();
@@ -351,9 +351,9 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
         </div>
       )}
 
-      {/* Panel lateral de React — FUERA de Leaflet */}
-      {selectedEvent && !savedFeedback && (
-        <div className="absolute top-4 right-4 z-[500] w-80 max-h-[calc(100%-2rem)] bg-zinc-900/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl shadow-black/50 overflow-hidden flex flex-col">
+      {/* Info Panel flotante */}
+      {selectedEvent && (
+        <div className="absolute bottom-4 left-4 right-4 md:left-auto md:bottom-auto md:top-4 md:right-4 z-[500] w-[calc(100vw-2rem)] md:w-96 max-h-[60vh] md:max-h-[90vh] bg-zinc-900/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-10 md:slide-in-from-right-10 fade-in">
           
           {/* Media Carousel */}
           {(selectedEvent.imageUrl || (selectedEvent.media && selectedEvent.media.length > 0)) && (
@@ -369,7 +369,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
                   closePanel();
                   setShowRoute(false);
                 }}
-                className="absolute top-2 right-2 z-20 bg-black/50 backdrop-blur-sm text-white p-1.5 rounded-full hover:bg-black/70 transition-colors"
+                className="absolute top-2 right-2 z-[60] bg-black/50 backdrop-blur-sm text-white p-1.5 rounded-full hover:bg-black/70 transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
