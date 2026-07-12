@@ -34,24 +34,12 @@ const HeroCharacterModel = () => {
 
     // Initial animation
     playAnimation(cycle[currentIndex]);
-    
-    if (scene) {
-      scene.children.forEach(child => {
-        child.visible = child.name === cycle[currentIndex];
-      });
-    }
 
     // Change animation every 8 seconds
     const interval = setInterval(() => {
       currentIndex = (currentIndex + 1) % cycle.length;
       const nextAnim = cycle[currentIndex];
       playAnimation(nextAnim);
-      
-      if (scene) {
-        scene.children.forEach(child => {
-          child.visible = child.name === nextAnim;
-        });
-      }
     }, 8000);
 
     return () => clearInterval(interval);
