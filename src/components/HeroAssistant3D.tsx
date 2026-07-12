@@ -10,16 +10,40 @@ useGLTF.preload(modelUrl);
 const HeroCharacterModel = () => {
   const { scene, animations } = useGLTF(modelUrl);
   const clonedScene = useMemo(() => SkeletonUtils.clone(scene), [scene]);
-  const { actions } = useAnimations(animations, clonedScene);
+  
+  const group = useRef<THREE.Group>(null);
+  const { actions } = useAnimations(animations, group);
+  const currentAction = useRef<string | null>(null);
 
-  // Play "Waving" animation for a friendly greeting
+  // Cycle animations to make it look alive
   React.useEffect(() => {
-    if (actions && actions['Waving']) {
-      actions['Waving'].reset().fadeIn(0.5).play();
-    } else if (actions && Object.keys(actions).length > 0) {
-      const firstAction = actions[Object.keys(actions)[0]];
-      if (firstAction) firstAction.reset().fadeIn(0.5).play();
-    }
+    if (!actions || Object.keys(actions).length === 0) return;
+
+    const cycle = ['Waving', 'Dancing', 'Sitting'];
+    let currentIndex = 0;
+    
+    const playAnimation = (name: string) => {
+      const action = actions[name];
+      if (!action) return;
+      
+      if (currentAction.current && actions[currentAction.current]) {
+        actions[currentAction.current]!.fadeOut(0.5);
+      }
+      
+      action.reset().fadeIn(0.5).play();
+      currentAction.current = name;
+    };
+
+    // Initial animation
+    playAnimation(cycle[currentIndex]);
+
+    // Change animation every 8 seconds
+    const interval = setInterval(() => {
+      currentIndex = (currentIndex + 1) % cycle.length;
+      playAnimation(cycle[currentIndex]);
+    }, 8000);
+
+    return () => clearInterval(interval);
   }, [actions]);
 
   // Fix materials
@@ -41,12 +65,14 @@ const HeroCharacterModel = () => {
 
   return (
     <Float speed={1.8} rotationIntensity={0.08} floatIntensity={0.15}>
-      <primitive 
-        object={clonedScene} 
-        position={[0, -2.2, 0]} 
-        scale={2.2}
-        rotation={[0.05, -0.2, 0]}
-      />
+      <group ref={group}>
+        <primitive 
+          object={clonedScene} 
+          position={[0, -2.2, 0]} 
+          scale={2.2}
+          rotation={[0.05, -0.2, 0]}
+        />
+      </group>
     </Float>
   );
 };
