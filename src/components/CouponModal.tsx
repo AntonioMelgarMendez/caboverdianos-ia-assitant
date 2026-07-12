@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { X, Store, Ticket, Loader2, Star, ChevronLeft, ChevronRight, Download } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
+import logoCipitour from '../assets/Cipitour.png';
 import { 
   AVAILABLE_COUPONS, 
   getUserCoupons, 
@@ -160,29 +161,35 @@ const CouponModal: React.FC<CouponModalProps> = ({ isOpen, onClose, userId, user
                     </button>
                   </div>
                   
-                  <div className="w-full bg-white rounded-3xl p-6 shadow-xl relative overflow-hidden">
-                    <div className="absolute top-0 left-0 w-full h-3 bg-amber-400"></div>
+                  <div className="w-full bg-zinc-900 rounded-3xl p-6 shadow-xl relative overflow-hidden border border-white/5">
+                    <div className="absolute top-0 left-0 w-full h-3 bg-purple-500"></div>
                     <div className="absolute top-1/2 -left-3 w-6 h-6 bg-zinc-950 rounded-full"></div>
                     <div className="absolute top-1/2 -right-3 w-6 h-6 bg-zinc-950 rounded-full"></div>
-                    <div className="absolute top-1/2 left-4 right-4 h-0.5 border-t-2 border-dashed border-zinc-200"></div>
+                    <div className="absolute top-1/2 left-4 right-4 h-0.5 border-t-2 border-dashed border-zinc-700"></div>
                     
                     <div className="text-center mb-8 pt-2">
-                      <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-1">Cupón Exclusivo</p>
-                      <h3 className="font-black text-3xl text-zinc-900">{getStoreCouponDetails(selectedCoupon.discount_percentage).title}</h3>
-                      <p className="text-amber-600 font-bold mt-1">Descuento del {selectedCoupon.discount_percentage}%</p>
+                      <p className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-1">Cupón Exclusivo</p>
+                      <h3 className="font-black text-3xl text-white">{getStoreCouponDetails(selectedCoupon.discount_percentage).title}</h3>
+                      <p className="text-purple-400 font-bold mt-1">Descuento del {selectedCoupon.discount_percentage}%</p>
                     </div>
                     
                     <div className="flex flex-col items-center mt-8">
-                      <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-4">Muestra este QR al cajero</p>
-                      <div className="bg-white p-4 rounded-xl border border-zinc-200 shadow-sm">
+                      <p className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-4">Muestra este QR al cajero</p>
+                      <div className="bg-white p-4 rounded-xl border border-white/10 shadow-[0_0_20px_rgba(168,85,247,0.15)]">
                         <QRCodeSVG 
                           value={selectedCoupon.coupon_code} 
                           size={180}
                           level="H"
                           includeMargin={true}
+                          imageSettings={{
+                            src: logoCipitour,
+                            height: 48,
+                            width: 48,
+                            excavate: true,
+                          }}
                         />
                       </div>
-                      <p className="font-mono text-zinc-500 font-bold mt-4 text-base tracking-widest bg-zinc-100 px-4 py-2 rounded-lg">
+                      <p className="font-mono text-zinc-300 font-bold mt-4 text-base tracking-widest bg-zinc-800 px-4 py-2 rounded-lg border border-white/5">
                         {selectedCoupon.coupon_code}
                       </p>
                     </div>
