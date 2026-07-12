@@ -84,7 +84,7 @@ const Assistant3D: React.FC<Assistant3DProps> = ({ animation = 'Waving' }) => {
   const [phase, setPhase] = React.useState<'running' | 'arrived'>('running');
 
   useEffect(() => {
-    const timer = setTimeout(() => setPhase('arrived'), ENTRANCE_DURATION_MS);
+    const timer = setTimeout(() => setPhase('arrived'), ENTRANCE_DURATION_MS + 500);
     return () => clearTimeout(timer);
   }, []);
 
@@ -94,23 +94,23 @@ const Assistant3D: React.FC<Assistant3DProps> = ({ animation = 'Waving' }) => {
     <div
       className="w-full h-full relative"
       style={{
-        animation: `cipitio-entrance ${ENTRANCE_DURATION_MS}ms cubic-bezier(0.25, 0.1, 0.25, 1) forwards`,
+        opacity: 0,
+        animation: `cipitio-entrance ${ENTRANCE_DURATION_MS}ms cubic-bezier(0.25, 0.1, 0.25, 1) 0.5s forwards`,
       }}
     >
       <style>{`
         @keyframes cipitio-entrance {
           0% {
-            transform: translateX(-120%);
-            opacity: 0.8;
-          }
-          15% {
+            transform: translateX(-100%);
             opacity: 1;
           }
-          85% {
-            transform: translateX(5%);
+          80% {
+            transform: translateX(3%);
+            opacity: 1;
           }
           100% {
             transform: translateX(0%);
+            opacity: 1;
           }
         }
       `}</style>
