@@ -14,22 +14,38 @@ export class SupabaseEventProvider implements EventProvider {
 
     if (!places) return [];
 
-    return places.map((place) => ({
-      id: place.id,
-      title: place.name,
-      description: place.description || '',
-      lat: place.lat,
-      lng: place.lng,
-      // Usaremos campos extra que añadimos si existen
-      category: place.category as any || 'general',
-      // Si no tenemos imagen por defecto y queremos usar streetview como media principal
-      media: [
-        { type: 'streetview', lat: place.lat, lng: place.lng }
-      ],
-      // Fecha por defecto para compatibilidad
-      date: new Date().toISOString().split('T')[0],
-      price: null, // Asumimos que los lugares son gratuitos por ahora
-      currency: 'USD'
-    }));
+    return places.map((place) => {
+      // 1. Construir el arreglo de media con las imágenes de Google
+      const media = [];
+      
+      // Si hay imágenes guardadas, las convertimos en URLs (usando la API key del frontend)
+      if (place.images && Array.isArray(place.images) && place.images.length > 0) {
+        const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+        place.images.forEach((photoName: string) => {
+          media.push({
+            type: 'image',
+            url: `https://places.googleapis.com/v1/${photoName}/media?maxHeightPx=800&maxWidthPx=800&key=${apiKey}`
+          });
+        });
+      }
+
+      // 2. Agregar el Street View al final
+      media.push({ type: 'streetview', lat: place.lat, lng: place.lng });
+
+      return {
+        id: place.id,
+        title: place.name,
+        description: place.description || '',
+        lat: place.lat,
+        lng: place.lng,
+        category: place.category as any || 'general',
+        media,
+        date: new Date().toISOString().split('T')[0],
+        price: null,
+        currency: 'USD',
+        // Podemos pasar las reviews y rating si decidimos extender AppEvent después,
+        // por ahora las omitimos o las mapeamos si es necesario
+      };
+    });
   }
 }
