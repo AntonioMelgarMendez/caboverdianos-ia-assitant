@@ -1,10 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Compass, Map, MessageSquare, Ticket, Star, Sparkles, MapPin, ChevronRight, Navigation2, Zap } from 'lucide-react';
+import Assistant3D from '../components/Assistant3D';
 
 const Landing: React.FC = () => {
   return (
-    <div className="min-h-screen bg-zinc-950 text-white overflow-x-hidden selection:bg-purple-500/30">
+    <div className="w-full min-h-screen bg-zinc-950 text-white overflow-hidden selection:bg-purple-500/30">
       {/* Background Decorative Orbs */}
       <div className="absolute top-0 left-1/2 w-[800px] h-[400px] bg-purple-600/20 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
       <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-amber-600/10 rounded-full blur-[150px] translate-x-1/3 translate-y-1/3 pointer-events-none"></div>
@@ -24,36 +25,49 @@ const Landing: React.FC = () => {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative z-10 flex flex-col items-center justify-center pt-24 md:pt-32 pb-20 px-6 text-center">
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300 text-xs font-bold uppercase tracking-widest mb-8">
-          <Sparkles className="w-4 h-4" /> La revolución del Turismo local
+      <section className="relative z-10 flex flex-col md:flex-row items-center justify-center pt-12 md:pt-20 pb-20 px-6 max-w-7xl mx-auto gap-12">
+        
+        {/* Left Side: Text */}
+        <div className="flex-1 flex flex-col items-center md:items-start text-center md:text-left">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300 text-xs font-bold uppercase tracking-widest mb-8">
+            <Sparkles className="w-4 h-4" /> La revolución del Turismo local
+          </div>
+          
+          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 leading-[1.1]">
+            Descubre tu país con un <br className="hidden md:block" />
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-amber-400">
+              Asistente Inteligente
+            </span>
+          </h1>
+          
+          <p className="text-lg md:text-xl text-zinc-400 max-w-xl mb-10 leading-relaxed">
+            Explora rutas, descubre lugares ocultos, recibe recomendaciones por voz de nuestra IA en 3D, y gana recompensas reales por tus viajes.
+          </p>
+          
+          <div className="flex flex-col sm:flex-row items-center gap-4">
+            <Link 
+              to="/app"
+              className="flex items-center gap-2 bg-purple-600 hover:bg-purple-500 text-white px-8 py-4 rounded-full font-bold text-lg transition-all hover:scale-105 active:scale-95 shadow-lg shadow-purple-600/30"
+            >
+              Abrir el Mapa <ChevronRight className="w-5 h-5" />
+            </Link>
+            <a 
+              href="#features"
+              className="flex items-center gap-2 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-white/10 px-8 py-4 rounded-full font-bold text-lg transition-all"
+            >
+              Saber más
+            </a>
+          </div>
         </div>
-        
-        <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 max-w-4xl leading-[1.1]">
-          Descubre tu país con un <br className="hidden md:block" />
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-amber-400">
-            Asistente Inteligente
-          </span>
-        </h1>
-        
-        <p className="text-lg md:text-xl text-zinc-400 max-w-2xl mb-10 leading-relaxed">
-          Explora rutas, descubre lugares ocultos, recibe recomendaciones por voz de nuestra IA en 3D, y gana recompensas reales por tus viajes.
-        </p>
-        
-        <div className="flex flex-col sm:flex-row items-center gap-4">
-          <Link 
-            to="/app"
-            className="flex items-center gap-2 bg-purple-600 hover:bg-purple-500 text-white px-8 py-4 rounded-full font-bold text-lg transition-all hover:scale-105 active:scale-95 shadow-lg shadow-purple-600/30"
-          >
-            Abrir el Mapa <ChevronRight className="w-5 h-5" />
-          </Link>
-          <a 
-            href="#features"
-            className="flex items-center gap-2 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-white/10 px-8 py-4 rounded-full font-bold text-lg transition-all"
-          >
-            Saber más
-          </a>
+
+        {/* Right Side: 3D Assistant */}
+        <div className="flex-1 w-full max-w-md relative flex items-center justify-center min-h-[400px] md:min-h-[500px]">
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-amber-500/10 rounded-full blur-3xl"></div>
+          <div className="relative w-full h-full drop-shadow-[0_0_50px_rgba(168,85,247,0.3)] pointer-events-auto z-20">
+            <Assistant3D />
+          </div>
         </div>
+
       </section>
 
       {/* Bento Grid Features */}
