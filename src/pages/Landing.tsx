@@ -151,16 +151,19 @@ const Landing: React.FC = () => {
       </section>
 
       {/* ======================= CTA SECTION ======================= */}
-      <section className="relative z-10 px-6 md:px-12 py-24">
-        <div className="max-w-4xl mx-auto text-center bg-gradient-to-br from-purple-500/10 to-pink-500/10 p-12 md:p-16 rounded-[2rem] border border-white/5 relative overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(168,85,247,0.1)_0%,transparent_60%)] pointer-events-none"></div>
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 relative z-10">¿Listo para explorar?</h2>
-          <p className="text-zinc-400 mb-8 relative z-10">Abre el mapa y empieza tu aventura ahora mismo.</p>
+      <section className="relative z-10 pt-16 pb-24 px-6">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-500/[0.04] to-purple-500/[0.08] pointer-events-none"></div>
+        <div className="relative z-10 max-w-2xl mx-auto text-center">
+          <div className="w-14 h-14 bg-purple-500/15 rounded-full flex items-center justify-center mx-auto mb-6 border border-purple-500/20">
+            <Compass className="w-7 h-7 text-purple-400" />
+          </div>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">¿Listo para explorar?</h2>
+          <p className="text-zinc-500 mb-8 leading-relaxed">Abre el mapa interactivo y déjate guiar por el Cipitío en tu próxima aventura turística.</p>
           <Link
             to="/app"
-            className="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-500 text-white px-10 py-4 rounded-full font-bold text-lg transition-all hover:scale-105 active:scale-95 shadow-lg shadow-purple-600/30 relative z-10"
+            className="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-500 text-white px-10 py-4 rounded-full font-bold text-lg transition-all hover:scale-105 active:scale-95 shadow-lg shadow-purple-600/30"
           >
-            Abrir el Mapa <ChevronRight className="w-5 h-5" />
+            Explorar Ahora <ChevronRight className="w-5 h-5" />
           </Link>
         </div>
       </section>
