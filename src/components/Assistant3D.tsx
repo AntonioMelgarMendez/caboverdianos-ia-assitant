@@ -17,9 +17,13 @@ interface AIModelProps {
 
 const AIModel: React.FC<AIModelProps> = ({ animation = 'Waving' }) => {
   const { scene, animations } = useGLTF(modelUrl);
+  const [isEntering, setIsEntering] = React.useState(true);
+  const groupRef = React.useRef<THREE.Group>(null);
+  
+  const currentAnimation = isEntering ? 'Running' : animation;
   
   // Find the specific model and clip for the current animation
-  const targetName = animations.find(a => a.name === animation) ? animation : animations[0]?.name;
+  const targetName = animations.find(a => a.name === currentAnimation) ? currentAnimation : animations[0]?.name;
   const model = useMemo(() => {
     if (!scene) return null;
     return scene.children.find(c => c.name === targetName) || scene.children[0];
@@ -45,6 +49,14 @@ const AIModel: React.FC<AIModelProps> = ({ animation = 'Waving' }) => {
 
   useFrame((_, delta) => {
     if (mixer) mixer.update(delta);
+    
+    if (isEntering && groupRef.current) {
+      groupRef.current.position.x += delta * 6; // Velocidad de carrera
+      if (groupRef.current.position.x >= 0) {
+        groupRef.current.position.x = 0;
+        setIsEntering(false);
+      }
+    }
   });
 
   // Arreglar materiales
@@ -72,11 +84,13 @@ const AIModel: React.FC<AIModelProps> = ({ animation = 'Waving' }) => {
       rotationIntensity={0.1}
       floatIntensity={0.2}
     >
-      <primitive 
-        object={model} 
-        position={[0, -1.8, 0]} 
-        scale={1.8}
-      />
+      <group ref={groupRef} position={[-8, 0, 0]}>
+        <primitive 
+          object={model} 
+          position={[0, -1.8, 0]} 
+          scale={1.8}
+        />
+      </group>
     </Float>
   );
 };
