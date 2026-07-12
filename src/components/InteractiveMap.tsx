@@ -226,7 +226,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
   }, [selectedEvent, onAskCipitio]);
 
   // Efecto auxiliar para notificar a los componentes padres si hay un evento seleccionado
-  useEffect(() => {
+  React.useEffect(() => {
     if (onEventSelectedStatusChange) {
       onEventSelectedStatusChange(!!selectedEvent);
     }
