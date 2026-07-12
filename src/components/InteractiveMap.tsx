@@ -32,6 +32,7 @@ interface InteractiveMapProps {
   userLocation?: { lat: number; lng: number } | null;
   events?: AppEvent[];
   forceSelectedEventId?: string | null;
+  onEventSelectedStatusChange?: (isSelected: boolean) => void;
 }
 
 // Componente para actualizar el centro del mapa dinámicamente
@@ -133,7 +134,8 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
   selectedCategories = [],
   userLocation = null,
   events = [],
-  forceSelectedEventId = null
+  forceSelectedEventId = null,
+  onEventSelectedStatusChange
 }) => {
   const position: [number, number] = [13.6929, -89.2182]; 
   const [selectedEvent, setSelectedEvent] = useState<AppEvent | null>(null);
@@ -222,6 +224,21 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
     onAskCipitio?.(selectedEvent.title);
     setSelectedEvent(null);
   }, [selectedEvent, onAskCipitio]);
+
+  // Efecto auxiliar para notificar a los componentes padres si hay un evento seleccionado
+  useEffect(() => {
+    if (onEventSelectedStatusChange) {
+      onEventSelectedStatusChange(!!selectedEvent);
+    }
+  }, [selectedEvent, onEventSelectedStatusChange]);
+
+  const handleEventSelect = (evt: AppEvent) => {
+    setSelectedEvent(evt);
+    setRouteCoordinates(null);
+    setShowRoute(false);
+    setPickedDate('');
+    setSavedFeedback(null);
+  };
 
   const closePanel = () => {
     setSelectedEvent(null);

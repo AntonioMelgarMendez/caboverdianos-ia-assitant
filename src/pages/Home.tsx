@@ -46,6 +46,7 @@ const Home: React.FC = () => {
   const [events, setEvents] = useState<AppEvent[]>([]);
   const [forceSelectedEventId, setForceSelectedEventId] = useState<string | null>(null);
   const [showPreview, setShowPreview] = useState(false);
+  const [isMapEventSelected, setIsMapEventSelected] = useState(false);
 
   useEffect(() => {
     async function fetchEvents() {
@@ -262,6 +263,7 @@ const Home: React.FC = () => {
              searchQuery={searchQuery}
              selectedCategories={selectedCategories}
              maxPrice={maxPrice}
+             onEventSelectedStatusChange={setIsMapEventSelected}
              onAskCipitio={(placeName) => {
                handleSendMessage(`Háblame sobre ${placeName}`);
                setIsChatOpen(true);
@@ -322,7 +324,7 @@ const Home: React.FC = () => {
         </div>
 
         {/* Floating AI Assistant & Chat */}
-        <div className="absolute bottom-6 left-4 md:left-6 z-[1000] flex items-end gap-4 pointer-events-none">
+        <div className={`absolute bottom-6 left-4 md:left-6 z-[1000] items-end gap-4 pointer-events-none ${isMapEventSelected && !isChatOpen ? 'hidden md:flex' : 'flex'}`}>
           
           {/* 3D Model Container (Bigger and Transparent) */}
           <div className="relative pointer-events-auto flex items-end gap-2">
