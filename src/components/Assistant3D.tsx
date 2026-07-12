@@ -110,12 +110,13 @@ const AIModel: React.FC<AIModelProps> = ({ animation = 'Waving' }) => {
       floatIntensity={0.2}
     >
       <group ref={groupRef} position={[-2.5, 0, 0]}>
-        <primitive
-          object={model}
-          position={[0, -1.8, 0]}
-          scale={1.8}
-          rotation={phase === 'running' ? [0, -Math.PI / 2, 0] : [0, 0, 0]}
-        />
+        <group rotation={phase === 'running' ? [0, Math.PI / 2, 0] : [0, 0, 0]}>
+          <primitive
+            object={model}
+            position={[0, -1.8, 0]}
+            scale={1.8}
+          />
+        </group>
       </group>
     </Float>
   );
