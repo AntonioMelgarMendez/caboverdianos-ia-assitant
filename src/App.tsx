@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import Landing from './pages/Landing';
+import ScanQR from './pages/ScanQR';
 
 function App() {
   return (
@@ -9,6 +10,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/app" element={<Home />} />
+          <Route path="/scan-qr" element={<ScanQR />} />
         </Routes>
       </div>
     </Router>
