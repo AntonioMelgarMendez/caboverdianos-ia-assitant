@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap, Polyline } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
-import { Star, MessageCircle, X, Clock, MapPin, Calendar, Check, Search, Filter, Tent, Mountain, Utensils, Landmark, Church, Waves, Navigation2 } from 'lucide-react';
+import { Star, MessageCircle, X, Clock, MapPin, Calendar, Check, Search, Filter, Tent, Mountain, Utensils, Landmark, Church, Waves, Navigation2, LocateFixed } from 'lucide-react';
 import { renderToString } from 'react-dom/server';
 // Arreglo para los íconos de Leaflet en React
 import icon from 'leaflet/dist/images/marker-icon.png';
@@ -43,6 +43,27 @@ const MapUpdater: React.FC<{ location?: { lat: number, lng: number } | null, zoo
     }
   }, [location, map, zoom]);
   return null;
+};
+
+// Componente para el Botón "Mi Ubicación"
+const LocateUserButton: React.FC<{ location?: { lat: number, lng: number } | null }> = ({ location }) => {
+  const map = useMap();
+  return (
+    <div className="absolute bottom-6 right-6 z-[1000]">
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          if (location) {
+            map.flyTo([location.lat, location.lng], 15, { animate: true, duration: 1.5 });
+          }
+        }}
+        className="bg-zinc-900 text-white p-3 rounded-full shadow-2xl border border-white/20 hover:bg-zinc-800 transition-all group"
+        title="Centrar en mi ubicación"
+      >
+        <LocateFixed className="w-6 h-6 text-blue-500 group-hover:scale-110 transition-transform" />
+      </button>
+    </div>
+  );
 };
 
 // Función para crear íconos de mapa personalizados
@@ -117,6 +138,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
   const position: [number, number] = [13.6929, -89.2182]; 
   const [selectedEvent, setSelectedEvent] = useState<AppEvent | null>(null);
   const [showRoute, setShowRoute] = useState(false);
+  const [routeCoordinates, setRouteCoordinates] = useState<[number, number][] | null>(null);
   
   // Filtrar eventos basados en búsqueda, precio y categoría
   const filteredEvents = events.filter((evt) => {
@@ -143,6 +165,32 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
       }
     }
   }, [forceSelectedEventId, events]);
+
+  // Consultar OSRM para trazar ruta por carreteras
+  React.useEffect(() => {
+    if (showRoute && userLocation && selectedEvent?.lat && selectedEvent?.lng) {
+      const fetchRoute = async () => {
+        try {
+          // OSRM espera longitud,latitud
+          const res = await fetch(`https://router.project-osrm.org/route/v1/driving/${userLocation.lng},${userLocation.lat};${selectedEvent.lng},${selectedEvent.lat}?overview=full&geometries=geojson`);
+          const data = await res.json();
+          if (data.routes && data.routes.length > 0) {
+            // Convertir GeoJSON [lng, lat] a Leaflet [lat, lng]
+            const coords = data.routes[0].geometry.coordinates.map((c: number[]) => [c[1], c[0]]);
+            setRouteCoordinates(coords);
+          } else {
+            setRouteCoordinates(null);
+          }
+        } catch (e) {
+          console.error("OSRM Route Error:", e);
+          setRouteCoordinates(null);
+        }
+      };
+      fetchRoute();
+    } else {
+      setRouteCoordinates(null);
+    }
+  }, [showRoute, userLocation, selectedEvent]);
 
   const isEvent = (evt: AppEvent) => !!evt.startTime;
 
@@ -281,17 +329,20 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
           />
         ))}
 
+        {/* Botón Mi Ubicación */}
+        <LocateUserButton location={userLocation} />
+
         {/* Ruta Trazada */}
         {showRoute && userLocation && selectedEvent?.lat && selectedEvent?.lng && (
           <Polyline 
-            positions={[
+            positions={routeCoordinates || [
               [userLocation.lat, userLocation.lng],
               [selectedEvent.lat, selectedEvent.lng]
             ]}
             color="#3b82f6"
             weight={4}
-            dashArray="10, 10"
-            className="animate-pulse"
+            dashArray={routeCoordinates ? undefined : "10, 10"} // Animación punteada solo si es línea recta de fallback
+            className={routeCoordinates ? "opacity-80" : "animate-pulse"}
           />
         )}
       </MapContainer>
