@@ -10,8 +10,7 @@ useGLTF.preload(modelUrl);
 const HeroCharacterModel = () => {
   const { scene, animations } = useGLTF(modelUrl);
   
-  const group = useRef<THREE.Group>(null);
-  const { actions } = useAnimations(animations, group);
+  const { ref, actions } = useAnimations(animations);
   const currentAction = useRef<string | null>(null);
 
   // Cycle animations to make it look alive
@@ -64,9 +63,13 @@ const HeroCharacterModel = () => {
 
   return (
     <Float speed={1.8} rotationIntensity={0.08} floatIntensity={0.15}>
-      <group ref={group} position={[0, -2.2, 0]} scale={2.2} rotation={[0.05, -0.2, 0]}>
-        <primitive object={scene} />
-      </group>
+      <primitive 
+        ref={ref}
+        object={scene} 
+        position={[0, -2.2, 0]} 
+        scale={2.2} 
+        rotation={[0.05, -0.2, 0]} 
+      />
     </Float>
   );
 };

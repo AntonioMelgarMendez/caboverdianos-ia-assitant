@@ -18,8 +18,7 @@ interface AIModelProps {
 
 const AIModel: React.FC<AIModelProps> = ({ animation = 'Waving' }) => {
   const { scene, animations } = useGLTF(modelUrl);
-  const group = useRef<THREE.Group>(null);
-  const { actions } = useAnimations(animations, group);
+  const { ref, actions } = useAnimations(animations);
   const currentAction = useRef<string | null>(null);
 
   // Cambiar animación suavemente con crossfade
@@ -66,9 +65,12 @@ const AIModel: React.FC<AIModelProps> = ({ animation = 'Waving' }) => {
       rotationIntensity={0.1}
       floatIntensity={0.2}
     >
-      <group ref={group} position={[0, -1.8, 0]} scale={1.8}>
-        <primitive object={scene} />
-      </group>
+      <primitive 
+        ref={ref}
+        object={scene} 
+        position={[0, -1.8, 0]} 
+        scale={1.8}
+      />
     </Float>
   );
 };
