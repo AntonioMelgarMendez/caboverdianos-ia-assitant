@@ -49,7 +49,7 @@ const MapUpdater: React.FC<{ location?: { lat: number, lng: number } | null, zoo
 const LocateUserButton: React.FC<{ location?: { lat: number, lng: number } | null }> = ({ location }) => {
   const map = useMap();
   return (
-    <div className="absolute bottom-24 md:bottom-6 right-4 md:right-6 z-[1000] transition-all">
+    <div className="absolute bottom-6 right-4 md:right-6 z-[1000] transition-all">
       <button
         onClick={(e) => {
           e.stopPropagation();

@@ -322,7 +322,7 @@ const Home: React.FC = () => {
         </div>
 
         {/* Floating AI Assistant & Chat */}
-        <div className="absolute bottom-6 left-6 z-[1000] flex items-end gap-4 pointer-events-none">
+        <div className="absolute bottom-6 left-4 md:left-6 z-[1000] flex items-end gap-4 pointer-events-none">
           
           {/* 3D Model Container (Bigger and Transparent) */}
           <div className="relative pointer-events-auto flex items-end gap-2">
@@ -344,13 +344,13 @@ const Home: React.FC = () => {
           
           {/* Chat Panel */}
           {isChatOpen && (
-            <div className="w-[calc(100vw-4rem)] md:w-80 h-[400px] md:h-[500px] max-h-[60vh] md:max-h-[70vh] bg-zinc-950/90 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl flex flex-col overflow-hidden pointer-events-auto transition-all animate-in slide-in-from-bottom-10 fade-in">
-              <div className="p-3 border-b border-white/10 bg-zinc-900/50 flex justify-between items-center">
+            <div className="fixed inset-x-0 bottom-0 rounded-t-3xl rounded-b-none border-b-0 md:static md:w-80 md:rounded-2xl md:border-b h-[60vh] md:h-[500px] max-h-[70vh] bg-zinc-950/95 md:bg-zinc-950/90 backdrop-blur-xl border border-white/10 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] md:shadow-2xl flex flex-col overflow-hidden pointer-events-auto transition-all animate-in slide-in-from-bottom-full md:slide-in-from-bottom-10 fade-in z-[2000] md:z-auto">
+              <div className="p-4 md:p-3 border-b border-white/10 bg-zinc-900/50 flex justify-between items-center rounded-t-3xl md:rounded-t-none">
                 <h3 className="text-sm font-medium text-white flex items-center gap-2">
                   <MessageSquare className="w-4 h-4 text-purple-400" /> Chat con Cipitío
                 </h3>
-                <button onClick={() => setIsChatOpen(false)} className="text-zinc-400 hover:text-white transition-colors">
-                  <X className="w-4 h-4" />
+                <button onClick={() => setIsChatOpen(false)} className="text-zinc-400 hover:text-white transition-colors bg-white/5 md:bg-transparent p-1.5 md:p-0 rounded-full">
+                  <X className="w-5 h-5 md:w-4 md:h-4" />
                 </button>
               </div>
 
