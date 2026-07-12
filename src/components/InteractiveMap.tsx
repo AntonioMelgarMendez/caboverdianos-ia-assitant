@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents, Polyline } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
-import { Star, MessageCircle, X, Clock, MapPin, Calendar, Check, Tent, Mountain, Utensils, Landmark, Church, Waves, Navigation2, LocateFixed, Recycle } from 'lucide-react';
+import { Star, MessageCircle, X, Clock, MapPin, Calendar, Check, Tent, Mountain, Utensils, Landmark, Church, Waves, Navigation2, LocateFixed, Recycle, View } from 'lucide-react';
 import { renderToString } from 'react-dom/server';
 // Arreglo para los íconos de Leaflet en React
 import icon from 'leaflet/dist/images/marker-icon.png';
@@ -44,11 +44,23 @@ const MapUpdater: React.FC<{ location?: { lat: number, lng: number } | null, zoo
   return null;
 };
 
-// Componente para el Botón "Mi Ubicación"
-const LocateUserButton: React.FC<{ location?: { lat: number, lng: number } | null }> = ({ location }) => {
+// Componente para botones superpuestos del mapa
+const MapOverlayButtons: React.FC<{ location?: { lat: number, lng: number } | null }> = ({ location }) => {
   const map = useMap();
   return (
-    <div className="absolute bottom-32 right-4 md:bottom-28 md:right-6 z-[1000] transition-all">
+    <div className="absolute bottom-32 right-4 md:bottom-28 md:right-6 z-[1000] flex flex-col gap-3 transition-all">
+      {/* Botón AR Experience */}
+      <a
+        href="https://srhadessvasquezz.github.io/Reto-3---CulturaXR/"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="bg-zinc-900 text-white p-3 rounded-full shadow-2xl border border-white/20 hover:bg-zinc-800 transition-all group flex items-center justify-center"
+        title="Ver en Realidad Aumentada"
+      >
+        <View className="w-6 h-6 text-purple-400 group-hover:scale-110 transition-transform" />
+      </a>
+
+      {/* Botón Mi Ubicación */}
       <button
         onClick={(e) => {
           e.stopPropagation();
@@ -401,8 +413,8 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
         {/* Marcadores de Reciclaje Falsos (se muestran según zoom) */}
         <RecyclingMarkers />
 
-        {/* Botón Mi Ubicación */}
-        <LocateUserButton location={userLocation} />
+        {/* Botones Flotantes (AR + Ubicación) */}
+        <MapOverlayButtons location={userLocation} />
 
         {/* Ruta Trazada */}
         {showRoute && routeCoordinates && userLocation && selectedEvent?.lat && selectedEvent?.lng && (

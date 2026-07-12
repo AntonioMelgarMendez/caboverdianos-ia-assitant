@@ -101,15 +101,15 @@ const Assistant3D: React.FC<Assistant3DProps> = ({ animation = 'Waving' }) => {
       <style>{`
         @keyframes cipitio-entrance {
           0% {
-            transform: translateX(-100%);
+            transform: translateX(-100%) scale(0.5);
             opacity: 1;
           }
           80% {
-            transform: translateX(3%);
+            transform: translateX(3%) scale(0.95);
             opacity: 1;
           }
           100% {
-            transform: translateX(0%);
+            transform: translateX(0%) scale(1);
             opacity: 1;
           }
         }

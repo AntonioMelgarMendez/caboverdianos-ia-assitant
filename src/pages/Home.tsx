@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MessageSquare, Loader2, LogIn, LogOut, Ticket, Star, MapPin, Search, X, View } from 'lucide-react';
+import { MessageSquare, Loader2, LogIn, LogOut, Ticket, Star, MapPin, Search, X } from 'lucide-react';
 import Assistant3D from '../components/Assistant3D';
 import type { CipitioAnimation } from '../components/Assistant3D';
 import InteractiveMap from '../components/InteractiveMap';
@@ -498,17 +498,6 @@ const Home: React.FC = () => {
           onComplete={() => setShowOnboarding(false)}
         />
       )}
-
-      {/* Botón AR Experience */}
-      <a
-        href="https://srhadessvasquezz.github.io/Reto-3---CulturaXR/"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="fixed top-4 right-4 z-[1100] flex items-center gap-1.5 bg-zinc-900/80 backdrop-blur-md border border-white/10 text-white text-xs font-medium px-3 py-2 rounded-full shadow-lg hover:bg-purple-600/80 hover:border-purple-400/30 transition-all duration-300 hover:scale-105 group"
-      >
-        <View className="w-4 h-4 text-purple-400 group-hover:text-white transition-colors" />
-        <span className="hidden sm:inline">AR</span>
-      </a>
     </div>
   );
 };
