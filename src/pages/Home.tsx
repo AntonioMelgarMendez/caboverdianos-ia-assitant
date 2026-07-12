@@ -10,6 +10,8 @@ import { generateTravelResponse } from '../services/ai';
 import { speakText } from '../services/tts';
 import { supabase } from '../services/supabase';
 import { getUserPoints, saveLocationToAgendaAndEarnPoints } from '../services/gamification';
+import { hasCompletedOnboarding } from '../services/userPreferences';
+import OnboardingSurvey from '../components/OnboardingSurvey';
 import type { User } from '@supabase/supabase-js';
 import { SupabaseEventProvider } from '../services/events/SupabaseEventProvider';
 import type { AppEvent } from '../types/AppEvent';
@@ -47,6 +49,7 @@ const Home: React.FC = () => {
   const [forceSelectedEventId, setForceSelectedEventId] = useState<string | null>(null);
   const [showPreview, setShowPreview] = useState(false);
   const [isMapEventSelected, setIsMapEventSelected] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
 
   useEffect(() => {
     async function fetchEvents() {
@@ -79,11 +82,16 @@ const Home: React.FC = () => {
     });
 
     // Escuchar cambios de autenticación
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       const currentUser = session?.user ?? null;
       setUser(currentUser);
       if (currentUser) {
         getUserPoints(currentUser.id).then(setUserPoints);
+        // Check if onboarding is needed
+        const completed = await hasCompletedOnboarding(currentUser.id);
+        if (!completed) {
+          setShowOnboarding(true);
+        }
       } else {
         setUserPoints(0);
       }
@@ -425,6 +433,13 @@ const Home: React.FC = () => {
             setUserLocation={setUserLocation}
           />
         </>
+      )}
+      {/* Onboarding Survey Modal */}
+      {showOnboarding && user && (
+        <OnboardingSurvey
+          userId={user.id}
+          onComplete={() => setShowOnboarding(false)}
+        />
       )}
     </div>
   );
