@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useMemo, useRef, useState } from 'react';
+import React, { Suspense, useEffect, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Float, ContactShadows, Environment, useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
@@ -17,14 +17,8 @@ interface AIModelProps {
 
 const AIModel: React.FC<AIModelProps> = ({ animation = 'Waving' }) => {
   const { scene, animations } = useGLTF(modelUrl);
-  const [hasArrived, setHasArrived] = useState(false);
-  const groupRef = useRef<THREE.Group>(null);
-  const rotGroupRef = useRef<THREE.Group>(null);
 
-  // Pick the correct scene child based on whether the entrance is done
-  const animName = hasArrived ? animation : 'Running';
-  const targetName = animations.find(a => a.name === animName) ? animName : animations[0]?.name;
-
+  const targetName = animations.find(a => a.name === animation) ? animation : animations[0]?.name;
   const model = useMemo(() => {
     if (!scene) return null;
     return scene.children.find(c => c.name === targetName) || scene.children[0];
@@ -48,17 +42,6 @@ const AIModel: React.FC<AIModelProps> = ({ animation = 'Waving' }) => {
 
   useFrame((_, delta) => {
     if (mixer) mixer.update(delta);
-    if (!groupRef.current) return;
-
-    if (!hasArrived) {
-      groupRef.current.position.x += delta * 2.5;
-      if (groupRef.current.position.x >= 0) {
-        groupRef.current.position.x = 0;
-        // Straighten rotation before swapping model
-        if (rotGroupRef.current) rotGroupRef.current.rotation.y = 0;
-        setHasArrived(true);
-      }
-    }
   });
 
   // Fix materials
@@ -81,21 +64,12 @@ const AIModel: React.FC<AIModelProps> = ({ animation = 'Waving' }) => {
   if (!model) return null;
 
   return (
-    <Float
-      speed={2}
-      rotationIntensity={0.1}
-      floatIntensity={0.2}
-    >
-      <group ref={groupRef} position={[-2.5, 0, 0]}>
-        <group ref={rotGroupRef} rotation={!hasArrived ? [0, Math.PI / 2, 0] : [0, 0, 0]}>
-          <primitive
-            key={targetName}
-            object={model}
-            position={[0, -1.8, 0]}
-            scale={1.8}
-          />
-        </group>
-      </group>
+    <Float speed={2} rotationIntensity={0.1} floatIntensity={0.2}>
+      <primitive
+        object={model}
+        position={[0, -1.8, 0]}
+        scale={1.8}
+      />
     </Float>
   );
 };
@@ -104,16 +78,49 @@ interface Assistant3DProps {
   animation?: CipitioAnimation;
 }
 
+const ENTRANCE_DURATION_MS = 1200;
+
 const Assistant3D: React.FC<Assistant3DProps> = ({ animation = 'Waving' }) => {
+  const [phase, setPhase] = React.useState<'running' | 'arrived'>('running');
+
+  useEffect(() => {
+    const timer = setTimeout(() => setPhase('arrived'), ENTRANCE_DURATION_MS);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const activeAnimation = phase === 'running' ? 'Running' : animation;
+
   return (
-    <div className="w-full h-full relative">
+    <div
+      className="w-full h-full relative"
+      style={{
+        animation: `cipitio-entrance ${ENTRANCE_DURATION_MS}ms cubic-bezier(0.25, 0.1, 0.25, 1) forwards`,
+      }}
+    >
+      <style>{`
+        @keyframes cipitio-entrance {
+          0% {
+            transform: translateX(-120%);
+            opacity: 0.8;
+          }
+          15% {
+            opacity: 1;
+          }
+          85% {
+            transform: translateX(5%);
+          }
+          100% {
+            transform: translateX(0%);
+          }
+        }
+      `}</style>
       <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
         <Environment preset="city" />
         <ambientLight intensity={0.5} />
         <directionalLight position={[10, 10, 5]} intensity={1} />
 
         <Suspense fallback={null}>
-          <AIModel animation={animation} />
+          <AIModel animation={activeAnimation} />
 
           <ContactShadows
             position={[0, -1.5, 0]}
@@ -136,5 +143,6 @@ const Assistant3D: React.FC<Assistant3DProps> = ({ animation = 'Waving' }) => {
 };
 
 export default Assistant3D;
+
 
 
