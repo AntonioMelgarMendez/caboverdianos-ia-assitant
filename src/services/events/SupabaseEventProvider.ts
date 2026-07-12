@@ -24,13 +24,13 @@ export class SupabaseEventProvider implements EventProvider {
         place.images.forEach((photoName: string) => {
           media.push({
             type: 'image',
-            url: `https://places.googleapis.com/v1/${photoName}/media?maxHeightPx=800&maxWidthPx=800&key=${apiKey}`
+            url: `https://places.googleapis.com/v1/${photoName}/media?maxHeightPx=1200&maxWidthPx=1200&key=${apiKey}`,
+            thumbnailUrl: `https://places.googleapis.com/v1/${photoName}/media?maxHeightPx=400&maxWidthPx=400&key=${apiKey}`
           });
         });
       }
 
-      // 2. Agregar el Street View al final
-      media.push({ type: 'streetview', lat: place.lat, lng: place.lng });
+      // Ya no insertamos streetview aquí; será manejado por una pestaña independiente en el carrusel
 
       return {
         id: place.id,

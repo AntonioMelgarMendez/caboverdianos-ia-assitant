@@ -132,8 +132,10 @@ const GoogleStreetView: React.FC<GoogleStreetViewProps> = ({ lat, lng }) => {
   return (
     <div className="w-full h-full relative bg-zinc-950 rounded-xl overflow-hidden">
       {isLoading && (
-        <div className="absolute inset-0 z-10 flex items-center justify-center bg-zinc-900">
-          <Loader2 className="w-8 h-8 text-purple-500 animate-spin" />
+        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-zinc-900 animate-pulse">
+          <Loader2 className="w-8 h-8 text-emerald-500 animate-spin mb-4" />
+          <div className="h-4 w-48 bg-zinc-800 rounded-full mb-2"></div>
+          <div className="h-3 w-32 bg-zinc-800 rounded-full"></div>
         </div>
       )}
       <div ref={containerRef} className="w-full h-full" />
