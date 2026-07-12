@@ -29,7 +29,7 @@ interface InteractiveMapProps {
   isAuthenticated?: boolean;
   searchQuery?: string;
   maxPrice?: number;
-  selectedCategory?: string;
+
 }
 
 // Componente para actualizar el centro del mapa dinámicamente
@@ -98,7 +98,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
   isAuthenticated = false,
   searchQuery = '',
   maxPrice = 1000,
-  selectedCategory = 'all'
+  selectedCategories = []
 }) => {
   const position: [number, number] = [13.6929, -89.2182]; 
   const [events, setEvents] = React.useState<AppEvent[]>([]);
@@ -110,14 +110,9 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
                           evt.description.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesPrice = evt.price === null || evt.price === undefined || evt.price <= maxPrice;
     
-    // Si la categoría seleccionada es 'all', no filtramos por categoría
-    // Si la categoría seleccionada es un mapeo especial, ajustamos
-    let eventCategoryForMatch = evt.category || '';
-    if (eventCategoryForMatch === 'deportes') eventCategoryForMatch = 'playa'; // Mapeo si es necesario
-    const matchesCategory = selectedCategory === 'all' || 
-                            eventCategoryForMatch.toLowerCase() === selectedCategory.toLowerCase() ||
-                            (selectedCategory === 'playa' && evt.category === 'deportes') ||
-                            (selectedCategory === 'montaña' && evt.category === 'naturaleza');
+    // Filtrar por categorías múltiples
+    const matchesCategory = selectedCategories.length === 0 || 
+                            selectedCategories.includes(evt.category?.toLowerCase() || 'general');
 
     return matchesSearch && matchesPrice && matchesCategory;
   });

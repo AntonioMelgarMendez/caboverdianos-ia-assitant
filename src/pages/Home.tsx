@@ -4,6 +4,7 @@ import Assistant3D from '../components/Assistant3D';
 import InteractiveMap from '../components/InteractiveMap';
 import AgendaModal from '../components/AgendaModal';
 import CouponModal from '../components/CouponModal';
+import CustomFilterDropdown from '../components/CustomFilterDropdown';
 import LocationTracker from '../components/LocationTracker';
 import { generateTravelResponse } from '../services/ai';
 import { speakText } from '../services/tts';
@@ -34,7 +35,7 @@ const Home: React.FC = () => {
   // Estados para Búsqueda y Filtros
   const [searchQuery, setSearchQuery] = useState('');
   const [maxPrice, setMaxPrice] = useState<number>(1000);
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
   useEffect(() => {
     // Verificar sesión inicial
@@ -110,48 +111,23 @@ const Home: React.FC = () => {
         
         {/* Controles de Búsqueda Globales */}
         <div className="flex-1 max-w-2xl mx-8 hidden sm:flex items-center gap-4">
-          <div className="flex-1 bg-zinc-800/50 rounded-full border border-white/10 px-4 py-2 flex items-center gap-2 focus-within:border-purple-500/50 transition-colors">
-            <Search className="w-4 h-4 text-zinc-400" />
+          <div className="flex items-center bg-zinc-800/50 rounded-full border border-white/10 px-4 py-2 w-full md:w-80 group focus-within:border-purple-500 focus-within:bg-zinc-800 transition-colors">
+            <Search className="w-4 h-4 text-zinc-400 group-focus-within:text-purple-400" />
             <input 
-              type="text" 
-              placeholder="Buscar destinos, eventos..." 
+              type="text"
+              placeholder="Buscar un evento, lugar..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="bg-transparent border-none outline-none text-white text-sm w-full placeholder-zinc-500"
+              className="bg-transparent border-none outline-none text-white text-sm w-full placeholder-zinc-500 ml-2"
             />
           </div>
           
-          <div className="flex items-center gap-2 bg-zinc-800/50 rounded-full border border-white/10 px-4 py-2">
-            <Filter className="w-4 h-4 text-zinc-400" />
-            <select 
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="bg-transparent text-sm text-white outline-none cursor-pointer"
-            >
-              <option value="all" className="bg-zinc-800">Todas las categorías</option>
-              <option value="playa" className="bg-zinc-800">Playa / Deportes</option>
-              <option value="montaña" className="bg-zinc-800">Montaña / Naturaleza</option>
-              <option value="cultura" className="bg-zinc-800">Cultura / Historia</option>
-              <option value="gastronomía" className="bg-zinc-800">Gastronomía</option>
-              <option value="religioso" className="bg-zinc-800">Turismo Religioso</option>
-            </select>
-          </div>
-
-          <div className="flex items-center gap-2 bg-zinc-800/50 rounded-full border border-white/10 px-4 py-2 group relative cursor-pointer">
-            <span className="text-sm font-medium text-amber-500">${maxPrice}</span>
-            <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 bg-zinc-900 border border-white/10 rounded-xl p-4 shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-opacity z-50 w-48">
-              <label className="text-xs text-zinc-400 mb-2 block">Precio Máximo</label>
-              <input 
-                type="range" 
-                min="0" 
-                max="1000" 
-                step="10"
-                value={maxPrice}
-                onChange={(e) => setMaxPrice(Number(e.target.value))}
-                className="w-full accent-amber-500 h-1 bg-zinc-800 rounded-lg appearance-none"
-              />
-            </div>
-          </div>
+          <CustomFilterDropdown 
+            selectedCategories={selectedCategories}
+            onChangeCategories={setSelectedCategories}
+            maxPrice={maxPrice}
+            onChangeMaxPrice={setMaxPrice}
+          />
         </div>
 
         <div className="flex items-center gap-6">
@@ -215,8 +191,8 @@ const Home: React.FC = () => {
              aiLocation={aiLocation}
              isAuthenticated={!!user} 
              searchQuery={searchQuery}
+             selectedCategories={selectedCategories}
              maxPrice={maxPrice}
-             selectedCategory={selectedCategory}
              onAskCipitio={(placeName) => {
                handleSendMessage(`Háblame sobre ${placeName}`);
                setIsChatOpen(true);
