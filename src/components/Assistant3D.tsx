@@ -18,9 +18,6 @@ interface AIModelProps {
 
 const AIModel: React.FC<AIModelProps> = ({ animation = 'Waving' }) => {
   const { scene, animations } = useGLTF(modelUrl);
-  // Clonar la escena para que cada instancia sea independiente
-  const clonedScene = useMemo(() => SkeletonUtils.clone(scene), [scene]);
-  
   const group = useRef<THREE.Group>(null);
   const { actions } = useAnimations(animations, group);
   const currentAction = useRef<string | null>(null);
@@ -48,8 +45,8 @@ const AIModel: React.FC<AIModelProps> = ({ animation = 'Waving' }) => {
 
   // Arreglar materiales
   useEffect(() => {
-    if (clonedScene) {
-      clonedScene.traverse((child) => {
+    if (scene) {
+      scene.traverse((child) => {
         if (child instanceof THREE.Mesh) {
           const mat = child.material as THREE.MeshStandardMaterial;
           if (mat) {
@@ -61,7 +58,7 @@ const AIModel: React.FC<AIModelProps> = ({ animation = 'Waving' }) => {
         }
       });
     }
-  }, [clonedScene]);
+  }, [scene]);
 
   return (
     <Float
@@ -69,12 +66,8 @@ const AIModel: React.FC<AIModelProps> = ({ animation = 'Waving' }) => {
       rotationIntensity={0.1}
       floatIntensity={0.2}
     >
-      <group ref={group}>
-        <primitive 
-          object={clonedScene} 
-          position={[0, -1.8, 0]} 
-          scale={1.8}
-        />
+      <group ref={group} position={[0, -1.8, 0]} scale={1.8}>
+        <primitive object={scene} />
       </group>
     </Float>
   );

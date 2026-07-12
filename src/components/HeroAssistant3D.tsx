@@ -9,7 +9,6 @@ useGLTF.preload(modelUrl);
 
 const HeroCharacterModel = () => {
   const { scene, animations } = useGLTF(modelUrl);
-  const clonedScene = useMemo(() => SkeletonUtils.clone(scene), [scene]);
   
   const group = useRef<THREE.Group>(null);
   const { actions } = useAnimations(animations, group);
@@ -48,8 +47,8 @@ const HeroCharacterModel = () => {
 
   // Fix materials
   React.useEffect(() => {
-    if (clonedScene) {
-      clonedScene.traverse((child) => {
+    if (scene) {
+      scene.traverse((child) => {
         if (child instanceof THREE.Mesh) {
           const mat = child.material as THREE.MeshStandardMaterial;
           if (mat) {
@@ -61,17 +60,12 @@ const HeroCharacterModel = () => {
         }
       });
     }
-  }, [clonedScene]);
+  }, [scene]);
 
   return (
     <Float speed={1.8} rotationIntensity={0.08} floatIntensity={0.15}>
-      <group ref={group}>
-        <primitive 
-          object={clonedScene} 
-          position={[0, -2.2, 0]} 
-          scale={2.2}
-          rotation={[0.05, -0.2, 0]}
-        />
+      <group ref={group} position={[0, -2.2, 0]} scale={2.2} rotation={[0.05, -0.2, 0]}>
+        <primitive object={scene} />
       </group>
     </Float>
   );
