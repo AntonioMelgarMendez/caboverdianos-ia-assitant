@@ -22,11 +22,19 @@ export class SupabaseEventProvider implements EventProvider {
       if (place.images && Array.isArray(place.images) && place.images.length > 0) {
         const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
         place.images.forEach((photoName: string) => {
-          media.push({
-            type: 'image',
-            url: `https://places.googleapis.com/v1/${photoName}/media?maxHeightPx=1200&maxWidthPx=1200&key=${apiKey}`,
-            thumbnailUrl: `https://places.googleapis.com/v1/${photoName}/media?maxHeightPx=400&maxWidthPx=400&key=${apiKey}`
-          });
+          if (photoName.startsWith('http://') || photoName.startsWith('https://')) {
+            media.push({
+              type: 'image',
+              url: photoName,
+              thumbnailUrl: photoName
+            });
+          } else {
+            media.push({
+              type: 'image',
+              url: `https://places.googleapis.com/v1/${photoName}/media?maxHeightPx=1200&maxWidthPx=1200&key=${apiKey}`,
+              thumbnailUrl: `https://places.googleapis.com/v1/${photoName}/media?maxHeightPx=400&maxWidthPx=400&key=${apiKey}`
+            });
+          }
         });
       }
 

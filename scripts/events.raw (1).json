@@ -1,0 +1,306 @@
+{
+  "generatedAt": "2026-07-12T03:03:50.645Z",
+  "note": "Resultado crudo: no incluye Facebook/redes sociales — no existe una vía pública de descubrir eventos por ubicación en Facebook sin login ni API de administrador de página. Fuentes cubiertas: PlusTicket.sv (home, sin JS) y eTicket.sv (calendario completo El Salvador, vía navegador headless).",
+  "totalEvents": 29,
+  "events": [
+    {
+      "source": "plusticket.sv",
+      "title": "CALACAS AGOSTINAS VI - ÚLTIMA OFRENDA",
+      "dateText": "17 Jul",
+      "venue": "SIMMER DOWN SAN BENITO",
+      "timeText": "06:00PM",
+      "imageUrl": "https://fls-9f39aa12-d38e-4de5-987e-571c7053b10b.laravel.cloud/01KX4165DFSS69YKFVAS5FH33D.jpg",
+      "eventUrl": "https://plusticket.sv/event/calacas-agostinas-vi-ultima-ofrenda"
+    },
+    {
+      "source": "plusticket.sv",
+      "title": "La Texana presenta un concierto",
+      "dateText": "23 Jul",
+      "venue": "La Ataraxia",
+      "timeText": "08:00PM",
+      "imageUrl": "https://fls-9f39aa12-d38e-4de5-987e-571c7053b10b.laravel.cloud/01KRED45WT20ANM1GA5AGHCE3E.png",
+      "eventUrl": "https://plusticket.sv/event/la-texana-presenta-un-concierto"
+    },
+    {
+      "source": "plusticket.sv",
+      "title": "LEMUS ALGODÓN EN SAN SALVADOR",
+      "dateText": "24 Jul",
+      "venue": "CENTRO DEPORTIVO UCA",
+      "timeText": "08:00PM",
+      "imageUrl": "https://fls-9f39aa12-d38e-4de5-987e-571c7053b10b.laravel.cloud/01KWZ3MJV5R26DWZGS0E92Z6MB.png",
+      "eventUrl": "https://plusticket.sv/event/lemus-algodon-en-san-salvador"
+    },
+    {
+      "source": "plusticket.sv",
+      "title": "LEMUS ALGODÓN EN ATIQUIZAYA",
+      "dateText": "1 Aug",
+      "venue": "PARQUE SAN JUAN - ATIQUIZAYA",
+      "timeText": "08:00PM",
+      "imageUrl": "https://fls-9f39aa12-d38e-4de5-987e-571c7053b10b.laravel.cloud/01KVXNCWGAG40YJ0SQA7WEPB61.jpg",
+      "eventUrl": "https://plusticket.sv/event/lemus-algodon-en-atiquizaya"
+    },
+    {
+      "source": "plusticket.sv",
+      "title": "JOHN ERICK \"LA ROCA OSORIO\"",
+      "dateText": "1 Aug",
+      "venue": "SPACE DISCOTECA",
+      "timeText": "08:00PM",
+      "imageUrl": "https://fls-9f39aa12-d38e-4de5-987e-571c7053b10b.laravel.cloud/01KVR675EQPREM0M08AP7A80KG.jpg",
+      "eventUrl": "https://plusticket.sv/event/john-erick-la-roca-osorio"
+    },
+    {
+      "source": "plusticket.sv",
+      "title": "ANDREA ECHEVERRI",
+      "dateText": "8 Aug",
+      "venue": "PARQUEO ALIANZA FRANCESA, SAN SALVADOR",
+      "timeText": "07:00PM",
+      "imageUrl": "https://fls-9f39aa12-d38e-4de5-987e-571c7053b10b.laravel.cloud/01KSTYB6SDNHKWMCEGGF1EA1KE.jpg",
+      "eventUrl": "https://plusticket.sv/event/andrea-echeverri"
+    },
+    {
+      "source": "plusticket.sv",
+      "title": "Latidos de Egipto",
+      "dateText": "16 Aug",
+      "venue": "TEATRO PRESIDENTE",
+      "timeText": "04:00PM",
+      "imageUrl": "https://fls-9f39aa12-d38e-4de5-987e-571c7053b10b.laravel.cloud/01KWW54EPRDK8993YG5AXCYJVF.png",
+      "eventUrl": "https://plusticket.sv/event/latidos-de-egipto"
+    },
+    {
+      "source": "plusticket.sv",
+      "title": "BUENA FE - CDMX - MÉXICO",
+      "dateText": "22 Aug",
+      "venue": "ESTACION ATM CDMX- MÉXICO",
+      "timeText": "07:00PM",
+      "imageUrl": "https://fls-9f39aa12-d38e-4de5-987e-571c7053b10b.laravel.cloud/01KX3YSE9P7F1YESZJ940E5E85.png",
+      "eventUrl": "https://plusticket.sv/event/buena-fe-cdmx-mexico"
+    },
+    {
+      "source": "plusticket.sv",
+      "title": "CARRERA AERÓBICA UPED 2026",
+      "dateText": "23 Aug",
+      "venue": "UNIVERSIDAD PEDAGOGICA",
+      "timeText": "06:00AM",
+      "imageUrl": "https://fls-9f39aa12-d38e-4de5-987e-571c7053b10b.laravel.cloud/01KWWJXG5DZKEEBW87XBYC3K5J.png",
+      "eventUrl": "https://plusticket.sv/event/carrera-aerobica-uped-2026"
+    },
+    {
+      "source": "plusticket.sv",
+      "title": "CALACAS AGOSTINAS Xll AÑOS",
+      "dateText": "Comprar",
+      "venue": "💀🕰️ XII Festival Calacas Agostinas XII 🕰️💀 💥 12 Años 💥 12 Bandas 💥 2 Días 💥 ⏰️ Por primera vez 2 días de musica ⏰️ Aprovecha los descuentos al comprar los dos días.",
+      "timeText": "",
+      "imageUrl": "https://fls-9f39aa12-d38e-4de5-987e-571c7053b10b.laravel.cloud/01KWMY3E7AX1BX35WKQ4PZRJ1W.jpg",
+      "eventUrl": "https://plusticket.sv/event-group/calacas-agostinas-xll-anos"
+    },
+    {
+      "source": "eticket.sv",
+      "idEvento": "1608",
+      "eventUrl": "https://www.eticket.sv/masinformacion.aspx?idevento=1608",
+      "eventName": "FOOTLOOSE EL MUSICAL",
+      "venue": "Auditorio FEPADE El Salvador",
+      "cityFromTitle": "ANTIGUO CUSCATLÁN",
+      "dateText": "Viernes, 28 de agosto de 2026",
+      "timeText": "19:30",
+      "bodyTextSample": "\t\n \n\t\nIniciar Sesión\nConciertos\n\t\nDeportes\n\t\nTeatro\n\t\nCulturales\n\t\nComedia\n\t\nFamiliares\n\t\nCongresos\n\t\nFestivales\nPuntos de venta\n\t\nAyuda\nCOMPRAR BOLETOS\nCOMPRA AQUÍ TU VIP EXPERIENCE\nFOOTLOOSE EL MUSICAL\nViernes, 28 de agosto de 2026 19:30 HRS\nAuditorio FEPADE El Salvador\nAntiguo Cuscatlán, La Libertad\nCalle El Pedregal y Calle de acceso Escuela Militar,\nAntiguo Cuscatlán, La Libertad\n1502\n\tPRIMERA FILA\t\n\nPRE VENTA TARJETAS BAC 20% DE DESCUENTO\t\n$34.10\n\n\tGENERAL\t\n\nPRE VENTA TARJETAS BAC 20% DE DESCUENTO\t\n$38.10\n\n\tPREMIUM\t\n\nPRE VENTA TARJETAS BAC 20% DE DESCUENTO\t\n$42.10\nPrecios expresados en Dólares (USD).\nEvento sujeto a cargo x servicio por el sistema eticket , los cuales están incluidos en el precio listado.\nCOMPRAR BOLETOS\nAuditorio FEPADE El Salvador\nLos mapas reflejan la ubicación aproximada de las secciones para este lugar.\nLa distribución real de los lugares y asientos puede variar sin previo aviso\nInformación adicional del espectáculo\n\nTérminos y Condiciones: La compra de boletos para Footloose es definitiva. No se aceptan devoluciones, reembolsos, cancelaciones, cambios de fecha, cambios de función ni cambios de ubicación una vez completada la transacción.\n\nSobre la preve"
+    },
+    {
+      "source": "eticket.sv",
+      "idEvento": "1611",
+      "eventUrl": "https://www.eticket.sv/masinformacion.aspx?idevento=1611",
+      "eventName": "FOOTLOOSE EL MUSICAL - VIP EXPERIENCE - (APLICA ÚNICAMENTE AL COMPRAR TU BOLETO REGULAR)",
+      "venue": "Auditorio FEPADE El Salvador",
+      "cityFromTitle": "ANTIGUO CUSCATLÁN",
+      "dateText": null,
+      "timeText": null,
+      "bodyTextSample": "\t\n \n\t\nIniciar Sesión\nConciertos\n\t\nDeportes\n\t\nTeatro\n\t\nCulturales\n\t\nComedia\n\t\nFamiliares\n\t\nCongresos\n\t\nFestivales\nPuntos de venta\n\t\nAyuda\nCOMPRAR BOLETOS\nCOMPRA AQUÍ TUS BOLETOS PARA FOOTLOOSE EL MUSICAL\nFOOTLOOSE EL MUSICAL - VIP EXPERIENCE - (APLICA ÚNICAMENTE AL COMPRAR TU BOLETO REGULAR)\nViernes, 28 de agosto de 2026\nAuditorio FEPADE El Salvador\nAntiguo Cuscatlán, La Libertad\nCalle El Pedregal y Calle de acceso Escuela Militar,\nAntiguo Cuscatlán, La Libertad\n1502\n\tVIP EXPERIENCE\t\n\nVIP EXPERIENCE\t\n🔒\nPrecios expresados en Dólares (USD).\nEvento sujeto a cargo x servicio por el sistema eticket , los cuales están incluidos en el precio listado.\nCOMPRAR BOLETOS\nAuditorio FEPADE El Salvador\nLos mapas reflejan la ubicación aproximada de las secciones para este lugar.\nLa distribución real de los lugares y asientos puede variar sin previo aviso\nInformación adicional del espectáculo\n\nLa compra de este VIP Experience hace que tu experiencia en el teatro sea “VIP”.\n\nEsto incluye: entrada preferencial 10 minutos antes que se abran las puertas al público general, foto en el escenario al final de la función con los personajes principales.\n\nAplica únicamente al comprar boleto regular.\n\nNo aplic"
+    },
+    {
+      "source": "eticket.sv",
+      "idEvento": "1612",
+      "eventUrl": "https://www.eticket.sv/masinformacion.aspx?idevento=1612",
+      "eventName": "FOOTLOOSE EL MUSICAL",
+      "venue": "Auditorio FEPADE El Salvador",
+      "cityFromTitle": "ANTIGUO CUSCATLÁN",
+      "dateText": "Sábado, 29 de agosto de 2026",
+      "timeText": "17:00",
+      "bodyTextSample": "\t\n \n\t\nIniciar Sesión\nConciertos\n\t\nDeportes\n\t\nTeatro\n\t\nCulturales\n\t\nComedia\n\t\nFamiliares\n\t\nCongresos\n\t\nFestivales\nPuntos de venta\n\t\nAyuda\nCOMPRAR BOLETOS\nCOMPRA AQUÍ TU VIP EXPERIENCE\nFOOTLOOSE EL MUSICAL\nSábado, 29 de agosto de 2026 17:00 HRS\nAuditorio FEPADE El Salvador\nAntiguo Cuscatlán, La Libertad\nCalle El Pedregal y Calle de acceso Escuela Militar,\nAntiguo Cuscatlán, La Libertad\n1502\n\tPRIMERA FILA\t\n\nPRE VENTA TARJETAS BAC 20% DE DESCUENTO\t\n$34.10\n\n\tGENERAL\t\n\nPRE VENTA TARJETAS BAC 20% DE DESCUENTO\t\n$38.10\n\n\tPREMIUM\t\n\nPRE VENTA TARJETAS BAC 20% DE DESCUENTO\t\n$42.10\nPrecios expresados en Dólares (USD).\nEvento sujeto a cargo x servicio por el sistema eticket , los cuales están incluidos en el precio listado.\nCOMPRAR BOLETOS\nAuditorio FEPADE El Salvador\nLos mapas reflejan la ubicación aproximada de las secciones para este lugar.\nLa distribución real de los lugares y asientos puede variar sin previo aviso\nInformación adicional del espectáculo\n\nTérminos y Condiciones: La compra de boletos para Footloose es definitiva. No se aceptan devoluciones, reembolsos, cancelaciones, cambios de fecha, cambios de función ni cambios de ubicación una vez completada la transacción.\n\n \n\nSobre la pre"
+    },
+    {
+      "source": "eticket.sv",
+      "idEvento": "1613",
+      "eventUrl": "https://www.eticket.sv/masinformacion.aspx?idevento=1613",
+      "eventName": "FOOTLOOSE EL MUSICAL - VIP EXPERIENCE - (APLICA ÚNICAMENTE AL COMPRAR TU BOLETO REGULAR)",
+      "venue": "Auditorio FEPADE El Salvador",
+      "cityFromTitle": "ANTIGUO CUSCATLÁN",
+      "dateText": null,
+      "timeText": null,
+      "bodyTextSample": "\t\n \n\t\nIniciar Sesión\nConciertos\n\t\nDeportes\n\t\nTeatro\n\t\nCulturales\n\t\nComedia\n\t\nFamiliares\n\t\nCongresos\n\t\nFestivales\nPuntos de venta\n\t\nAyuda\nCOMPRAR BOLETOS\nCOMPRA AQUÍ TUS BOLETOS PARA FOOTLOOSE EL MUSICAL\nFOOTLOOSE EL MUSICAL - VIP EXPERIENCE - (APLICA ÚNICAMENTE AL COMPRAR TU BOLETO REGULAR)\nSábado, 29 de agosto de 2026\nAuditorio FEPADE El Salvador\nAntiguo Cuscatlán, La Libertad\nCalle El Pedregal y Calle de acceso Escuela Militar,\nAntiguo Cuscatlán, La Libertad\n1502\n\tVIP EXPERIENCE\t\n\nVIP EXPERIENCE\t\n🔒\nPrecios expresados en Dólares (USD).\nEvento sujeto a cargo x servicio por el sistema eticket , los cuales están incluidos en el precio listado.\nCOMPRAR BOLETOS\nAuditorio FEPADE El Salvador\nLos mapas reflejan la ubicación aproximada de las secciones para este lugar.\nLa distribución real de los lugares y asientos puede variar sin previo aviso\nInformación adicional del espectáculo\n\nLa compra de este VIP Experience hace que tu experiencia en el teatro sea “VIP”.\n\nEsto incluye: entrada preferencial 10 minutos antes que se abran las puertas al público general, foto en el escenario al final de la función con los personajes principales.\n\nAplica únicamente al comprar boleto regular.\n\nNo aplica"
+    },
+    {
+      "source": "eticket.sv",
+      "idEvento": "1614",
+      "eventUrl": "https://www.eticket.sv/masinformacion.aspx?idevento=1614",
+      "eventName": "FOOTLOOSE EL MUSICAL",
+      "venue": "Auditorio FEPADE El Salvador",
+      "cityFromTitle": "ANTIGUO CUSCATLÁN",
+      "dateText": "Domingo, 30 de agosto de 2026",
+      "timeText": "17:00",
+      "bodyTextSample": "\t\n \n\t\nIniciar Sesión\nConciertos\n\t\nDeportes\n\t\nTeatro\n\t\nCulturales\n\t\nComedia\n\t\nFamiliares\n\t\nCongresos\n\t\nFestivales\nPuntos de venta\n\t\nAyuda\nCOMPRAR BOLETOS\nCOMPRA AQUÍ TU VIP EXPERIENCE\nFOOTLOOSE EL MUSICAL\nDomingo, 30 de agosto de 2026 17:00 HRS\nAuditorio FEPADE El Salvador\nAntiguo Cuscatlán, La Libertad\nCalle El Pedregal y Calle de acceso Escuela Militar,\nAntiguo Cuscatlán, La Libertad\n1502\n\tPRIMERA FILA\t\n\nPRE VENTA TARJETAS BAC 20% DE DESCUENTO\t\n$34.10\n\n\tGENERAL\t\n\nPRE VENTA TARJETAS BAC 20% DE DESCUENTO\t\n$38.10\n\n\tPREMIUM\t\n\nPRE VENTA TARJETAS BAC 20% DE DESCUENTO\t\n$42.10\nPrecios expresados en Dólares (USD).\nEvento sujeto a cargo x servicio por el sistema eticket , los cuales están incluidos en el precio listado.\nCOMPRAR BOLETOS\nAuditorio FEPADE El Salvador\nLos mapas reflejan la ubicación aproximada de las secciones para este lugar.\nLa distribución real de los lugares y asientos puede variar sin previo aviso\nInformación adicional del espectáculo\n\nTérminos y Condiciones: La compra de boletos para Footloose es definitiva. No se aceptan devoluciones, reembolsos, cancelaciones, cambios de fecha, cambios de función ni cambios de ubicación una vez completada la transacción.\n\n \n\nSobre la pr"
+    },
+    {
+      "source": "eticket.sv",
+      "idEvento": "1615",
+      "eventUrl": "https://www.eticket.sv/masinformacion.aspx?idevento=1615",
+      "eventName": "FOOTLOOSE EL MUSICAL - VIP EXPERIENCE - (APLICA ÚNICAMENTE AL COMPRAR TU BOLETO REGULAR)",
+      "venue": "Auditorio FEPADE El Salvador",
+      "cityFromTitle": "ANTIGUO CUSCATLÁN",
+      "dateText": null,
+      "timeText": null,
+      "bodyTextSample": "\t\n \n\t\nIniciar Sesión\nConciertos\n\t\nDeportes\n\t\nTeatro\n\t\nCulturales\n\t\nComedia\n\t\nFamiliares\n\t\nCongresos\n\t\nFestivales\nPuntos de venta\n\t\nAyuda\nCOMPRAR BOLETOS\nCOMPRA AQUÍ TUS BOLETOS PARA FOOTLOOSE EL MUSICAL\nFOOTLOOSE EL MUSICAL - VIP EXPERIENCE - (APLICA ÚNICAMENTE AL COMPRAR TU BOLETO REGULAR)\nDomingo, 30 de agosto de 2026\nAuditorio FEPADE El Salvador\nAntiguo Cuscatlán, La Libertad\nCalle El Pedregal y Calle de acceso Escuela Militar,\nAntiguo Cuscatlán, La Libertad\n1502\n\tVIP EXPERIENCE\t\n\nVIP EXPERIENCE\t\n🔒\nPrecios expresados en Dólares (USD).\nEvento sujeto a cargo x servicio por el sistema eticket , los cuales están incluidos en el precio listado.\nCOMPRAR BOLETOS\nAuditorio FEPADE El Salvador\nLos mapas reflejan la ubicación aproximada de las secciones para este lugar.\nLa distribución real de los lugares y asientos puede variar sin previo aviso\nInformación adicional del espectáculo\n\nLa compra de este VIP Experience hace que tu experiencia en el teatro sea “VIP”.\n\nEsto incluye: entrada preferencial 10 minutos antes que se abran las puertas al público general, foto en el escenario al final de la función con los personajes principales.\n\nAplica únicamente al comprar boleto regular.\n\nNo aplic"
+    },
+    {
+      "source": "eticket.sv",
+      "idEvento": "1609",
+      "eventUrl": "https://www.eticket.sv/masinformacion.aspx?idevento=1609",
+      "eventName": "FOOTLOOSE EL MUSICAL",
+      "venue": "Auditorio FEPADE El Salvador",
+      "cityFromTitle": "ANTIGUO CUSCATLÁN",
+      "dateText": "Martes, 1 de septiembre de 2026",
+      "timeText": "19:30",
+      "bodyTextSample": "\t\n \n\t\nIniciar Sesión\nConciertos\n\t\nDeportes\n\t\nTeatro\n\t\nCulturales\n\t\nComedia\n\t\nFamiliares\n\t\nCongresos\n\t\nFestivales\nPuntos de venta\n\t\nAyuda\nCOMPRAR BOLETOS\nCOMPRA AQUÍ TU VIP EXPERIENCE\nFOOTLOOSE EL MUSICAL\nMartes, 1 de septiembre de 2026 19:30 HRS\nAuditorio FEPADE El Salvador\nAntiguo Cuscatlán, La Libertad\nCalle El Pedregal y Calle de acceso Escuela Militar,\nAntiguo Cuscatlán, La Libertad\n1502\n\tPRIMERA FILA\t\n\nPRE VENTA TARJETAS BAC 15% DE DESCUENTO\t\n$35.95\n\n\tGENERAL\t\n\nPRE VENTA TARJETAS BAC 15% DE DESCUENTO\t\n$40.20\n\n\tPREMIUM\t\n\nPRE VENTA TARJETAS BAC 15% DE DESCUENTO\t\n$44.45\nPrecios expresados en Dólares (USD).\nEvento sujeto a cargo x servicio por el sistema eticket , los cuales están incluidos en el precio listado.\nCOMPRAR BOLETOS\nAuditorio FEPADE El Salvador\nLos mapas reflejan la ubicación aproximada de las secciones para este lugar.\nLa distribución real de los lugares y asientos puede variar sin previo aviso\nInformación adicional del espectáculo\n\nTérminos y Condiciones: La compra de boletos para Footloose es definitiva. No se aceptan devoluciones, reembolsos, cancelaciones, cambios de fecha, cambios de función ni cambios de ubicación una vez completada la transacción.\n\n \n\nSobre la "
+    },
+    {
+      "source": "eticket.sv",
+      "idEvento": "1617",
+      "eventUrl": "https://www.eticket.sv/masinformacion.aspx?idevento=1617",
+      "eventName": "FOOTLOOSE EL MUSICAL - VIP EXPERIENCE - (APLICA ÚNICAMENTE AL COMPRAR TU BOLETO REGULAR)",
+      "venue": "Auditorio FEPADE El Salvador",
+      "cityFromTitle": "ANTIGUO CUSCATLÁN",
+      "dateText": null,
+      "timeText": null,
+      "bodyTextSample": "\t\n \n\t\nIniciar Sesión\nConciertos\n\t\nDeportes\n\t\nTeatro\n\t\nCulturales\n\t\nComedia\n\t\nFamiliares\n\t\nCongresos\n\t\nFestivales\nPuntos de venta\n\t\nAyuda\nCOMPRAR BOLETOS\nCOMPRA AQUÍ TUS BOLETOS PARA FOOTLOOSE EL MUSICAL\nFOOTLOOSE EL MUSICAL - VIP EXPERIENCE - (APLICA ÚNICAMENTE AL COMPRAR TU BOLETO REGULAR)\nMartes, 1 de septiembre de 2026\nAuditorio FEPADE El Salvador\nAntiguo Cuscatlán, La Libertad\nCalle El Pedregal y Calle de acceso Escuela Militar,\nAntiguo Cuscatlán, La Libertad\n1502\n\tVIP EXPERIENCE\t\n\nVIP EXPERIENCE\t\n🔒\nPrecios expresados en Dólares (USD).\nEvento sujeto a cargo x servicio por el sistema eticket , los cuales están incluidos en el precio listado.\nCOMPRAR BOLETOS\nAuditorio FEPADE El Salvador\nLos mapas reflejan la ubicación aproximada de las secciones para este lugar.\nLa distribución real de los lugares y asientos puede variar sin previo aviso\nInformación adicional del espectáculo\n\nLa compra de este VIP Experience hace que tu experiencia en el teatro sea “VIP”.\n\nEsto incluye: entrada preferencial 10 minutos antes que se abran las puertas al público general, foto en el escenario al final de la función con los personajes principales.\n\nAplica únicamente al comprar boleto regular.\n\nNo apl"
+    },
+    {
+      "source": "eticket.sv",
+      "idEvento": "1616",
+      "eventUrl": "https://www.eticket.sv/masinformacion.aspx?idevento=1616",
+      "eventName": "FOOTLOOSE EL MUSICAL",
+      "venue": "Auditorio FEPADE El Salvador",
+      "cityFromTitle": "ANTIGUO CUSCATLÁN",
+      "dateText": "Miércoles, 2 de septiembre de 2026",
+      "timeText": "19:30",
+      "bodyTextSample": "\t\n \n\t\nIniciar Sesión\nConciertos\n\t\nDeportes\n\t\nTeatro\n\t\nCulturales\n\t\nComedia\n\t\nFamiliares\n\t\nCongresos\n\t\nFestivales\nPuntos de venta\n\t\nAyuda\nCOMPRAR BOLETOS\nCOMPRA AQUÍ TU VIP EXPERIENCE\nFOOTLOOSE EL MUSICAL\nMiércoles, 2 de septiembre de 2026 19:30 HRS\nAuditorio FEPADE El Salvador\nAntiguo Cuscatlán, La Libertad\nCalle El Pedregal y Calle de acceso Escuela Militar,\nAntiguo Cuscatlán, La Libertad\n1502\n\tPRIMERA FILA\t\n\nPRE VENTA TARJETAS BAC 15% DE DESCUENTO\t\n$35.95\n\n\tGENERAL\t\n\nPRE VENTA TARJETAS BAC 15% DE DESCUENTO\t\n$40.20\n\n\tPREMIUM\t\n\nPRE VENTA TARJETAS BAC 15% DE DESCUENTO\t\n$44.45\nPrecios expresados en Dólares (USD).\nEvento sujeto a cargo x servicio por el sistema eticket , los cuales están incluidos en el precio listado.\nCOMPRAR BOLETOS\nAuditorio FEPADE El Salvador\nLos mapas reflejan la ubicación aproximada de las secciones para este lugar.\nLa distribución real de los lugares y asientos puede variar sin previo aviso\nInformación adicional del espectáculo\n\nTérminos y Condiciones: La compra de boletos para Footloose es definitiva. No se aceptan devoluciones, reembolsos, cancelaciones, cambios de fecha, cambios de función ni cambios de ubicación una vez completada la transacción.\n\n \n\nSobre "
+    },
+    {
+      "source": "eticket.sv",
+      "idEvento": "1618",
+      "eventUrl": "https://www.eticket.sv/masinformacion.aspx?idevento=1618",
+      "eventName": "FOOTLOOSE EL MUSICAL - VIP EXPERIENCE - (APLICA ÚNICAMENTE AL COMPRAR TU BOLETO REGULAR)",
+      "venue": "Auditorio FEPADE El Salvador",
+      "cityFromTitle": "ANTIGUO CUSCATLÁN",
+      "dateText": null,
+      "timeText": null,
+      "bodyTextSample": "\t\n \n\t\nIniciar Sesión\nConciertos\n\t\nDeportes\n\t\nTeatro\n\t\nCulturales\n\t\nComedia\n\t\nFamiliares\n\t\nCongresos\n\t\nFestivales\nPuntos de venta\n\t\nAyuda\nCOMPRAR BOLETOS\nCOMPRA AQUÍ TUS BOLETOS PARA FOOTLOOSE EL MUSICAL\nFOOTLOOSE EL MUSICAL - VIP EXPERIENCE - (APLICA ÚNICAMENTE AL COMPRAR TU BOLETO REGULAR)\nMiércoles, 2 de septiembre de 2026\nAuditorio FEPADE El Salvador\nAntiguo Cuscatlán, La Libertad\nCalle El Pedregal y Calle de acceso Escuela Militar,\nAntiguo Cuscatlán, La Libertad\n1502\n\tVIP EXPERIENCE\t\n\nVIP EXPERIENCE\t\n🔒\nPrecios expresados en Dólares (USD).\nEvento sujeto a cargo x servicio por el sistema eticket , los cuales están incluidos en el precio listado.\nCOMPRAR BOLETOS\nAuditorio FEPADE El Salvador\nLos mapas reflejan la ubicación aproximada de las secciones para este lugar.\nLa distribución real de los lugares y asientos puede variar sin previo aviso\nInformación adicional del espectáculo\n\nLa compra de este VIP Experience hace que tu experiencia en el teatro sea “VIP”.\n\nEsto incluye: entrada preferencial 10 minutos antes que se abran las puertas al público general, foto en el escenario al final de la función con los personajes principales.\n\nAplica únicamente al comprar boleto regular.\n\nNo "
+    },
+    {
+      "source": "eticket.sv",
+      "idEvento": "1619",
+      "eventUrl": "https://www.eticket.sv/masinformacion.aspx?idevento=1619",
+      "eventName": "FOOTLOOSE EL MUSICAL",
+      "venue": "Auditorio FEPADE El Salvador",
+      "cityFromTitle": "ANTIGUO CUSCATLÁN",
+      "dateText": "Jueves, 3 de septiembre de 2026",
+      "timeText": "19:30",
+      "bodyTextSample": "\t\n \n\t\nIniciar Sesión\nConciertos\n\t\nDeportes\n\t\nTeatro\n\t\nCulturales\n\t\nComedia\n\t\nFamiliares\n\t\nCongresos\n\t\nFestivales\nPuntos de venta\n\t\nAyuda\nCOMPRAR BOLETOS\nCOMPRA AQUÍ TU VIP EXPERIENCE\nFOOTLOOSE EL MUSICAL\nJueves, 3 de septiembre de 2026 19:30 HRS\nAuditorio FEPADE El Salvador\nAntiguo Cuscatlán, La Libertad\nCalle El Pedregal y Calle de acceso Escuela Militar,\nAntiguo Cuscatlán, La Libertad\n1502\n\tPRIMERA FILA\t\n\nPRE VENTA TARJETAS BAC 15% DE DESCUENTO\t\n$35.95\n\n\tGENERAL\t\n\nPRE VENTA TARJETAS BAC 15% DE DESCUENTO\t\n$40.20\n\n\tPREMIUM\t\n\nPRE VENTA TARJETAS BAC 15% DE DESCUENTO\t\n$44.45\nPrecios expresados en Dólares (USD).\nEvento sujeto a cargo x servicio por el sistema eticket , los cuales están incluidos en el precio listado.\nCOMPRAR BOLETOS\nAuditorio FEPADE El Salvador\nLos mapas reflejan la ubicación aproximada de las secciones para este lugar.\nLa distribución real de los lugares y asientos puede variar sin previo aviso\nInformación adicional del espectáculo\n\nTérminos y Condiciones: La compra de boletos para Footloose es definitiva. No se aceptan devoluciones, reembolsos, cancelaciones, cambios de fecha, cambios de función ni cambios de ubicación una vez completada la transacción.\n\n \n\nSobre la "
+    },
+    {
+      "source": "eticket.sv",
+      "idEvento": "1620",
+      "eventUrl": "https://www.eticket.sv/masinformacion.aspx?idevento=1620",
+      "eventName": "FOOTLOOSE EL MUSICAL - VIP EXPERIENCE - (APLICA ÚNICAMENTE AL COMPRAR TU BOLETO REGULAR)",
+      "venue": "Auditorio FEPADE El Salvador",
+      "cityFromTitle": "ANTIGUO CUSCATLÁN",
+      "dateText": null,
+      "timeText": null,
+      "bodyTextSample": "\t\n \n\t\nIniciar Sesión\nConciertos\n\t\nDeportes\n\t\nTeatro\n\t\nCulturales\n\t\nComedia\n\t\nFamiliares\n\t\nCongresos\n\t\nFestivales\nPuntos de venta\n\t\nAyuda\nCOMPRAR BOLETOS\nCOMPRA AQUÍ TUS BOLETOS PARA FOOTLOOSE EL MUSICAL\nFOOTLOOSE EL MUSICAL - VIP EXPERIENCE - (APLICA ÚNICAMENTE AL COMPRAR TU BOLETO REGULAR)\nJueves, 3 de septiembre de 2026\nAuditorio FEPADE El Salvador\nAntiguo Cuscatlán, La Libertad\nCalle El Pedregal y Calle de acceso Escuela Militar,\nAntiguo Cuscatlán, La Libertad\n1502\n\tVIP EXPERIENCE\t\n\nVIP EXPERIENCE\t\n🔒\nPrecios expresados en Dólares (USD).\nEvento sujeto a cargo x servicio por el sistema eticket , los cuales están incluidos en el precio listado.\nCOMPRAR BOLETOS\nAuditorio FEPADE El Salvador\nLos mapas reflejan la ubicación aproximada de las secciones para este lugar.\nLa distribución real de los lugares y asientos puede variar sin previo aviso\nInformación adicional del espectáculo\n\nLa compra de este VIP Experience hace que tu experiencia en el teatro sea “VIP”.\n\nEsto incluye: entrada preferencial 10 minutos antes que se abran las puertas al público general, foto en el escenario al final de la función con los personajes principales.\n\nAplica únicamente al comprar boleto regular.\n\nNo apl"
+    },
+    {
+      "source": "eticket.sv",
+      "idEvento": "1621",
+      "eventUrl": "https://www.eticket.sv/masinformacion.aspx?idevento=1621",
+      "eventName": "FOOTLOOSE EL MUSICAL",
+      "venue": "Auditorio FEPADE El Salvador",
+      "cityFromTitle": "ANTIGUO CUSCATLÁN",
+      "dateText": "Viernes, 4 de septiembre de 2026",
+      "timeText": "19:30",
+      "bodyTextSample": "\t\n \n\t\nIniciar Sesión\nConciertos\n\t\nDeportes\n\t\nTeatro\n\t\nCulturales\n\t\nComedia\n\t\nFamiliares\n\t\nCongresos\n\t\nFestivales\nPuntos de venta\n\t\nAyuda\nCOMPRAR BOLETOS\nCOMPRA AQUÍ TU VIP EXPERIENCE\nFOOTLOOSE EL MUSICAL\nViernes, 4 de septiembre de 2026 19:30 HRS\nAuditorio FEPADE El Salvador\nAntiguo Cuscatlán, La Libertad\nCalle El Pedregal y Calle de acceso Escuela Militar,\nAntiguo Cuscatlán, La Libertad\n1502\n\tPRIMERA FILA\t\n\nPRE VENTA TARJETAS BAC 15% DE DESCUENTO\t\n$35.95\n\n\tGENERAL\t\n\nPRE VENTA TARJETAS BAC 15% DE DESCUENTO\t\n$40.20\n\n\tPREMIUM\t\n\nPRE VENTA TARJETAS BAC 15% DE DESCUENTO\t\n$44.45\nPrecios expresados en Dólares (USD).\nEvento sujeto a cargo x servicio por el sistema eticket , los cuales están incluidos en el precio listado.\nCOMPRAR BOLETOS\nAuditorio FEPADE El Salvador\nLos mapas reflejan la ubicación aproximada de las secciones para este lugar.\nLa distribución real de los lugares y asientos puede variar sin previo aviso\nInformación adicional del espectáculo\n\nTérminos y Condiciones: La compra de boletos para Footloose es definitiva. No se aceptan devoluciones, reembolsos, cancelaciones, cambios de fecha, cambios de función ni cambios de ubicación una vez completada la transacción.\n\n \n\nSobre la"
+    },
+    {
+      "source": "eticket.sv",
+      "idEvento": "1622",
+      "eventUrl": "https://www.eticket.sv/masinformacion.aspx?idevento=1622",
+      "eventName": "FOOTLOOSE EL MUSICAL - VIP EXPERIENCE - (APLICA ÚNICAMENTE AL COMPRAR TU BOLETO REGULAR)",
+      "venue": "Auditorio FEPADE El Salvador",
+      "cityFromTitle": "ANTIGUO CUSCATLÁN",
+      "dateText": null,
+      "timeText": null,
+      "bodyTextSample": "\t\n \n\t\nIniciar Sesión\nConciertos\n\t\nDeportes\n\t\nTeatro\n\t\nCulturales\n\t\nComedia\n\t\nFamiliares\n\t\nCongresos\n\t\nFestivales\nPuntos de venta\n\t\nAyuda\nCOMPRAR BOLETOS\nCOMPRA AQUÍ TUS BOLETOS PARA FOOTLOOSE EL MUSICAL\nFOOTLOOSE EL MUSICAL - VIP EXPERIENCE - (APLICA ÚNICAMENTE AL COMPRAR TU BOLETO REGULAR)\nViernes, 4 de septiembre de 2026\nAuditorio FEPADE El Salvador\nAntiguo Cuscatlán, La Libertad\nCalle El Pedregal y Calle de acceso Escuela Militar,\nAntiguo Cuscatlán, La Libertad\n1502\n\tVIP EXPERIENCE\t\n\nVIP EXPERIENCE\t\n🔒\nPrecios expresados en Dólares (USD).\nEvento sujeto a cargo x servicio por el sistema eticket , los cuales están incluidos en el precio listado.\nCOMPRAR BOLETOS\nAuditorio FEPADE El Salvador\nLos mapas reflejan la ubicación aproximada de las secciones para este lugar.\nLa distribución real de los lugares y asientos puede variar sin previo aviso\nInformación adicional del espectáculo\n\nLa compra de este VIP Experience hace que tu experiencia en el teatro sea “VIP”.\n\nEsto incluye: entrada preferencial 10 minutos antes que se abran las puertas al público general, foto en el escenario al final de la función con los personajes principales.\n\nAplica únicamente al comprar boleto regular.\n\nNo ap"
+    },
+    {
+      "source": "eticket.sv",
+      "idEvento": "1610",
+      "eventUrl": "https://www.eticket.sv/masinformacion.aspx?idevento=1610",
+      "eventName": "FOOTLOOSE EL MUSICAL",
+      "venue": "Auditorio FEPADE El Salvador",
+      "cityFromTitle": "ANTIGUO CUSCATLÁN",
+      "dateText": "Sábado, 5 de septiembre de 2026",
+      "timeText": "17:00",
+      "bodyTextSample": "\t\n \n\t\nIniciar Sesión\nConciertos\n\t\nDeportes\n\t\nTeatro\n\t\nCulturales\n\t\nComedia\n\t\nFamiliares\n\t\nCongresos\n\t\nFestivales\nPuntos de venta\n\t\nAyuda\nCOMPRAR BOLETOS\nCOMPRA AQUÍ TU VIP EXPERIENCE\nFOOTLOOSE EL MUSICAL\nSábado, 5 de septiembre de 2026 17:00 HRS\nAuditorio FEPADE El Salvador\nAntiguo Cuscatlán, La Libertad\nCalle El Pedregal y Calle de acceso Escuela Militar,\nAntiguo Cuscatlán, La Libertad\n1502\n\tPRIMERA FILA\t\n\nPRE VENTA TARJETAS BAC 15% DE DESCUENTO\t\n$35.95\n\n\tGENERAL\t\n\nPRE VENTA TARJETAS BAC 15% DE DESCUENTO\t\n$40.20\n\n\tPREMIUM\t\n\nPRE VENTA TARJETAS BAC 15% DE DESCUENTO\t\n$44.45\nPrecios expresados en Dólares (USD).\nEvento sujeto a cargo x servicio por el sistema eticket , los cuales están incluidos en el precio listado.\nCOMPRAR BOLETOS\nAuditorio FEPADE El Salvador\nLos mapas reflejan la ubicación aproximada de las secciones para este lugar.\nLa distribución real de los lugares y asientos puede variar sin previo aviso\nInformación adicional del espectáculo\n\nTérminos y Condiciones: La compra de boletos para Footloose es definitiva. No se aceptan devoluciones, reembolsos, cancelaciones, cambios de fecha, cambios de función ni cambios de ubicación una vez completada la transacción.\n\n \n\nSobre la "
+    },
+    {
+      "source": "eticket.sv",
+      "idEvento": "1623",
+      "eventUrl": "https://www.eticket.sv/masinformacion.aspx?idevento=1623",
+      "eventName": "FOOTLOOSE EL MUSICAL - VIP EXPERIENCE - (APLICA ÚNICAMENTE AL COMPRAR TU BOLETO REGULAR)",
+      "venue": "Auditorio FEPADE El Salvador",
+      "cityFromTitle": "ANTIGUO CUSCATLÁN",
+      "dateText": null,
+      "timeText": null,
+      "bodyTextSample": "\t\n \n\t\nIniciar Sesión\nConciertos\n\t\nDeportes\n\t\nTeatro\n\t\nCulturales\n\t\nComedia\n\t\nFamiliares\n\t\nCongresos\n\t\nFestivales\nPuntos de venta\n\t\nAyuda\nCOMPRAR BOLETOS\nCOMPRA AQUÍ TUS BOLETOS PARA FOOTLOOSE EL MUSICAL\nFOOTLOOSE EL MUSICAL - VIP EXPERIENCE - (APLICA ÚNICAMENTE AL COMPRAR TU BOLETO REGULAR)\nSábado, 5 de septiembre de 2026\nAuditorio FEPADE El Salvador\nAntiguo Cuscatlán, La Libertad\nCalle El Pedregal y Calle de acceso Escuela Militar,\nAntiguo Cuscatlán, La Libertad\n1502\n\tVIP EXPERIENCE\t\n\nVIP EXPERIENCE\t\n🔒\nPrecios expresados en Dólares (USD).\nEvento sujeto a cargo x servicio por el sistema eticket , los cuales están incluidos en el precio listado.\nCOMPRAR BOLETOS\nAuditorio FEPADE El Salvador\nLos mapas reflejan la ubicación aproximada de las secciones para este lugar.\nLa distribución real de los lugares y asientos puede variar sin previo aviso\nInformación adicional del espectáculo\n\nLa compra de este VIP Experience hace que tu experiencia en el teatro sea “VIP”.\n\nEsto incluye: entrada preferencial 10 minutos antes que se abran las puertas al público general, foto en el escenario al final de la función con los personajes principales.\n\nAplica únicamente al comprar boleto regular.\n\nNo apl"
+    },
+    {
+      "source": "eticket.sv",
+      "idEvento": "1624",
+      "eventUrl": "https://www.eticket.sv/masinformacion.aspx?idevento=1624",
+      "eventName": "FOOTLOOSE EL MUSICAL",
+      "venue": "Auditorio FEPADE El Salvador",
+      "cityFromTitle": "ANTIGUO CUSCATLÁN",
+      "dateText": "Domingo, 6 de septiembre de 2026",
+      "timeText": "11:00",
+      "bodyTextSample": "\t\n \n\t\nIniciar Sesión\nConciertos\n\t\nDeportes\n\t\nTeatro\n\t\nCulturales\n\t\nComedia\n\t\nFamiliares\n\t\nCongresos\n\t\nFestivales\nPuntos de venta\n\t\nAyuda\nCOMPRAR BOLETOS\nCOMPRA AQUÍ TU VIP EXPERIENCE\nFOOTLOOSE EL MUSICAL\nDomingo, 6 de septiembre de 2026 11:00 HRS\nAuditorio FEPADE El Salvador\nAntiguo Cuscatlán, La Libertad\nCalle El Pedregal y Calle de acceso Escuela Militar,\nAntiguo Cuscatlán, La Libertad\n1502\n\tPRIMERA FILA\t\n\nPRE VENTA TARJETAS BAC 15% DE DESCUENTO\t\n$35.95\n\n\tGENERAL\t\n\nPRE VENTA TARJETAS BAC 15% DE DESCUENTO\t\n$40.20\n\n\tPREMIUM\t\n\nPRE VENTA TARJETAS BAC 15% DE DESCUENTO\t\n$44.45\nPrecios expresados en Dólares (USD).\nEvento sujeto a cargo x servicio por el sistema eticket , los cuales están incluidos en el precio listado.\nCOMPRAR BOLETOS\nAuditorio FEPADE El Salvador\nLos mapas reflejan la ubicación aproximada de las secciones para este lugar.\nLa distribución real de los lugares y asientos puede variar sin previo aviso\nInformación adicional del espectáculo\n\nTérminos y Condiciones: La compra de boletos para Footloose es definitiva. No se aceptan devoluciones, reembolsos, cancelaciones, cambios de fecha, cambios de función ni cambios de ubicación una vez completada la transacción.\n\n \n\nSobre la"
+    },
+    {
+      "source": "eticket.sv",
+      "idEvento": "1625",
+      "eventUrl": "https://www.eticket.sv/masinformacion.aspx?idevento=1625",
+      "eventName": "FOOTLOOSE EL MUSICAL - VIP EXPERIENCE - (APLICA ÚNICAMENTE AL COMPRAR TU BOLETO REGULAR)",
+      "venue": "Auditorio FEPADE El Salvador",
+      "cityFromTitle": "ANTIGUO CUSCATLÁN",
+      "dateText": null,
+      "timeText": null,
+      "bodyTextSample": "\t\n \n\t\nIniciar Sesión\nConciertos\n\t\nDeportes\n\t\nTeatro\n\t\nCulturales\n\t\nComedia\n\t\nFamiliares\n\t\nCongresos\n\t\nFestivales\nPuntos de venta\n\t\nAyuda\nCOMPRAR BOLETOS\nCOMPRA AQUÍ TUS BOLETOS PARA FOOTLOOSE EL MUSICAL\nFOOTLOOSE EL MUSICAL - VIP EXPERIENCE - (APLICA ÚNICAMENTE AL COMPRAR TU BOLETO REGULAR)\nDomingo, 6 de septiembre de 2026\nAuditorio FEPADE El Salvador\nAntiguo Cuscatlán, La Libertad\nCalle El Pedregal y Calle de acceso Escuela Militar,\nAntiguo Cuscatlán, La Libertad\n1502\n\tVIP EXPERIENCE\t\n\nVIP EXPERIENCE\t\n🔒\nPrecios expresados en Dólares (USD).\nEvento sujeto a cargo x servicio por el sistema eticket , los cuales están incluidos en el precio listado.\nCOMPRAR BOLETOS\nAuditorio FEPADE El Salvador\nLos mapas reflejan la ubicación aproximada de las secciones para este lugar.\nLa distribución real de los lugares y asientos puede variar sin previo aviso\nInformación adicional del espectáculo\n\nLa compra de este VIP Experience hace que tu experiencia en el teatro sea “VIP”.\n\nEsto incluye: entrada preferencial 10 minutos antes que se abran las puertas al público general, foto en el escenario al final de la función con los personajes principales.\n\nAplica únicamente al comprar boleto regular.\n\nNo ap"
+    },
+    {
+      "source": "eticket.sv",
+      "idEvento": "1626",
+      "eventUrl": "https://www.eticket.sv/masinformacion.aspx?idevento=1626",
+      "eventName": "FOOTLOOSE EL MUSICAL",
+      "venue": "Auditorio FEPADE El Salvador",
+      "cityFromTitle": "ANTIGUO CUSCATLÁN",
+      "dateText": "Domingo, 6 de septiembre de 2026",
+      "timeText": "17:00",
+      "bodyTextSample": "\t\n \n\t\nIniciar Sesión\nConciertos\n\t\nDeportes\n\t\nTeatro\n\t\nCulturales\n\t\nComedia\n\t\nFamiliares\n\t\nCongresos\n\t\nFestivales\nPuntos de venta\n\t\nAyuda\nCOMPRAR BOLETOS\nFOOTLOOSE EL MUSICAL\nDomingo, 6 de septiembre de 2026 17:00 HRS\nAuditorio FEPADE El Salvador\nAntiguo Cuscatlán, La Libertad\nCalle El Pedregal y Calle de acceso Escuela Militar,\nAntiguo Cuscatlán, La Libertad\n1502\n\tPRIMERA FILA\t\n\nPRE VENTA TARJETAS BAC 15% DE DESCUENTO\t\n$35.95\n\n\tGENERAL\t\n\nPRE VENTA TARJETAS BAC 15% DE DESCUENTO\t\n$40.20\n\n\tPREMIUM\t\n\nPRE VENTA TARJETAS BAC 15% DE DESCUENTO\t\n$44.45\nPrecios expresados en Dólares (USD).\nEvento sujeto a cargo x servicio por el sistema eticket , los cuales están incluidos en el precio listado.\nCOMPRAR BOLETOS\nAuditorio FEPADE El Salvador\nLos mapas reflejan la ubicación aproximada de las secciones para este lugar.\nLa distribución real de los lugares y asientos puede variar sin previo aviso\nInformación adicional del espectáculo\n\nTérminos y Condiciones: La compra de boletos para Footloose es definitiva. No se aceptan devoluciones, reembolsos, cancelaciones, cambios de fecha, cambios de función ni cambios de ubicación una vez completada la transacción.\n\n \n\nSobre la preventa del 15% con tarjetas"
+    }
+  ]
+}
