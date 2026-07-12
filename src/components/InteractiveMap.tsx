@@ -1,8 +1,8 @@
 import React, { useState, useCallback } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap, Polyline } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents, Polyline } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
-import { Star, MessageCircle, X, Clock, MapPin, Calendar, Check, Tent, Mountain, Utensils, Landmark, Church, Waves, Navigation2, LocateFixed } from 'lucide-react';
+import { Star, MessageCircle, X, Clock, MapPin, Calendar, Check, Tent, Mountain, Utensils, Landmark, Church, Waves, Navigation2, LocateFixed, Recycle } from 'lucide-react';
 import { renderToString } from 'react-dom/server';
 // Arreglo para los íconos de Leaflet en React
 import icon from 'leaflet/dist/images/marker-icon.png';
@@ -100,6 +100,66 @@ const createCategoryIcon = (category?: string) => {
 
   iconCache[cat] = icon;
   return icon;
+};
+
+const createRecycleIcon = () => {
+  if (iconCache['recycle']) return iconCache['recycle'];
+  const iconHtml = renderToString(
+    <div className={`w-8 h-8 rounded-full bg-green-500 flex items-center justify-center border-2 border-white shadow-lg text-white`}>
+      <Recycle className="w-4 h-4" />
+    </div>
+  );
+  const icon = L.divIcon({
+    html: iconHtml,
+    className: 'custom-leaflet-icon',
+    iconSize: [32, 32],
+    iconAnchor: [16, 32],
+  });
+  iconCache['recycle'] = icon;
+  return icon;
+};
+
+// Puntos de reciclaje falsos para el MVP
+const FAKE_RECYCLING_BINS = [
+  { lat: 13.693, lng: -89.218 },
+  { lat: 13.698, lng: -89.210 },
+  { lat: 13.690, lng: -89.225 },
+  { lat: 13.700, lng: -89.220 },
+  { lat: 13.685, lng: -89.215 },
+  { lat: 13.695, lng: -89.230 },
+];
+
+const RecyclingMarkers: React.FC = () => {
+  const [zoomLevel, setZoomLevel] = useState(12);
+  const map = useMapEvents({
+    zoomend: () => {
+      setZoomLevel(map.getZoom());
+    },
+  });
+
+  // Solo mostrar si hay suficiente zoom (15 o más)
+  if (zoomLevel < 15) return null;
+
+  return (
+    <>
+      {FAKE_RECYCLING_BINS.map((bin, i) => (
+        <Marker 
+          key={`bin-${i}`}
+          position={[bin.lat, bin.lng]}
+          icon={createRecycleIcon()}
+        >
+          <Popup>
+            <div className="text-center p-2">
+              <h3 className="font-bold text-green-600 mb-1 flex items-center justify-center gap-1">
+                <Recycle className="w-4 h-4" /> Punto Ecológico
+              </h3>
+              <p className="text-xs text-zinc-600">Deposita aquí envases para ganar puntos Cipitour.</p>
+            </div>
+          </Popup>
+        </Marker>
+      ))}
+    </>
+  );
 };
 
 // Subcomponente para Marker que usa useMap para volar hacia él
@@ -337,6 +397,9 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
             }}
           />
         ))}
+
+        {/* Marcadores de Reciclaje Falsos (se muestran según zoom) */}
+        <RecyclingMarkers />
 
         {/* Botón Mi Ubicación */}
         <LocateUserButton location={userLocation} />
