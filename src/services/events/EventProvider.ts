@@ -9,11 +9,11 @@ export interface AppEvent {
   endTime?: string;
   imageUrl?: string; // Mantenemos imageUrl por retrocompatibilidad
   media?: { type: 'image' | 'video', url: string }[];
-  itinerary?: string[];
+  itinerary?: { time: string; description: string }[] | string[];
   activities?: string[];
   price?: number | null;  // null = gratis
   currency?: string;
-  category?: 'cultura' | 'aventura' | 'gastronomía' | 'naturaleza' | 'deportes' | 'religioso';
+  category?: 'cultura' | 'aventura' | 'gastronomía' | 'naturaleza' | 'deportes' | 'religioso' | string;
   ageRange?: string;  // ej. "Todas las edades", "18+"
 }
 

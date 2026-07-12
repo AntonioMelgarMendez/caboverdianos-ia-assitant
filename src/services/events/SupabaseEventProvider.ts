@@ -43,8 +43,9 @@ export class SupabaseEventProvider implements EventProvider {
         date: new Date().toISOString().split('T')[0],
         price: null,
         currency: 'USD',
-        // Podemos pasar las reviews y rating si decidimos extender AppEvent después,
-        // por ahora las omitimos o las mapeamos si es necesario
+        ageRange: place.recommended_age || undefined,
+        activities: place.activities || [],
+        itinerary: place.agenda || [],
       };
     });
   }

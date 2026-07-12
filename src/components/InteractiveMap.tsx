@@ -236,10 +236,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
               <MediaCarousel 
                 title={selectedEvent.title}
                 event={selectedEvent}
-                media={[
-                  ...(selectedEvent.media || (selectedEvent.imageUrl ? [{ type: 'image' as const, url: selectedEvent.imageUrl }] : [])),
-                  { type: 'streetview' as const, lat: selectedEvent.lat, lng: selectedEvent.lng }
-                ]} 
+                media={selectedEvent.media || (selectedEvent.imageUrl ? [{ type: 'image' as const, url: selectedEvent.imageUrl }] : [])} 
               />
               <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-transparent to-transparent pointer-events-none"></div>
               <button 

@@ -288,14 +288,43 @@ const MediaCarousel: React.FC<MediaCarouselProps> = ({ media, title = "Media", e
                   </div>
                 </div>
 
+                {event.ageRange && (
+                  <div className="mt-2">
+                    <h3 className="text-sm font-bold text-emerald-400 mb-1 uppercase tracking-wider">Edad Recomendada</h3>
+                    <p className="text-sm text-zinc-300 bg-white/5 inline-block px-3 py-1 rounded-full border border-white/10">{event.ageRange}</p>
+                  </div>
+                )}
+
+                {event.activities && event.activities.length > 0 && (
+                  <div className="mt-2">
+                    <h3 className="text-sm font-bold text-blue-400 mb-2 uppercase tracking-wider">Actividades</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {event.activities.map((act, idx) => (
+                        <span key={idx} className="text-xs font-medium text-blue-200 bg-blue-900/30 px-2.5 py-1 rounded-md border border-blue-500/20">
+                          {act}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 {event.itinerary && event.itinerary.length > 0 && (
                   <div className="mt-2">
-                    <h3 className="text-sm font-bold text-purple-400 mb-2 uppercase tracking-wider">Itinerario</h3>
-                    <ul className="space-y-2">
+                    <h3 className="text-sm font-bold text-purple-400 mb-2 uppercase tracking-wider">Agenda Sugerida</h3>
+                    <ul className="space-y-3">
                       {event.itinerary.map((item, idx) => (
-                        <li key={idx} className="text-sm text-zinc-300 flex items-start gap-2">
-                          <span className="text-purple-500 mt-1">•</span>
-                          <span>{item}</span>
+                        <li key={idx} className="text-sm flex gap-3 bg-black/20 p-2.5 rounded-lg border border-white/5">
+                          {typeof item === 'string' ? (
+                            <>
+                              <span className="text-purple-500 mt-0.5">•</span>
+                              <span className="text-zinc-300">{item}</span>
+                            </>
+                          ) : (
+                            <>
+                              <span className="text-purple-400 font-bold whitespace-nowrap min-w-[70px]">{item.time}</span>
+                              <span className="text-zinc-300">{item.description}</span>
+                            </>
+                          )}
                         </li>
                       ))}
                     </ul>
