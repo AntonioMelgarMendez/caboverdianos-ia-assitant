@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
-import { ChevronLeft, ChevronRight, X, Image as ImageIcon, Map as MapIcon, Loader2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, X, Image as ImageIcon, Map as MapIcon, Loader2, Maximize2 } from 'lucide-react';
 
 import type { AppEvent } from '../services/events/EventProvider';
 import GoogleStreetView from './GoogleStreetView';
@@ -22,7 +22,7 @@ const ImageWithSkeleton = ({ src, alt, className, onClick }: { src: string, alt:
   const [loaded, setLoaded] = useState(false);
 
   return (
-    <div className="w-full h-full relative overflow-hidden bg-zinc-900" onClick={onClick}>
+    <div className="absolute inset-0 overflow-hidden bg-zinc-900" onClick={onClick}>
       {!loaded && (
         <div className="absolute inset-0 z-10 flex items-center justify-center bg-zinc-900 animate-pulse">
           <Loader2 className="w-6 h-6 text-zinc-600 animate-spin" />
@@ -31,7 +31,7 @@ const ImageWithSkeleton = ({ src, alt, className, onClick }: { src: string, alt:
       <img
         src={src}
         alt={alt}
-        className={`${className} ${loaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500`}
+        className={`absolute inset-0 w-full h-full ${className} ${loaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500`}
         onLoad={() => setLoaded(true)}
       />
     </div>
@@ -73,7 +73,7 @@ const MediaCarousel: React.FC<MediaCarouselProps> = ({ media, title = "Media", e
     
     if (item.type === 'video') {
       return (
-        <div className={`relative w-full h-full flex items-center justify-center bg-black ${isFull ? '' : 'overflow-hidden rounded-t-2xl cursor-pointer'}`}
+        <div className={`absolute inset-0 flex items-center justify-center bg-black ${isFull ? '' : 'overflow-hidden rounded-t-2xl cursor-pointer'}`}
              onClick={(e) => {
                if (!isFull) {
                  e.stopPropagation();
@@ -124,7 +124,7 @@ const MediaCarousel: React.FC<MediaCarouselProps> = ({ media, title = "Media", e
     if (!hasLocation) return null;
     return (
       <div 
-        className={`w-full h-full relative ${!isFull ? 'rounded-t-2xl overflow-hidden' : ''}`}
+        className={`absolute inset-0 ${!isFull ? 'rounded-t-2xl overflow-hidden' : ''}`}
         onClick={(e) => e.stopPropagation()}
       >
         {!isFull && (
