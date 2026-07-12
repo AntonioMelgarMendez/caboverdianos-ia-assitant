@@ -201,7 +201,7 @@ const AgendaModal: React.FC<AgendaModalProps> = ({ isOpen, onClose, userId, onPo
                         ))}
                         {calendarDays.map((day, idx) => {
                           const hasItems = day && daysWithItems.has(day);
-                          const isSelected = selectedDay === day;
+                          const isSelected = day !== null && selectedDay === day;
                           const todayFlag = day && isToday(day);
                           return (
                             <button

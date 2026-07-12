@@ -247,7 +247,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
               </button>
               {/* Category badge */}
               {selectedEvent.category && (
-                <span className="absolute top-2 left-2 z-10 text-[10px] font-bold uppercase tracking-wider bg-purple-600/80 backdrop-blur-sm text-white px-2 py-1 rounded-md">
+                <span className="absolute bottom-2 left-2 z-[60] text-[10px] font-bold uppercase tracking-wider bg-purple-600/80 backdrop-blur-sm text-white px-2 py-1 rounded-md">
                   {selectedEvent.category}
                 </span>
               )}
@@ -255,7 +255,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
           )}
 
           {/* Header (sin imagen) */}
-          {!selectedEvent.imageUrl && (
+          {!selectedEvent.imageUrl && (!selectedEvent.media || selectedEvent.media.length === 0) && (
             <div className="relative bg-gradient-to-br from-purple-600/30 to-amber-600/20 p-4 border-b border-white/10 shrink-0">
               <button onClick={closePanel} className="absolute top-3 right-3 text-white/50 hover:text-white transition-colors">
                 <X className="w-4 h-4" />
