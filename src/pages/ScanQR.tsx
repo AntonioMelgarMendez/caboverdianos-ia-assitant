@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { QrCode, ScanLine, CheckCircle2, Store, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -10,15 +10,45 @@ const ScanQR: React.FC = () => {
 
   // Animación simple para el escáner
   const [scanLinePos, setScanLinePos] = useState(0);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+
+  const stopCamera = () => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current = null;
+    }
+  };
 
   useEffect(() => {
     if (scanState === 'scanning') {
       const interval = setInterval(() => {
         setScanLinePos((prev) => (prev > 95 ? 0 : prev + 2));
       }, 30);
-      return () => clearInterval(interval);
+      
+      // Request camera access
+      navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+        .then(stream => {
+          streamRef.current = stream;
+          if (videoRef.current) {
+            videoRef.current.srcObject = stream;
+          }
+        })
+        .catch(err => console.error("Camera access denied or unavailable", err));
+
+      return () => {
+        clearInterval(interval);
+        stopCamera();
+      };
+    } else {
+      stopCamera();
     }
   }, [scanState]);
+
+  // Limpiar cámara al desmontar componente
+  useEffect(() => {
+    return () => stopCamera();
+  }, []);
 
   const handleSimulateScan = () => {
     // En la vida real, aquí se llamaría a la cámara y luego a la API para validar
@@ -94,12 +124,21 @@ const ScanQR: React.FC = () => {
               
               {/* Línea láser animada */}
               <div 
-                className="absolute left-0 w-full h-1 bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.8)]"
+                className="absolute left-0 w-full h-1 bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.8)] z-20"
                 style={{ top: `${scanLinePos}%` }}
               />
               
+              {/* Feed de la cámara en vivo */}
+              <video 
+                ref={videoRef}
+                autoPlay 
+                playsInline 
+                muted 
+                className="absolute inset-0 w-full h-full object-cover z-0"
+              />
+              
               {/* Opacidad extraña simulando cámara oscura */}
-              <div className="absolute inset-0 bg-black/20" />
+              <div className="absolute inset-0 bg-black/40 z-10" />
             </div>
             
             <p className="text-zinc-500 text-sm mb-12 text-center animate-pulse">
