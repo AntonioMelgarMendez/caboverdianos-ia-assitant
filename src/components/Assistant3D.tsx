@@ -13,99 +13,81 @@ export type CipitioAnimation = 'Dancing' | 'Running' | 'Sad' | 'Sitting' | 'Walk
 
 interface AIModelProps {
   animation?: CipitioAnimation;
-  onEntryComplete?: () => void;
 }
 
-const AIModel: React.FC<AIModelProps> = ({ animation = 'Waving', onEntryComplete }) => {
+const AIModel: React.FC<AIModelProps> = ({ animation = 'Waving' }) => {
   const { scene, animations } = useGLTF(modelUrl);
-  const [phase, setPhase] = useState<'running' | 'done'>('running');
+  const [phase, setPhase] = useState<'running' | 'transitioning' | 'idle'>('running');
   const groupRef = useRef<THREE.Group>(null);
-  const mixerRef = useRef<THREE.AnimationMixer | null>(null);
-  const actionsRef = useRef<Record<string, THREE.AnimationAction>>({});
-  const currentActionRef = useRef<string>('');
-  
-  // Use the "Waving" model as the single base mesh (all clips apply to it)
-  const baseModel = useMemo(() => {
+  const scaleRef = useRef(1);
+  const transitionTimer = useRef(0);
+
+  // Determine which animation name to use for the model child
+  const activeAnimName = phase === 'running' ? 'Running' : animation;
+
+  // Find the model child matching the active animation
+  const targetName = animations.find(a => a.name === activeAnimName) ? activeAnimName : animations[0]?.name;
+  const model = useMemo(() => {
     if (!scene) return null;
-    // Pick the first available child — they all share the same skeleton
-    const target = scene.children.find(c => c.name === 'Running') || scene.children[0];
-    return target;
-  }, [scene]);
+    return scene.children.find(c => c.name === targetName) || scene.children[0];
+  }, [scene, targetName]);
 
-  // Create a single mixer on the base model and cache all actions
+  const clip = useMemo(() => {
+    return animations.find(a => a.name === targetName);
+  }, [animations, targetName]);
+
+  const mixer = useMemo(() => {
+    if (!model) return null;
+    return new THREE.AnimationMixer(model);
+  }, [model]);
+
   useEffect(() => {
-    if (!baseModel) return;
-    const mixer = new THREE.AnimationMixer(baseModel);
-    mixerRef.current = mixer;
-
-    for (const clip of animations) {
-      const action = mixer.clipAction(clip);
-      actionsRef.current[clip.name] = action;
-    }
-
+    if (!mixer || !clip) return;
+    const action = mixer.clipAction(clip);
+    action.play();
     return () => {
-      mixer.stopAllAction();
-      mixerRef.current = null;
-      actionsRef.current = {};
+      action.stop();
     };
-  }, [baseModel, animations]);
-
-  // Start Running on mount
-  useEffect(() => {
-    const runAction = actionsRef.current['Running'];
-    if (runAction) {
-      runAction.reset().play();
-      currentActionRef.current = 'Running';
-    }
-  }, [baseModel]);
-
-  // Crossfade to target animation when phase changes
-  useEffect(() => {
-    if (phase !== 'done') return;
-    const targetName = animation;
-    const prevAction = actionsRef.current[currentActionRef.current];
-    const nextAction = actionsRef.current[targetName];
-
-    if (nextAction && prevAction && prevAction !== nextAction) {
-      nextAction.reset().play();
-      prevAction.crossFadeTo(nextAction, 0.4, true);
-      currentActionRef.current = targetName;
-    } else if (nextAction && !prevAction) {
-      nextAction.reset().play();
-      currentActionRef.current = targetName;
-    }
-  }, [phase, animation]);
-
-  // Also handle external animation changes after entry is done
-  useEffect(() => {
-    if (phase !== 'done') return;
-    const prevAction = actionsRef.current[currentActionRef.current];
-    const nextAction = actionsRef.current[animation];
-
-    if (nextAction && prevAction && currentActionRef.current !== animation) {
-      nextAction.reset().play();
-      prevAction.crossFadeTo(nextAction, 0.4, true);
-      currentActionRef.current = animation;
-    }
-  }, [animation, phase]);
+  }, [mixer, clip]);
 
   useFrame((_, delta) => {
-    if (mixerRef.current) mixerRef.current.update(delta);
-    
-    if (phase === 'running' && groupRef.current) {
-      groupRef.current.position.x += delta * 3;
+    if (mixer) mixer.update(delta);
+
+    if (!groupRef.current) return;
+
+    if (phase === 'running') {
+      // Slide from left to center
+      groupRef.current.position.x += delta * 2.5;
       if (groupRef.current.position.x >= 0) {
         groupRef.current.position.x = 0;
-        setPhase('done');
-        onEntryComplete?.();
+        // Begin transition: shrink briefly to mask model swap
+        setPhase('transitioning');
+        transitionTimer.current = 0;
       }
+    }
+
+    if (phase === 'transitioning') {
+      transitionTimer.current += delta;
+      // Quick scale down over 0.15s, then React will swap to the idle model
+      const t = Math.min(transitionTimer.current / 0.15, 1);
+      scaleRef.current = 1 - t * 0.3; // Shrink to 70%
+      groupRef.current.scale.setScalar(scaleRef.current);
+      if (t >= 1) {
+        setPhase('idle');
+      }
+    }
+
+    if (phase === 'idle' && scaleRef.current < 1) {
+      // Scale back up smoothly
+      scaleRef.current = Math.min(scaleRef.current + delta * 4, 1);
+      groupRef.current.scale.setScalar(scaleRef.current);
     }
   });
 
   // Fix materials
   useEffect(() => {
-    if (baseModel) {
-      baseModel.traverse((child) => {
+    if (model) {
+      model.traverse((child) => {
         if (child instanceof THREE.Mesh) {
           const mat = child.material as THREE.MeshStandardMaterial;
           if (mat) {
@@ -117,9 +99,9 @@ const AIModel: React.FC<AIModelProps> = ({ animation = 'Waving', onEntryComplete
         }
       });
     }
-  }, [baseModel]);
+  }, [model]);
 
-  if (!baseModel) return null;
+  if (!model) return null;
 
   return (
     <Float
@@ -127,11 +109,12 @@ const AIModel: React.FC<AIModelProps> = ({ animation = 'Waving', onEntryComplete
       rotationIntensity={0.1}
       floatIntensity={0.2}
     >
-      <group ref={groupRef} position={[-3, 0, 0]}>
-        <primitive 
-          object={baseModel} 
-          position={[0, -1.8, 0]} 
+      <group ref={groupRef} position={[-2.5, 0, 0]}>
+        <primitive
+          object={model}
+          position={[0, -1.8, 0]}
           scale={1.8}
+          rotation={phase === 'running' ? [0, -Math.PI / 2, 0] : [0, 0, 0]}
         />
       </group>
     </Float>
@@ -149,21 +132,21 @@ const Assistant3D: React.FC<Assistant3DProps> = ({ animation = 'Waving' }) => {
         <Environment preset="city" />
         <ambientLight intensity={0.5} />
         <directionalLight position={[10, 10, 5]} intensity={1} />
-        
+
         <Suspense fallback={null}>
           <AIModel animation={animation} />
-          
-          <ContactShadows 
-            position={[0, -1.5, 0]} 
-            opacity={0.4} 
-            scale={10} 
-            blur={2} 
-            far={4} 
+
+          <ContactShadows
+            position={[0, -1.5, 0]}
+            opacity={0.4}
+            scale={10}
+            blur={2}
+            far={4}
           />
         </Suspense>
 
-        <OrbitControls 
-          enableZoom={false} 
+        <OrbitControls
+          enableZoom={false}
           enablePan={false}
           minPolarAngle={Math.PI / 2.5}
           maxPolarAngle={Math.PI / 1.5}
@@ -174,4 +157,5 @@ const Assistant3D: React.FC<Assistant3DProps> = ({ animation = 'Waving' }) => {
 };
 
 export default Assistant3D;
+
 
