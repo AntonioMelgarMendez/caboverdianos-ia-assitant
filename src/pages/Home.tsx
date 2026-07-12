@@ -19,9 +19,13 @@ type Message = {
 };
 
 const Home: React.FC = () => {
-  const [messages, setMessages] = useState<Message[]>([
-    { id: '1', text: "¡Hola! Soy tu Asistente de Viajes IA. ¿A dónde te gustaría ir hoy?", sender: 'ai' }
-  ]);
+  const [messages, setMessages] = useState<Message[]>(() => {
+    const saved = localStorage.getItem('ai_assistant_chat');
+    if (saved) {
+      try { return JSON.parse(saved); } catch (e) { console.error("Error parsing chat history", e); }
+    }
+    return [{ id: '1', text: "¡Hola! Soy tu Asistente de Viajes IA. ¿A dónde te gustaría ir hoy?", sender: 'ai' }];
+  });
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [user, setUser] = useState<User | null>(null);
@@ -36,6 +40,10 @@ const Home: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [maxPrice, setMaxPrice] = useState<number>(1000);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+
+  useEffect(() => {
+    localStorage.setItem('ai_assistant_chat', JSON.stringify(messages));
+  }, [messages]);
 
   useEffect(() => {
     // Verificar sesión inicial
@@ -91,7 +99,7 @@ const Home: React.FC = () => {
         setAiLocation(aiResponse.suggestedLocation);
       }
 
-      await speakText(aiResponseText);
+      speakText(aiResponseText).catch(err => console.error("Error TTS:", err));
     } catch (error) {
       console.error("Error en el chat:", error);
       setMessages(prev => [...prev, { id: Date.now().toString(), text: "Lo siento, tuve un problema de conexión.", sender: 'ai' }]);
