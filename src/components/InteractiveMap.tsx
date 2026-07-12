@@ -29,7 +29,8 @@ interface InteractiveMapProps {
   isAuthenticated?: boolean;
   searchQuery?: string;
   maxPrice?: number;
-
+  selectedCategories?: string[];
+  userLocation?: { lat: number; lng: number } | null;
 }
 
 // Componente para actualizar el centro del mapa dinámicamente
@@ -107,7 +108,8 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
   isAuthenticated = false,
   searchQuery = '',
   maxPrice = 1000,
-  selectedCategories = []
+  selectedCategories = [],
+  userLocation = null
 }) => {
   const position: [number, number] = [13.6929, -89.2182]; 
   const [events, setEvents] = React.useState<AppEvent[]>([]);
@@ -208,6 +210,25 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
             </Popup>
           </Marker>
         )}
+
+        {/* Marcador del Usuario (GPS real) */}
+        {userLocation && (
+          <Marker 
+            position={[userLocation.lat, userLocation.lng]}
+            icon={L.divIcon({
+              html: '<div class="w-6 h-6 rounded-full bg-blue-500 border-2 border-white shadow-[0_0_15px_rgba(59,130,246,0.6)] flex items-center justify-center"><div class="w-2 h-2 rounded-full bg-white"></div></div>',
+              className: 'custom-leaflet-icon',
+              iconSize: [24, 24],
+              iconAnchor: [12, 12]
+            })}
+          >
+            <Popup className="custom-popup">
+              <div className="text-zinc-900 font-sans font-bold text-sm text-blue-600">
+                Estás aquí
+              </div>
+            </Popup>
+          </Marker>
+        )}
         
         {/* Renderizado dinámico de eventos */}
         {/* Map Skeleton while loading */}
@@ -298,13 +319,28 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
               <button onClick={closePanel} className="absolute top-3 right-3 text-white/50 hover:text-white transition-colors">
                 <X className="w-4 h-4" />
               </button>
-              <h3 className="font-bold text-white text-base pr-6">{selectedEvent.title}</h3>
+              <h3 className="text-xl font-bold text-white leading-tight">{selectedEvent.title}</h3>
+              
+              {userLocation && selectedEvent.lat && selectedEvent.lng && (
+                <div className="flex items-center gap-1.5 text-xs font-semibold text-emerald-400 mt-2 bg-emerald-400/10 w-fit px-2 py-1 rounded-md border border-emerald-400/20">
+                  <MapPin className="w-3 h-3" />
+                  A {(L.latLng(userLocation.lat, userLocation.lng).distanceTo(L.latLng(selectedEvent.lat, selectedEvent.lng)) / 1000).toFixed(1)} km de ti
+                </div>
+              )}
             </div>
           )}
 
           {/* Body — scrollable */}
           <div className="p-4 space-y-3 overflow-y-auto custom-scrollbar flex-1">
-            <h3 className="font-bold text-white text-base">{selectedEvent.title}</h3>
+            <div className="flex flex-col gap-1">
+              <h3 className="font-bold text-white text-base leading-tight">{selectedEvent.title}</h3>
+              {userLocation && selectedEvent.lat && selectedEvent.lng && (selectedEvent.imageUrl || (selectedEvent.media && selectedEvent.media.length > 0)) && (
+                <div className="flex items-center gap-1.5 text-[11px] font-semibold text-emerald-400 bg-emerald-400/10 w-fit px-2 py-0.5 rounded-md border border-emerald-400/20">
+                  <MapPin className="w-3 h-3" />
+                  A {(L.latLng(userLocation.lat, userLocation.lng).distanceTo(L.latLng(selectedEvent.lat, selectedEvent.lng)) / 1000).toFixed(1)} km
+                </div>
+              )}
+            </div>
             <p className="text-sm text-zinc-300 leading-relaxed">{selectedEvent.description}</p>
             
             {/* Metadatos */}

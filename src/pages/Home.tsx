@@ -30,6 +30,7 @@ const Home: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [aiLocation, setAiLocation] = useState<{name: string, lat: number, lng: number} | null>(null);
+  const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null);
   const [userPoints, setUserPoints] = useState<number>(0);
   const [isSavingAgenda, setIsSavingAgenda] = useState(false);
   const [isAgendaOpen, setIsAgendaOpen] = useState(false);
@@ -197,6 +198,7 @@ const Home: React.FC = () => {
         <div className="absolute inset-0 bg-zinc-900 z-0">
            <InteractiveMap 
              aiLocation={aiLocation}
+             userLocation={userLocation}
              isAuthenticated={!!user} 
              searchQuery={searchQuery}
              selectedCategories={selectedCategories}
@@ -358,6 +360,8 @@ const Home: React.FC = () => {
           <LocationTracker 
             userId={user.id} 
             onPointsEarned={(pts) => setUserPoints(pts)} 
+            userLocation={userLocation}
+            setUserLocation={setUserLocation}
           />
         </>
       )}

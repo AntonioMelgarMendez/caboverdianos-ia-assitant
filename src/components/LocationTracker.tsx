@@ -6,6 +6,8 @@ import type { AgendaItem } from '../services/gamification';
 interface LocationTrackerProps {
   userId: string;
   onPointsEarned: (newPoints: number) => void;
+  userLocation: {lat: number, lng: number} | null;
+  setUserLocation: (loc: {lat: number, lng: number}) => void;
 }
 
 // Haversine formula para calcular distancia en metros
@@ -27,9 +29,8 @@ function getDistance(lat1: number, lon1: number, lat2: number, lon2: number): nu
 const REQUIRED_SECONDS = 10;
 const RADIUS_METERS = 50;
 
-const LocationTracker: React.FC<LocationTrackerProps> = ({ userId, onPointsEarned }) => {
+const LocationTracker: React.FC<LocationTrackerProps> = ({ userId, onPointsEarned, userLocation, setUserLocation }) => {
   const [agenda, setAgenda] = useState<AgendaItem[]>([]);
-  const [currentLocation, setCurrentLocation] = useState<{lat: number, lng: number} | null>(null);
   const [activeItem, setActiveItem] = useState<AgendaItem | null>(null);
   const [secondsAtLocation, setSecondsAtLocation] = useState(0);
   const [showCelebration, setShowCelebration] = useState<{title: string, points: number} | null>(null);
@@ -48,7 +49,34 @@ const LocationTracker: React.FC<LocationTrackerProps> = ({ userId, onPointsEarne
   }, [userId]);
 
   useEffect(() => {
-    if (!currentLocation || agenda.length === 0) {
+    // Escuchar el GPS real
+    if (!navigator.geolocation) {
+      console.warn("Geolocation no es soportada por este navegador.");
+      return;
+    }
+
+    const watchId = navigator.geolocation.watchPosition(
+      (position) => {
+        setUserLocation({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        });
+      },
+      (error) => {
+        console.error("Error obteniendo ubicación GPS:", error);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0
+      }
+    );
+
+    return () => navigator.geolocation.clearWatch(watchId);
+  }, [setUserLocation]);
+
+  useEffect(() => {
+    if (!userLocation || agenda.length === 0) {
       setActiveItem(null);
       setSecondsAtLocation(0);
       return;
@@ -56,7 +84,7 @@ const LocationTracker: React.FC<LocationTrackerProps> = ({ userId, onPointsEarne
 
     // Buscar si estamos cerca de algún lugar
     const nearby = agenda.find(item => {
-      const dist = getDistance(currentLocation.lat, currentLocation.lng, item.lat, item.lng);
+      const dist = getDistance(userLocation.lat, userLocation.lng, item.lat, item.lng);
       return dist <= RADIUS_METERS;
     });
 
@@ -69,7 +97,7 @@ const LocationTracker: React.FC<LocationTrackerProps> = ({ userId, onPointsEarne
       setActiveItem(null);
       setSecondsAtLocation(0);
     }
-  }, [currentLocation, agenda, activeItem?.id]);
+  }, [userLocation, agenda, activeItem?.id]);
 
   useEffect(() => {
     if (!activeItem) return;
@@ -107,7 +135,7 @@ const LocationTracker: React.FC<LocationTrackerProps> = ({ userId, onPointsEarne
   const simulateTravel = () => {
     if (agenda.length > 0) {
       const target = agenda[0];
-      setCurrentLocation({ lat: target.lat, lng: target.lng });
+      setUserLocation({ lat: target.lat, lng: target.lng });
     }
   };
 

@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { ChevronLeft, ChevronRight, X, Image as ImageIcon, Map as MapIcon, Loader2, Maximize2 } from 'lucide-react';
 
 import type { AppEvent } from '../services/events/EventProvider';
-import GoogleStreetView from './GoogleStreetView';
+import GoogleStreetView, { checkStreetViewAvailability } from './GoogleStreetView';
 
 interface MediaItem {
   type: 'image' | 'video';
@@ -43,6 +43,17 @@ const MediaCarousel: React.FC<MediaCarouselProps> = ({ media, title = "Media", e
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [isZoomed, setIsZoomed] = useState(false);
   const [activeTab, setActiveTab] = useState<'photos' | 'streetview'>('photos');
+  const [hasStreetView, setHasStreetView] = useState<boolean>(false);
+
+  const hasLocation = event?.lat && event?.lng;
+
+  useEffect(() => {
+    if (hasLocation) {
+      checkStreetViewAvailability(event!.lat!, event!.lng!).then(available => {
+        setHasStreetView(available);
+      });
+    }
+  }, [event?.lat, event?.lng, hasLocation]);
 
   React.useEffect(() => {
     setCurrentIndex(0);
@@ -147,7 +158,7 @@ const MediaCarousel: React.FC<MediaCarouselProps> = ({ media, title = "Media", e
     <>
       <div className="relative h-48 w-full group flex flex-col">
         {/* Pestañas de Navegación */}
-        {hasLocation && (
+        {hasStreetView && (
           <div className="absolute top-2 left-1/2 -translate-x-1/2 z-[60] flex gap-1 p-1 bg-black/40 backdrop-blur-md rounded-full shadow-lg">
             <button
               onClick={(e) => { e.stopPropagation(); setActiveTab('photos'); }}
