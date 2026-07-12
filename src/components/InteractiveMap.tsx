@@ -19,7 +19,6 @@ L.Marker.prototype.options.icon = DefaultIcon;
 import type { EventProvider, AppEvent } from '../services/events/EventProvider';
 import { MockDataTeamProvider } from '../services/events/MockDataTeamProvider';
 import { SupabaseEventProvider } from '../services/events/SupabaseEventProvider';
-import { useMap } from 'react-leaflet';
 import MediaCarousel from './MediaCarousel';
 
 interface InteractiveMapProps {
