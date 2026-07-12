@@ -191,7 +191,7 @@ const CouponModal: React.FC<CouponModalProps> = ({ isOpen, onClose, userId, user
                         <img 
                           src={logoCipitour} 
                           alt="Logo" 
-                          className="absolute w-12 h-12 object-contain z-10"
+                          className="absolute w-12 h-12 object-contain z-10 invert"
                         />
                       </div>
                       <p className="font-mono text-zinc-300 font-bold mt-4 text-base tracking-widest bg-zinc-800 px-4 py-2 rounded-lg border border-white/5">
