@@ -38,11 +38,9 @@ const AIModel: React.FC<AIModelProps> = ({ animation = 'Waving' }) => {
   useEffect(() => {
     if (!mixer || !clip) return;
     const action = mixer.clipAction(clip);
-    action.reset().fadeIn(0.4).play();
+    action.play();
     return () => {
-      action.fadeOut(0.4);
-      // Wait for fadeout before stopping
-      setTimeout(() => action.stop(), 400);
+      action.stop();
     };
   }, [mixer, clip]);
 

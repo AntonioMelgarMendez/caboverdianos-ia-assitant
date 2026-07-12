@@ -41,10 +41,9 @@ const HeroCharacterModel = () => {
   React.useEffect(() => {
     if (!mixer || !clip) return;
     const action = mixer.clipAction(clip);
-    action.reset().fadeIn(0.4).play();
+    action.play();
     return () => {
-      action.fadeOut(0.4);
-      setTimeout(() => action.stop(), 400);
+      action.stop();
     };
   }, [mixer, clip]);
 
