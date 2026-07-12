@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Compass, MessageSquare, Ticket, Star, Sparkles, ChevronRight, Navigation2, Zap, ArrowDown } from 'lucide-react';
-import HeroAssistant3D from '../components/HeroAssistant3D';
+import heroImg from '../assets/hero.jpg';
 
 const Landing: React.FC = () => {
   return (
@@ -63,10 +63,13 @@ const Landing: React.FC = () => {
             </div>
           </div>
 
-          {/* Right: 3D Model */}
-          <div className="flex-1 w-full h-[300px] md:h-full relative">
-            <div className="absolute inset-0 bg-gradient-to-l from-transparent via-transparent to-zinc-950/60 z-[2] pointer-events-none hidden md:block"></div>
-            <HeroAssistant3D />
+          {/* Right: Static Image instead of 3D Model */}
+          <div className="flex-1 w-full flex justify-center items-center relative py-12 md:py-0">
+            <img 
+              src={heroImg} 
+              alt="Cipitio Tourist Assistant" 
+              className="w-full max-w-md md:max-w-xl rounded-[40px] shadow-[0_0_100px_rgba(168,85,247,0.3)] object-cover"
+            />
           </div>
         </div>
 
