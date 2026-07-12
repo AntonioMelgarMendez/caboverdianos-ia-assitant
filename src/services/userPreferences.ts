@@ -8,6 +8,11 @@ export interface UserPreferences {
 }
 
 export const hasCompletedOnboarding = async (userId: string): Promise<boolean> => {
+  // Check local cache first so we don't reprompt on every refresh if DB fails
+  if (localStorage.getItem(`onboarding_completed_${userId}`) === 'true') {
+    return true;
+  }
+
   const { data, error } = await supabase
     .from('user_preferences')
     .select('onboarding_completed')
@@ -15,10 +20,19 @@ export const hasCompletedOnboarding = async (userId: string): Promise<boolean> =
     .single();
 
   if (error || !data) return false;
-  return data.onboarding_completed === true;
+  
+  if (data.onboarding_completed === true) {
+    localStorage.setItem(`onboarding_completed_${userId}`, 'true');
+    return true;
+  }
+  
+  return false;
 };
 
 export const saveUserPreferences = async (userId: string, prefs: Partial<UserPreferences>): Promise<void> => {
+  // Save to local cache immediately to prevent reprompting
+  localStorage.setItem(`onboarding_completed_${userId}`, 'true');
+
   const { error } = await supabase
     .from('user_preferences')
     .upsert({
@@ -29,7 +43,7 @@ export const saveUserPreferences = async (userId: string, prefs: Partial<UserPre
     });
 
   if (error) {
-    console.error('Error saving user preferences:', error);
+    console.error('Error saving user preferences to Supabase:', error);
   }
 };
 
