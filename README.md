@@ -59,7 +59,8 @@ scripts/
 ├── generate_events_sql_seed.js # Genera seed_events.sql a partir del scraper de eventos
 ├── seed_places.sql     # Seed generado de lugares turísticos (para Supabase)
 ├── seed_events.sql     # Seed generado de eventos (para Supabase)
-└── add_voice.js         # Script de setup: crea la voz personalizada en ElevenLabs
+├── add_voice.js         # Script de setup: crea la voz personalizada en ElevenLabs
+└── migrateDataTour.ts  # Script para migrar datos de la base del proveedor DataTour
 
 public/                 # Assets estáticos servidos tal cual (favicon, sprites SVG)
 ```
@@ -148,6 +149,7 @@ Definidas en `.env.example`. Copiar a `.env` y completar:
 - Mapa interactivo (Leaflet) con marcadores por categoría, popups y panel de detalle con carrusel de fotos.
 - Búsqueda y filtros de lugares/eventos por texto, categoría y precio.
 - Trazado de rutas reales por carretera (OSRM) entre la ubicación del usuario y un lugar seleccionado.
+- Puntos de reciclaje ocultos (Easter egg) que aparecen al hacer zoom en el mapa para fomentar el turismo sostenible.
 - Integración con Google Street View (vista 360°) cuando hay cobertura en la zona.
 - Autenticación de usuarios con Google OAuth vía Supabase Auth.
 - Encuesta de onboarding para guardar preferencias (categorías, presupuesto, duración del viaje).
