@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GoogleGenerativeAI, SchemaType } from '@google/generative-ai';
 
 const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 let genAI: GoogleGenerativeAI | null = null;
@@ -12,20 +12,8 @@ Eres un asistente de viajes y turismo mágico para El Salvador (y el mundo). Tu 
 Actúa con este balance:
 1. IDENTIDAD (10%): Usa un tono amigable, alguna palabra coloquial salvadoreña ("chero", "púchica", "cipote") de forma natural, y ocasionalmente ríete ("¡Jajaja!").
 2. UTILIDAD (90%): Provee información real y valiosa. Cuando recomiendes un lugar, incluye detalles como precios aproximados, clima, seguridad, qué comer ahí o mejor hora para visitar.
-3. FORMATO: Tus respuestas de texto deben ser conversacionales pero directas, ideales para ser leídas en voz alta.
-
-REGLA CRÍTICA DE FORMATO:
-DEBES responder EXCLUSIVAMENTE con un objeto JSON válido. No incluyas Markdown (\`\`\`json) ni texto fuera del JSON.
-La estructura del JSON debe ser exactamente esta:
-{
-  "text": "Tu respuesta hablada aquí, con tu personalidad",
-  "suggestedLocation": {
-    "name": "Nombre del lugar que recomiendas (si aplica)",
-    "lat": 13.6929,
-    "lng": -89.2182
-  }
-}
-Si no estás recomendando un lugar específico en tu respuesta, pon "suggestedLocation": null.
+3. PRECISIÓN GEOGRÁFICA: Siempre que el usuario pregunte por un lugar o recomendación, debes incluir el nombre del lugar exacto y sus coordenadas precisas (latitud y longitud) en el objeto de ubicación. Si no recomiendas un lugar específico o la pregunta no tiene relación con ubicación, la ubicación debe ser nula.
+4. FORMATO: Tus respuestas de texto deben ser conversacionales pero directas, ideales para ser leídas en voz alta.
 `;
 
 export interface AIResponse {
@@ -52,36 +40,60 @@ export async function generateTravelResponse(history: ChatMessage[]): Promise<AI
   }
 
   try {
-
-    
     // Construir el historial para Gemini
     const contents = history.map(msg => ({
       role: msg.sender === 'user' ? 'user' : 'model',
       parts: [{ text: msg.text }]
     }));
 
-    // Inyectamos el system prompt en el primer mensaje de usuario o como instrucción del sistema si está soportado.
-    // Para simplificar y asegurar compatibilidad con versiones simples de la API, lo ponemos como un mensaje inicial "user".
-    // Pero si usamos model.generateContent, podemos pasar systemInstruction en la config del modelo.
-    // Lo más seguro es usar systemInstruction en getGenerativeModel:
-    
     const configuredModel = genAI.getGenerativeModel({ 
-      model: "gemini-3.5-flash",
-      systemInstruction: SYSTEM_PROMPT
+      model: "gemini-1.5-flash", // Utilizando un modelo robusto que soporta Structured Outputs
+      systemInstruction: SYSTEM_PROMPT,
+      generationConfig: {
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: SchemaType.OBJECT,
+          properties: {
+            text: {
+              type: SchemaType.STRING,
+              description: "Tu respuesta hablada aquí, con tu personalidad."
+            },
+            suggestedLocation: {
+              type: SchemaType.OBJECT,
+              description: "La ubicación sugerida en la respuesta. Nulo si no aplica a la pregunta.",
+              nullable: true,
+              properties: {
+                name: {
+                  type: SchemaType.STRING,
+                  description: "Nombre corto e identificable del lugar."
+                },
+                lat: {
+                  type: SchemaType.NUMBER,
+                  description: "Coordenada de Latitud precisa."
+                },
+                lng: {
+                  type: SchemaType.NUMBER,
+                  description: "Coordenada de Longitud precisa."
+                }
+              },
+              required: ["name", "lat", "lng"]
+            }
+          },
+          required: ["text"]
+        }
+      }
     });
 
     const result = await configuredModel.generateContent({ contents });
-    const responseText = await result.response.text();
+    const responseText = result.response.text();
     
-    // Limpiar posible Markdown
-    const cleanJson = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
-    
-    return JSON.parse(cleanJson) as AIResponse;
+    return JSON.parse(responseText) as AIResponse;
   } catch (error) {
-    console.error("Error al generar respuesta:", error);
+    console.error("Error al generar respuesta estructurada:", error);
     return {
-      text: "Lo siento, me trabé con una ceniza y no pude responder.",
+      text: "Lo siento, tuve un percance mágico y no pude orientarme.",
       suggestedLocation: null
     };
   }
 }
+
