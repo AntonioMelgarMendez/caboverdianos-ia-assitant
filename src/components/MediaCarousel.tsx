@@ -77,7 +77,6 @@ const MediaCarousel: React.FC<MediaCarouselProps> = ({ media, title = "Media", e
   const safeIndex = currentIndex >= media.length ? 0 : currentIndex;
   const currentItem = media[safeIndex];
   
-  const hasLocation = event?.lat && event?.lng;
 
   const renderMediaContent = (item: MediaItem, isFull: boolean) => {
     if (!item) return null;
