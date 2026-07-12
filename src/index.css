@@ -39,3 +39,8 @@ body {
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: rgba(170, 59, 255, 0.4);
 }
+
+/* Override leaflet background for dark mode tearing */
+.leaflet-container {
+  background: #0f111a !important;
+}

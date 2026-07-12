@@ -185,7 +185,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
         center={position} 
         zoom={9} 
         scrollWheelZoom={true} 
-        className="w-full h-full"
+        className="w-full h-full bg-[#1a1a1a]"
         zoomControl={false}
       >
         <TileLayer
