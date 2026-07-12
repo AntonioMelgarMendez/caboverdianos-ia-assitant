@@ -210,6 +210,32 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
         )}
         
         {/* Renderizado dinámico de eventos */}
+        {/* Map Skeleton while loading */}
+        {events.length === 0 && (
+          <>
+            {[
+              [13.6929, -89.2182],
+              [13.7029, -89.2082],
+              [13.6829, -89.2282],
+              [13.7129, -89.2482],
+              [13.6729, -89.1982],
+              [13.6989, -89.2382]
+            ].map((pos, idx) => (
+              <Marker 
+                key={`skeleton-${idx}`} 
+                position={pos as [number, number]} 
+                icon={L.divIcon({
+                  html: '<div class="w-8 h-8 rounded-full bg-zinc-800 border-2 border-white/10 shadow-lg animate-pulse flex items-center justify-center"></div>',
+                  className: 'custom-leaflet-icon',
+                  iconSize: [32, 32],
+                  iconAnchor: [16, 32],
+                })} 
+              />
+            ))}
+          </>
+        )}
+
+        {/* Real Markers */}
         {filteredEvents.map((evt) => (
           <EventMarker 
             key={evt.id} 
