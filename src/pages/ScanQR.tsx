@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { QrCode, ScanLine, CheckCircle2, Store, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import jsQR from 'jsqr';
 
 type ScanState = 'tutorial' | 'scanning' | 'success';
 
@@ -10,14 +11,49 @@ const ScanQR: React.FC = () => {
 
   // Animación simple para el escáner
   const [scanLinePos, setScanLinePos] = useState(0);
+  const [scannedCode, setScannedCode] = useState<string>('SV-15-HR6JPA'); // Default fallback
   const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
+  const scanAnimationFrame = useRef<number | null>(null);
 
   const stopCamera = () => {
     if (streamRef.current) {
       streamRef.current.getTracks().forEach(track => track.stop());
       streamRef.current = null;
     }
+    if (scanAnimationFrame.current) {
+      cancelAnimationFrame(scanAnimationFrame.current);
+      scanAnimationFrame.current = null;
+    }
+  };
+
+  const scanVideoFrame = () => {
+    if (videoRef.current && canvasRef.current && videoRef.current.readyState === videoRef.current.HAVE_ENOUGH_DATA) {
+      const video = videoRef.current;
+      const canvas = canvasRef.current;
+      const context = canvas.getContext('2d');
+      
+      if (context) {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        
+        const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+        const code = jsQR(imageData.data, imageData.width, imageData.height, {
+          inversionAttempts: "dontInvert",
+        });
+
+        if (code && code.data) {
+          // Si encontramos un código válido, detener escaneo y marcar éxito
+          setScannedCode(code.data);
+          setScanState('success');
+          stopCamera();
+          return; // Stop loop
+        }
+      }
+    }
+    scanAnimationFrame.current = requestAnimationFrame(scanVideoFrame);
   };
 
   useEffect(() => {
@@ -32,6 +68,10 @@ const ScanQR: React.FC = () => {
           streamRef.current = stream;
           if (videoRef.current) {
             videoRef.current.srcObject = stream;
+            // Start scanning frames once the video starts playing
+            videoRef.current.addEventListener('play', () => {
+              scanAnimationFrame.current = requestAnimationFrame(scanVideoFrame);
+            });
           }
         })
         .catch(err => console.error("Camera access denied or unavailable", err));
@@ -80,7 +120,7 @@ const ScanQR: React.FC = () => {
             <div className="w-20 h-20 bg-purple-500/20 rounded-full flex items-center justify-center mb-6">
               <QrCode className="w-10 h-10 text-purple-400" />
             </div>
-            <h1 className="text-2xl font-black text-white text-center mb-2">Portal de Cobro</h1>
+            <h1 className="text-2xl font-black text-white text-center mb-2">Portal de Descuentos</h1>
             <p className="text-zinc-400 text-center mb-8 px-4 text-sm">
               Escanea el cupón de tu cliente para aplicar el descuento y registrar la venta.
             </p>
@@ -136,6 +176,7 @@ const ScanQR: React.FC = () => {
                 muted 
                 className="absolute inset-0 w-full h-full object-cover z-0"
               />
+              <canvas ref={canvasRef} className="hidden" />
               
               {/* Opacidad extraña simulando cámara oscura */}
               <div className="absolute inset-0 bg-black/40 z-10" />
@@ -169,9 +210,9 @@ const ScanQR: React.FC = () => {
             <h2 className="text-3xl font-black text-white mb-2">¡Cupón Válido!</h2>
             <p className="text-zinc-400 mb-8">El descuento ha sido verificado en el sistema.</p>
             
-            <div className="bg-zinc-900 border border-white/5 w-full p-6 rounded-2xl mb-8">
-              <p className="text-xs text-zinc-500 uppercase tracking-wider mb-2 font-bold">Código del Turista</p>
-              <p className="font-mono text-xl text-green-400 font-bold mb-4">SV-15-HR6JPA</p>
+            <div className="bg-zinc-900 border border-white/5 w-full p-6 rounded-2xl mb-8 shadow-xl">
+              <p className="text-xs text-zinc-500 uppercase tracking-wider mb-2 font-bold">Código Escaneado</p>
+              <p className="font-mono text-xl text-green-400 font-bold mb-4 break-all">{scannedCode}</p>
               
               <div className="h-px w-full bg-white/10 mb-4" />
               
