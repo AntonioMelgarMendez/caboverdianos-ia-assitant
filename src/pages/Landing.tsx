@@ -68,7 +68,7 @@ const Landing: React.FC = () => {
             <img 
               src={heroImg} 
               alt="Cipitio Tourist Assistant" 
-              className="w-full max-w-md md:max-w-xl rounded-[40px] shadow-[0_0_100px_rgba(168,85,247,0.3)] object-cover"
+              className="w-full max-w-md md:max-w-xl object-contain drop-shadow-[0_0_80px_rgba(168,85,247,0.4)]"
             />
           </div>
         </div>
