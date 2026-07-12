@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { X, Store, Ticket, Loader2, Star, ChevronLeft, ChevronRight, Download } from 'lucide-react';
-import { QRCodeCanvas } from 'qrcode.react';
+import { QRCodeSVG } from 'qrcode.react';
 import logoCipitour from '../assets/Cipitour.png';
 import { 
   AVAILABLE_COUPONS, 
@@ -175,8 +175,8 @@ const CouponModal: React.FC<CouponModalProps> = ({ isOpen, onClose, userId, user
                     
                     <div className="flex flex-col items-center mt-8">
                       <p className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-4">Muestra este QR al cajero</p>
-                      <div className="bg-white p-4 rounded-xl border border-white/10 shadow-[0_0_20px_rgba(168,85,247,0.15)]">
-                        <QRCodeCanvas 
+                      <div className="bg-white p-4 rounded-xl border border-white/10 shadow-[0_0_20px_rgba(168,85,247,0.15)] relative flex items-center justify-center">
+                        <QRCodeSVG 
                           value={selectedCoupon.coupon_code} 
                           size={180}
                           level="H"
@@ -187,6 +187,11 @@ const CouponModal: React.FC<CouponModalProps> = ({ isOpen, onClose, userId, user
                             width: 48,
                             excavate: true,
                           }}
+                        />
+                        <img 
+                          src={logoCipitour} 
+                          alt="Logo" 
+                          className="absolute w-12 h-12 object-contain z-10"
                         />
                       </div>
                       <p className="font-mono text-zinc-300 font-bold mt-4 text-base tracking-widest bg-zinc-800 px-4 py-2 rounded-lg border border-white/5">
