@@ -309,9 +309,15 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
             {selectedEvent.itinerary && selectedEvent.itinerary.length > 0 && (
               <div>
                 <h4 className="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-1.5">Itinerario</h4>
-                <div className="space-y-1 pl-2 border-l-2 border-purple-500/30">
+                <div className="space-y-1.5 pl-2 border-l-2 border-purple-500/30">
                   {selectedEvent.itinerary.map((step, i) => (
-                    <p key={i} className="text-[11px] text-zinc-400 leading-snug">{step}</p>
+                    <div key={i} className="text-[11px] text-zinc-400 leading-snug">
+                      {typeof step === 'string' ? (
+                        <p>{step}</p>
+                      ) : (
+                        <p><span className="text-purple-400 font-bold mr-1">{step.time}</span> {step.description}</p>
+                      )}
+                    </div>
                   ))}
                 </div>
               </div>
