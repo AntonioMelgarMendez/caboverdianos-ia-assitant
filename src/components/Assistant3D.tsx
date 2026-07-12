@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Float, ContactShadows, Environment, useGLTF, Html } from '@react-three/drei';
+import { OrbitControls, Float, ContactShadows, Environment, useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 import modelUrl from '../assets/Cipitio.glb?url';
 
@@ -84,7 +84,7 @@ const AIModel: React.FC<AIModelProps> = ({ animation = 'Waving' }) => {
       rotationIntensity={0.1}
       floatIntensity={0.2}
     >
-      <group ref={groupRef} position={[-8, 0, 0]}>
+      <group ref={groupRef} position={[-4, 0, 0]}>
         <primitive 
           object={model} 
           position={[0, -1.8, 0]} 
@@ -92,17 +92,6 @@ const AIModel: React.FC<AIModelProps> = ({ animation = 'Waving' }) => {
         />
       </group>
     </Float>
-  );
-};
-
-const ModelLoader = () => {
-  return (
-    <Html center>
-      <div className="flex flex-col items-center gap-2">
-        <div className="w-8 h-8 border-4 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
-        <span className="text-purple-400 font-mono text-xs whitespace-nowrap">Loading 3D Model...</span>
-      </div>
-    </Html>
   );
 };
 
@@ -118,7 +107,7 @@ const Assistant3D: React.FC<Assistant3DProps> = ({ animation = 'Waving' }) => {
         <ambientLight intensity={0.5} />
         <directionalLight position={[10, 10, 5]} intensity={1} />
         
-        <Suspense fallback={<ModelLoader />}>
+        <Suspense fallback={null}>
           <AIModel animation={animation} />
           
           <ContactShadows 
