@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Compass, MessageSquare, Ticket, Star, Sparkles, ChevronRight, Navigation2, Zap, ArrowDown } from 'lucide-react';
-import heroImg from '../assets/hero.jpg';
+import heroImg from '../assets/Cipitio2.png';
 
 const Landing: React.FC = () => {
   return (

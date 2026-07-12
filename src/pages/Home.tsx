@@ -16,7 +16,7 @@ import OnboardingSurvey from '../components/OnboardingSurvey';
 import type { User } from '@supabase/supabase-js';
 import { SupabaseEventProvider } from '../services/events/SupabaseEventProvider';
 import type { AppEvent } from '../services/events/EventProvider';
-import logoCipitour from '../assets/Logo_Cipitour.svg';
+import logoCipitour from '../assets/Cipitour.png';
 
 type Message = {
   id: string;

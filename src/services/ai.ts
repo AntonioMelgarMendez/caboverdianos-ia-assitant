@@ -40,11 +40,28 @@ export async function generateTravelResponse(history: ChatMessage[]): Promise<AI
   }
 
   try {
-    // Construir el historial para Gemini
-    const contents = history.map(msg => ({
-      role: msg.sender === 'user' ? 'user' : 'model',
-      parts: [{ text: msg.text }]
-    }));
+    // Gemini requiere que el historial:
+    // 1. Comience siempre con el rol "user"
+    // 2. Alterne estrictamente entre "user" y "model"
+    let startIndex = 0;
+    while (startIndex < history.length && history[startIndex].sender !== 'user') {
+      startIndex++;
+    }
+    
+    const validHistory = history.slice(startIndex);
+    
+    // Coalesce adjacent roles
+    const contents: { role: string; parts: { text: string }[] }[] = [];
+    for (const msg of validHistory) {
+      const role = msg.sender === 'user' ? 'user' : 'model';
+      if (contents.length > 0 && contents[contents.length - 1].role === role) {
+        // Append to the last message if the role is the same
+        contents[contents.length - 1].parts[0].text += `\n\n${msg.text}`;
+      } else {
+        // Add new turn
+        contents.push({ role, parts: [{ text: msg.text }] });
+      }
+    }
 
     const configuredModel = genAI.getGenerativeModel({ 
       model: "gemini-1.5-flash", // Utilizando un modelo robusto que soporta Structured Outputs
