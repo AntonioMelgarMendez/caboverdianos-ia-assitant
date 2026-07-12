@@ -67,6 +67,10 @@ public/                 # Assets estáticos servidos tal cual (favicon, sprites 
 
 Ver `DOCUMENTACION.md` para el detalle de cada módulo, el modelo de datos y las integraciones.
 
+## Colaboración con Proveedores de Datos (DataTour)
+
+El proyecto incluye un script de integración diseñado para establecer conectividad y migración de datos con la plataforma del equipo **DataTour**. Esta colaboración permite enriquecer la base de datos de CipiTourist consumiendo las Edge Functions de DataTour (`/lugares` y `/eventos`) para importar lugares y eventos turísticos centralizados. El script (`scripts/migrateDataTour.ts`) procesa y estandariza los esquemas de datos entrantes, realizando inserciones masivas ("upserts") directas a Supabase.
+
 ## Instrucciones de instalación
 
 Requisitos previos: Node.js 18+ y npm.
@@ -141,33 +145,35 @@ Definidas en `.env.example`. Copiar a `.env` y completar:
 
 ## Funcionalidades: completas, simuladas y pendientes
 
-### ✅ Completas (funcionan de punta a punta)
+### Completas (funcionan de punta a punta)
 - Landing page de presentación del producto.
 - Chat conversacional con el Cipitío (Google Gemini) con salida estructurada (texto + ubicación sugerida con lat/lng).
+- Inyección de léxico salvadoreño: El modelo de IA está configurado para mantener la jerga salvadoreña incluso al responder en inglés. Las palabras en jerga (ej. "cipote") se resaltan visualmente y muestran su significado en el idioma objetivo mediante un tooltip.
 - Texto a voz de las respuestas del asistente (ElevenLabs, con fallback nativo del navegador).
 - Modelo 3D animado del Cipitío (Three.js) con distintas animaciones según el estado del chat.
 - Mapa interactivo (Leaflet) con marcadores por categoría, popups y panel de detalle con carrusel de fotos.
 - Búsqueda y filtros de lugares/eventos por texto, categoría y precio.
 - Trazado de rutas reales por carretera (OSRM) entre la ubicación del usuario y un lugar seleccionado.
-- Puntos de reciclaje ocultos (Easter egg) que aparecen al hacer zoom en el mapa para fomentar el turismo sostenible.
+- Fomento al turismo sostenible: Puntos de reciclaje ocultos integrados en el mapa que únicamente se revelan al alcanzar un alto nivel de zoom sobre el área metropolitana de San Salvador.
 - Integración con Google Street View (vista 360°) cuando hay cobertura en la zona.
 - Autenticación de usuarios con Google OAuth vía Supabase Auth.
 - Encuesta de onboarding para guardar preferencias (categorías, presupuesto, duración del viaje).
-- Gamificación: puntos por guardar/visitar lugares, agenda personal con vista de calendario y lista, check-in automático por GPS (+200 pts al estar 10s dentro de un radio de 50m), tienda de cupones canjeables con código QR.
-- Scripts de scraping + generación de seed SQL para poblar Supabase con lugares (Google Places) y eventos (PlusTicket/eTicket) reales.
+- Gamificación y recompensas: Puntos por guardar/visitar lugares, agenda personal, check-in automático por GPS, y tienda de cupones canjeables con código QR que incrusta dinámicamente el logotipo del proyecto.
+- Portal para comercios y escaneo de QR: Interfaz (mockout funcional en `/scan-qr`) orientada a pequeñas empresas para la lectura y validación de cupones QR a través de la cámara del dispositivo móvil.
+- Integración de scripts de scraping y generación de semillas SQL para poblar Supabase con lugares (Google Places) y eventos reales.
 
-### 🟡 Simuladas / con datos mock
-- **Respuesta del chat IA**: si falta `VITE_GEMINI_API_KEY`, `generateTravelResponse` no llama a Gemini y devuelve siempre la misma respuesta de ejemplo ("te recomiendo el Volcán de San Salvador...").
-- **Cliente de Supabase**: si faltan las credenciales, se instancia con una URL/clave "placeholder" para no romper el arranque de la app, pero ninguna operación contra la base de datos funcionará (login, puntos, agenda, cupones quedan inoperantes).
-- **Catálogo de cupones** (`AVAILABLE_COUPONS` en `src/services/gamification.ts`): está hardcodeado en el frontend, no se lee desde la base de datos. Solo el cupón ya canjeado por el usuario (código único + descuento) se persiste en Supabase.
-- **`MockDataTeamProvider`** (`src/services/events/MockDataTeamProvider.ts`): implementación de `EventProvider` con 5 eventos de ejemplo totalmente hardcodeados (festivales, surf, senderismo, etc.), pensada para desarrollar/demostrar la UI sin depender de Supabase. Actualmente `Home.tsx` usa `SupabaseEventProvider`, por lo que este mock queda disponible pero no está conectado en producción.
-- **Actividades e itinerario** de los lugares provenientes del scraping de Google Places: no son datos reales, se generan heurísticamente por categoría en `scripts/generate_sql_seed.js` (p. ej. toda playa/lago recibe el mismo itinerario genérico).
+### Simuladas / con datos mock
+- Respuesta del chat IA: Si falta `VITE_GEMINI_API_KEY`, la función de respuesta no llama a Gemini y devuelve de manera estática un texto de ejemplo.
+- Cliente de Supabase: Si faltan las credenciales, se inicializa con parámetros temporales. Ninguna operación de base de datos funcionará.
+- Catálogo de cupones: Se encuentra predefinido estáticamente en el código del frontend. Solo la asignación del cupón al usuario se persiste en Supabase.
+- Proveedor simulado de eventos: La clase `MockDataTeamProvider` ofrece un catálogo de 5 eventos estáticos, útil para pruebas locales o caídas del entorno de base de datos.
+- Itinerarios: Los itinerarios sugeridos provistos por los scripts de scraping son generados de manera algorítmica y no corresponden a datos directamente extraídos.
 
-### 🔴 Pendientes / limitaciones conocidas
-- No existe una suite de tests automatizados (unitarios, de integración o e2e) ni script de test configurado.
-- El botón "Guardar como imagen" del cupón (`CouponModal.tsx`) está renderizado pero sin funcionalidad implementada (no tiene `onClick`).
-- El pipeline de datos (scraping + generación de SQL) es manual y offline: hay que ejecutar los scripts y correr el `.sql` resultante a mano en el editor SQL de Supabase; no hay actualización programada/automática de lugares o eventos.
-- Discrepancia de nombre entre `.env.example` (`VITE_VOICE_API_KEY`) y la variable que realmente lee el código (`VITE_ELEVENLABS_API_KEY`) — ver nota en la tabla de variables de entorno.
+### Pendientes / limitaciones conocidas
+- Inexistencia de una suite de pruebas automatizadas (unitarias, integración o end-to-end).
+- El botón "Guardar como imagen" del cupón interactivo no posee funcionalidad implementada.
+- El ciclo de importación de datos actual (scraping y ejecución SQL) depende de intervención manual; no cuenta con automatización cronológica.
+- Discrepancia de nomenclatura entre el archivo `.env.example` (`VITE_VOICE_API_KEY`) y el código que demanda la llave de la API (`VITE_ELEVENLABS_API_KEY`).
 
 ## Documentación adicional
 
