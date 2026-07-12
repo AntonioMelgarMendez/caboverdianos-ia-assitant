@@ -10,16 +10,8 @@ const Landing: React.FC = () => {
       {/* ======================= HERO: FULL VIEWPORT ======================= */}
       <section className="relative w-full h-screen flex flex-col overflow-hidden">
 
-        {/* Giant 3D Model as Background */}
-        <div className="absolute inset-0 z-0">
-          {/* Radial glow behind the face */}
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(168,85,247,0.15)_0%,transparent_70%)] pointer-events-none z-[1]"></div>
-          <HeroAssistant3D />
-          {/* Bottom fade so text is always readable */}
-          <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-zinc-950 via-zinc-950/80 to-transparent z-[2] pointer-events-none"></div>
-          {/* Top fade for nav */}
-          <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-zinc-950/80 to-transparent z-[2] pointer-events-none"></div>
-        </div>
+        {/* Background effects */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_70%_50%,rgba(168,85,247,0.12)_0%,transparent_60%)] pointer-events-none z-[1]"></div>
 
         {/* Navbar */}
         <nav className="relative z-30 flex items-center justify-between px-6 md:px-12 py-6">
@@ -35,36 +27,46 @@ const Landing: React.FC = () => {
           </Link>
         </nav>
 
-        {/* Hero Content (anchored to bottom) */}
-        <div className="relative z-30 mt-auto pb-16 md:pb-20 px-6 md:px-12 max-w-5xl mx-auto w-full text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300 text-[11px] font-bold uppercase tracking-widest mb-6 backdrop-blur-sm">
-            <Sparkles className="w-3.5 h-3.5" /> Potenciado por Inteligencia Artificial
+        {/* Hero Content: Text Left + Model Right */}
+        <div className="relative z-10 flex-1 flex flex-col-reverse md:flex-row items-center max-w-7xl mx-auto w-full px-6 md:px-12">
+          
+          {/* Left: Text */}
+          <div className="flex-1 flex flex-col items-center md:items-start text-center md:text-left pb-12 md:pb-0">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300 text-[11px] font-bold uppercase tracking-widest mb-6 backdrop-blur-sm">
+              <Sparkles className="w-3.5 h-3.5" /> Potenciado por Inteligencia Artificial
+            </div>
+
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight mb-5 leading-[1.08]">
+              Tu guía turístico{' '}
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-amber-400">
+                vive dentro del mapa
+              </span>
+            </h1>
+
+            <p className="text-base md:text-lg text-zinc-400 max-w-lg mb-8 leading-relaxed">
+              Conoce al Cipitío, un asistente 3D con IA que te guía por voz, traza rutas y te recompensa por explorar.
+            </p>
+
+            <div className="flex flex-col sm:flex-row items-center gap-4">
+              <Link
+                to="/app"
+                className="flex items-center gap-2 bg-purple-600 hover:bg-purple-500 text-white px-8 py-4 rounded-full font-bold text-lg transition-all hover:scale-105 active:scale-95 shadow-lg shadow-purple-600/40"
+              >
+                Explorar Ahora <ChevronRight className="w-5 h-5" />
+              </Link>
+              <a
+                href="#features"
+                className="flex items-center gap-2 text-zinc-400 hover:text-white px-6 py-4 rounded-full font-medium transition-all group"
+              >
+                Ver características <ArrowDown className="w-4 h-4 group-hover:translate-y-0.5 transition-transform" />
+              </a>
+            </div>
           </div>
 
-          <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-tight mb-5 leading-[1.08]">
-            Tu guía turístico{' '}
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-amber-400">
-              vive dentro del mapa
-            </span>
-          </h1>
-
-          <p className="text-base md:text-xl text-zinc-400 max-w-2xl mx-auto mb-8 leading-relaxed">
-            Conoce al Cipitío, un asistente 3D con IA que te guía por voz, traza rutas y te recompensa por explorar.
-          </p>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              to="/app"
-              className="flex items-center gap-2 bg-purple-600 hover:bg-purple-500 text-white px-8 py-4 rounded-full font-bold text-lg transition-all hover:scale-105 active:scale-95 shadow-lg shadow-purple-600/40"
-            >
-              Explorar Ahora <ChevronRight className="w-5 h-5" />
-            </Link>
-            <a
-              href="#features"
-              className="flex items-center gap-2 text-zinc-400 hover:text-white px-6 py-4 rounded-full font-medium transition-all group"
-            >
-              Ver características <ArrowDown className="w-4 h-4 group-hover:translate-y-0.5 transition-transform" />
-            </a>
+          {/* Right: 3D Model */}
+          <div className="flex-1 w-full h-[300px] md:h-full relative">
+            <div className="absolute inset-0 bg-gradient-to-l from-transparent via-transparent to-zinc-950/60 z-[2] pointer-events-none hidden md:block"></div>
+            <HeroAssistant3D />
           </div>
         </div>
 
