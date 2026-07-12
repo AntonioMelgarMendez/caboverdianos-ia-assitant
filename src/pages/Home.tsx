@@ -133,15 +133,21 @@ const Home: React.FC = () => {
   return (
     <div className="flex h-screen flex-col overflow-hidden bg-zinc-950">
       {/* Header */}
-      <header className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-zinc-900/50 backdrop-blur-md z-10">
-        <div className="flex items-center gap-2">
-          <Compass className="w-6 h-6 text-purple-400" />
-          <h1 className="text-xl font-medium tracking-tight text-white hidden md:block">AI Travel Assistant</h1>
+      <header className="relative flex flex-col md:flex-row items-center justify-between px-4 md:px-6 py-3 md:py-4 border-b border-white/10 bg-zinc-900/50 backdrop-blur-md z-10 gap-3 md:gap-0">
+        
+        {/* ROW 1: Logo + User Info (Solo en móvil actúan como fila 1, en desktop todo es una fila) */}
+        <div className="flex w-full md:w-auto items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Compass className="w-6 h-6 text-purple-400 shrink-0" />
+            <h1 className="text-xl font-medium tracking-tight text-white hidden md:block">AI Travel Assistant</h1>
+          </div>
+          
+          {/* USER INFO (Mobile version only. We hide this on desktop and show it at the end to keep the DOM logical, or we just render it once here and use CSS to order it? Actually, it's easier to just keep it in DOM order and let CSS flex-col handle mobile, and on desktop, order-3 moves it to the right!) */}
         </div>
         
-        {/* Controles de Búsqueda Globales */}
-        <div className="flex-1 max-w-2xl mx-2 md:mx-8 flex items-center gap-2 md:gap-4">
-          <div className="relative flex items-center bg-zinc-800/50 rounded-full border border-white/10 px-3 md:px-4 py-2 w-full md:w-80 group focus-within:border-purple-500 focus-within:bg-zinc-800 transition-colors">
+        {/* Controles de Búsqueda Globales (Fila 2 en móvil, Centro en Desktop) */}
+        <div className="w-full md:w-auto md:flex-1 md:max-w-2xl mx-0 md:mx-8 flex items-center gap-2 md:gap-4 order-3 md:order-2">
+          <div className="relative flex items-center bg-zinc-800/50 rounded-full border border-white/10 px-3 md:px-4 py-2 w-full group focus-within:border-purple-500 focus-within:bg-zinc-800 transition-colors">
             <Search className="w-4 h-4 text-zinc-400 group-focus-within:text-purple-400" />
             <input 
               type="text"
@@ -189,7 +195,8 @@ const Home: React.FC = () => {
           />
         </div>
 
-        <div className="flex items-center gap-6">
+        {/* Gamification y Perfil (Fila 1 en móvil flotando a la derecha, Fila 1 derecha en Desktop) */}
+        <div className="flex items-center gap-4 md:gap-6 order-2 md:order-3 absolute md:relative top-3 right-4 md:top-auto md:right-auto">
           {user ? (
             <>
               {/* Gamification Dashboard */}

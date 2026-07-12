@@ -64,7 +64,7 @@ const CustomFilterDropdown: React.FC<CustomFilterDropdownProps> = ({
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-all ${
+        className={`flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-all whitespace-nowrap ${
           isOpen || selectedCategories.length > 0 
             ? 'bg-purple-600/20 border-purple-500/50 text-white' 
             : 'bg-zinc-800/50 border-white/10 text-zinc-300 hover:bg-zinc-800 hover:text-white'
