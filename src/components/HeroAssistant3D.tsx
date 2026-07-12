@@ -1,14 +1,16 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useMemo } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { Float, Environment, useGLTF, Html, useAnimations } from '@react-three/drei';
 import * as THREE from 'three';
+import { SkeletonUtils } from 'three-stdlib';
 import modelUrl from '../assets/Cipitio.glb?url';
 
 useGLTF.preload(modelUrl);
 
 const HeroCharacterModel = () => {
   const { scene, animations } = useGLTF(modelUrl);
-  const { actions } = useAnimations(animations, scene);
+  const clonedScene = useMemo(() => SkeletonUtils.clone(scene), [scene]);
+  const { actions } = useAnimations(animations, clonedScene);
 
   // Play "Waving" animation for a friendly greeting
   React.useEffect(() => {
@@ -22,8 +24,8 @@ const HeroCharacterModel = () => {
 
   // Fix materials
   React.useEffect(() => {
-    if (scene) {
-      scene.traverse((child) => {
+    if (clonedScene) {
+      clonedScene.traverse((child) => {
         if (child instanceof THREE.Mesh) {
           const mat = child.material as THREE.MeshStandardMaterial;
           if (mat) {
@@ -35,12 +37,12 @@ const HeroCharacterModel = () => {
         }
       });
     }
-  }, [scene]);
+  }, [clonedScene]);
 
   return (
     <Float speed={1.8} rotationIntensity={0.08} floatIntensity={0.15}>
       <primitive 
-        object={scene} 
+        object={clonedScene} 
         position={[0, -2.2, 0]} 
         scale={2.2}
         rotation={[0.05, -0.2, 0]}

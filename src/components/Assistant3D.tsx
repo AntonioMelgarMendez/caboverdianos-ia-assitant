@@ -1,7 +1,8 @@
-import React, { Suspense, useRef, useEffect } from 'react';
+import React, { Suspense, useRef, useEffect, useMemo } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Float, ContactShadows, Environment, useGLTF, Html, useAnimations } from '@react-three/drei';
 import * as THREE from 'three';
+import { SkeletonUtils } from 'three-stdlib';
 import modelUrl from '../assets/Cipitio.glb?url';
 
 // Preload the model to avoid lag on first render
@@ -17,14 +18,15 @@ interface AIModelProps {
 
 const AIModel: React.FC<AIModelProps> = ({ animation = 'Waving' }) => {
   const { scene, animations } = useGLTF(modelUrl);
-  const { actions } = useAnimations(animations, scene);
+  // Clonar la escena para que cada instancia sea independiente
+  const clonedScene = useMemo(() => SkeletonUtils.clone(scene), [scene]);
+  const { actions } = useAnimations(animations, clonedScene);
   const currentAction = useRef<string | null>(null);
 
   // Cambiar animación suavemente con crossfade
   useEffect(() => {
     if (!actions || Object.keys(actions).length === 0) return;
 
-    // Si la animación solicitada no existe, usar la primera disponible
     const targetName = actions[animation] ? animation : Object.keys(actions)[0];
     
     if (currentAction.current === targetName) return;
@@ -44,8 +46,8 @@ const AIModel: React.FC<AIModelProps> = ({ animation = 'Waving' }) => {
 
   // Arreglar materiales
   useEffect(() => {
-    if (scene) {
-      scene.traverse((child) => {
+    if (clonedScene) {
+      clonedScene.traverse((child) => {
         if (child instanceof THREE.Mesh) {
           const mat = child.material as THREE.MeshStandardMaterial;
           if (mat) {
@@ -57,7 +59,7 @@ const AIModel: React.FC<AIModelProps> = ({ animation = 'Waving' }) => {
         }
       });
     }
-  }, [scene]);
+  }, [clonedScene]);
 
   return (
     <Float
@@ -66,7 +68,7 @@ const AIModel: React.FC<AIModelProps> = ({ animation = 'Waving' }) => {
       floatIntensity={0.2}
     >
       <primitive 
-        object={scene} 
+        object={clonedScene} 
         position={[0, -1.8, 0]} 
         scale={1.8}
       />
@@ -93,7 +95,6 @@ const Assistant3D: React.FC<Assistant3DProps> = ({ animation = 'Waving' }) => {
   return (
     <div className="w-full h-full relative">
       <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
-        {/* Environment lighting for realistic reflections */}
         <Environment preset="city" />
         <ambientLight intensity={0.5} />
         <directionalLight position={[10, 10, 5]} intensity={1} />
@@ -101,7 +102,6 @@ const Assistant3D: React.FC<Assistant3DProps> = ({ animation = 'Waving' }) => {
         <Suspense fallback={<ModelLoader />}>
           <AIModel animation={animation} />
           
-          {/* Subtle shadow below the model */}
           <ContactShadows 
             position={[0, -1.5, 0]} 
             opacity={0.4} 
@@ -111,7 +111,6 @@ const Assistant3D: React.FC<Assistant3DProps> = ({ animation = 'Waving' }) => {
           />
         </Suspense>
 
-        {/* Allow user to rotate the model gently */}
         <OrbitControls 
           enableZoom={false} 
           enablePan={false}
