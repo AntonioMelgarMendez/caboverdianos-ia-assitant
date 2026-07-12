@@ -40,7 +40,15 @@ const AIModel: React.FC<AIModelProps> = ({ animation = 'Waving' }) => {
       newAction.reset().fadeIn(0.4).play();
       currentAction.current = targetName;
     }
-  }, [animation, actions]);
+
+    // El GLB tiene 6 modelos distintos (uno por animación). 
+    // Ocultamos todos y mostramos solo el que corresponde a la animación actual.
+    if (scene) {
+      scene.children.forEach(child => {
+        child.visible = child.name === targetName;
+      });
+    }
+  }, [animation, actions, scene]);
 
   // Arreglar materiales
   useEffect(() => {
