@@ -1,14 +1,27 @@
 import React, { Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { Float, Environment, useGLTF, Html, OrbitControls } from '@react-three/drei';
+import { Float, Environment, useGLTF, Html, useAnimations } from '@react-three/drei';
 import * as THREE from 'three';
-import modelUrl from '../assets/mario.glb?url';
+import modelUrl from '../assets/Dancing.glb?url';
 
 useGLTF.preload(modelUrl);
 
-const HeroStaticModel = () => {
-  const { scene } = useGLTF(modelUrl);
+const HeroCharacterModel = () => {
+  const { scene, animations } = useGLTF(modelUrl);
+  const { actions } = useAnimations(animations, scene);
 
+  // Play the default animation on loop
+  React.useEffect(() => {
+    if (actions && Object.keys(actions).length > 0) {
+      const firstActionName = Object.keys(actions)[0];
+      const action = actions[firstActionName];
+      if (action) {
+        action.reset().fadeIn(0.5).play();
+      }
+    }
+  }, [actions]);
+
+  // Fix materials
   React.useEffect(() => {
     if (scene) {
       scene.traverse((child) => {
@@ -26,12 +39,12 @@ const HeroStaticModel = () => {
   }, [scene]);
 
   return (
-    <Float speed={2} rotationIntensity={0.15} floatIntensity={0.3}>
+    <Float speed={1.8} rotationIntensity={0.08} floatIntensity={0.15}>
       <primitive 
         object={scene} 
-        position={[0, -1.6, 0]} 
-        scale={1.6}
-        rotation={[0, 0.3, 0]}
+        position={[0, -2.2, 0]} 
+        scale={2.2}
+        rotation={[0.05, -0.2, 0]}
       />
     </Float>
   );
@@ -40,11 +53,12 @@ const HeroStaticModel = () => {
 const HeroAssistant3D: React.FC = () => {
   return (
     <div className="w-full h-full">
-      <Canvas camera={{ position: [0, 0.5, 4], fov: 40 }}>
+      <Canvas camera={{ position: [0, 0.3, 5], fov: 35 }}>
         <Environment preset="city" />
-        <ambientLight intensity={0.7} />
-        <directionalLight position={[5, 8, 5]} intensity={1} color="#c084fc" />
-        <directionalLight position={[-5, 3, -5]} intensity={0.5} color="#f59e0b" />
+        <ambientLight intensity={0.8} />
+        <directionalLight position={[3, 5, 4]} intensity={1} color="#e9d5ff" />
+        <directionalLight position={[-3, 2, -3]} intensity={0.3} color="#fbbf24" />
+        <pointLight position={[0, 3, 2]} intensity={0.5} color="#c084fc" />
         <Suspense fallback={
           <Html center>
             <div className="flex flex-col items-center gap-2">
@@ -52,16 +66,8 @@ const HeroAssistant3D: React.FC = () => {
             </div>
           </Html>
         }>
-          <HeroStaticModel />
+          <HeroCharacterModel />
         </Suspense>
-        <OrbitControls 
-          enableZoom={false} 
-          enablePan={false}
-          autoRotate
-          autoRotateSpeed={1.5}
-          minPolarAngle={Math.PI / 2.5}
-          maxPolarAngle={Math.PI / 1.8}
-        />
       </Canvas>
     </div>
   );
