@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap, Polyline } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
-import { Star, MessageCircle, X, Clock, MapPin, Calendar, Check, Search, Filter, Tent, Mountain, Utensils, Landmark, Church, Waves, Navigation2, LocateFixed } from 'lucide-react';
+import { Star, MessageCircle, X, Clock, MapPin, Calendar, Check, Tent, Mountain, Utensils, Landmark, Church, Waves, Navigation2, LocateFixed } from 'lucide-react';
 import { renderToString } from 'react-dom/server';
 // Arreglo para los íconos de Leaflet en React
 import icon from 'leaflet/dist/images/marker-icon.png';
@@ -16,9 +16,7 @@ let DefaultIcon = L.icon({
 });
 L.Marker.prototype.options.icon = DefaultIcon;
 
-import type { EventProvider, AppEvent } from '../services/events/EventProvider';
-import { MockDataTeamProvider } from '../services/events/MockDataTeamProvider';
-import { SupabaseEventProvider } from '../services/events/SupabaseEventProvider';
+import type { AppEvent } from '../services/events/EventProvider';
 import MediaCarousel from './MediaCarousel';
 
 interface InteractiveMapProps {
@@ -232,13 +230,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
     }
   }, [selectedEvent, onEventSelectedStatusChange]);
 
-  const handleEventSelect = (evt: AppEvent) => {
-    setSelectedEvent(evt);
-    setRouteCoordinates(null);
-    setShowRoute(false);
-    setPickedDate('');
-    setSavedFeedback(null);
-  };
+
 
   const closePanel = () => {
     setSelectedEvent(null);

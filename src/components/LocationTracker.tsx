@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MapPin, Navigation, Trophy, CheckCircle2 } from 'lucide-react';
+import { MapPin, Trophy } from 'lucide-react';
 import { getUserAgenda, markAgendaVisitedAndEarnPoints } from '../services/gamification';
 import type { AgendaItem } from '../services/gamification';
 
@@ -131,13 +131,6 @@ const LocationTracker: React.FC<LocationTrackerProps> = ({ userId, onPointsEarne
     }
   };
 
-  // Botón para simular viaje al primer lugar pendiente
-  const simulateTravel = () => {
-    if (agenda.length > 0) {
-      const target = agenda[0];
-      setUserLocation({ lat: target.lat, lng: target.lng });
-    }
-  };
 
   if (showCelebration) {
     return (

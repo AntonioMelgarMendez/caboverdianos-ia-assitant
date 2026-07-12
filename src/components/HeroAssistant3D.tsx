@@ -1,8 +1,7 @@
-import React, { Suspense, useMemo, useRef } from 'react';
+import React, { Suspense, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { Float, Environment, useGLTF, Html, useAnimations } from '@react-three/drei';
+import { Float, Environment, useGLTF, Html } from '@react-three/drei';
 import * as THREE from 'three';
-import { SkeletonUtils } from 'three-stdlib';
 import modelUrl from '../assets/Cipitio.glb?url';
 
 useGLTF.preload(modelUrl);

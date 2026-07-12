@@ -1,3 +1,4 @@
+/// <reference types="@types/google.maps" />
 import React, { useEffect, useRef, useState } from 'react';
 import { Loader2, MapPinOff } from 'lucide-react';
 
@@ -39,7 +40,7 @@ export const checkStreetViewAvailability = async (lat: number, lng: number): Pro
     return new Promise((resolve) => {
       const svService = new google.maps.StreetViewService();
       const location = new google.maps.LatLng(lat, lng);
-      svService.getPanorama({ location, radius: 200 }, (data, status) => {
+      svService.getPanorama({ location, radius: 200 }, (data: any, status: any) => {
         if (status === google.maps.StreetViewStatus.OK && data && data.location && data.location.latLng) {
           resolve(true);
         } else {
@@ -59,8 +60,6 @@ const GoogleStreetView: React.FC<GoogleStreetViewProps> = ({ lat, lng }) => {
   const [noData, setNoData] = useState(false);
 
   useEffect(() => {
-    let panorama: google.maps.StreetViewPanorama | null = null;
-    
     const initStreetView = async () => {
       try {
         const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
@@ -76,12 +75,12 @@ const GoogleStreetView: React.FC<GoogleStreetViewProps> = ({ lat, lng }) => {
         const svService = new google.maps.StreetViewService();
         const location = new google.maps.LatLng(lat, lng);
         
-        svService.getPanorama({ location, radius: 200 }, (data, status) => {
+        svService.getPanorama({ location, radius: 200 }, (data: any, status: any) => {
           if (status === google.maps.StreetViewStatus.OK && data && data.location && data.location.latLng) {
             setIsLoading(false);
             
             // Inicializar el visor de Street View
-            panorama = new google.maps.StreetViewPanorama(containerRef.current!, {
+            new google.maps.StreetViewPanorama(containerRef.current!, {
               position: data.location.latLng,
               pov: { heading: 0, pitch: 0 },
               zoom: 1,

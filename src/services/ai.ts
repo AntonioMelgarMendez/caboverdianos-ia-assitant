@@ -52,7 +52,7 @@ export async function generateTravelResponse(history: ChatMessage[]): Promise<AI
   }
 
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-3.5-flash" });
+
     
     // Construir el historial para Gemini
     const contents = history.map(msg => ({

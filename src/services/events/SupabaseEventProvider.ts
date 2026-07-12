@@ -16,7 +16,7 @@ export class SupabaseEventProvider implements EventProvider {
 
     return places.map((place) => {
       // 1. Construir el arreglo de media con las imágenes de Google
-      const media = [];
+      const media: { type: 'image' | 'video'; url: string; thumbnailUrl?: string }[] = [];
       
       // Si hay imágenes guardadas, las convertimos en URLs (usando la API key del frontend)
       if (place.images && Array.isArray(place.images) && place.images.length > 0) {

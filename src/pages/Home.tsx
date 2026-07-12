@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Map, MessageSquare, Compass, Loader2, LogIn, LogOut, Ticket, Star, MapPin, Search, Filter, X } from 'lucide-react';
+import { MessageSquare, Compass, Loader2, LogIn, LogOut, Ticket, Star, MapPin, Search, X } from 'lucide-react';
 import Assistant3D from '../components/Assistant3D';
 import type { CipitioAnimation } from '../components/Assistant3D';
 import InteractiveMap from '../components/InteractiveMap';
@@ -15,7 +15,7 @@ import { hasCompletedOnboarding } from '../services/userPreferences';
 import OnboardingSurvey from '../components/OnboardingSurvey';
 import type { User } from '@supabase/supabase-js';
 import { SupabaseEventProvider } from '../services/events/SupabaseEventProvider';
-import type { AppEvent } from '../types/AppEvent';
+import type { AppEvent } from '../services/events/EventProvider';
 
 type Message = {
   id: string;
@@ -407,7 +407,7 @@ const Home: React.FC = () => {
                     className="w-full bg-zinc-950 border border-white/10 rounded-full py-2 px-4 pr-10 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/50 transition-all disabled:opacity-50"
                   />
                   <button 
-                    onClick={handleSendMessage}
+                    onClick={() => handleSendMessage()}
                     disabled={isLoading || !input.trim()}
                     className="absolute right-1 top-1/2 -translate-y-1/2 p-1.5 bg-purple-600 hover:bg-purple-500 disabled:bg-zinc-800 disabled:text-zinc-600 rounded-full text-white transition-colors"
                   >
