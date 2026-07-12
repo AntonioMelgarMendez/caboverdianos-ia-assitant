@@ -1,22 +1,27 @@
 import React, { Suspense, useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Float, ContactShadows, Environment, useGLTF, Html } from '@react-three/drei';
+import { OrbitControls, Float, ContactShadows, Environment, useGLTF, Html, useAnimations } from '@react-three/drei';
 import * as THREE from 'three';
-import modelUrl from '../assets/mario.glb?url';
+import modelUrl from '../assets/Dancing.glb?url';
 
 // Preload the model to avoid lag on first render
 useGLTF.preload(modelUrl);
 
 const AIModel = () => {
-  const { scene } = useGLTF(modelUrl);
+  const { scene, animations } = useGLTF(modelUrl);
+  const { actions } = useAnimations(animations, scene);
   const modelRef = useRef<THREE.Group>(null);
 
-  // Simple idle animation (rotation)
-  useFrame((state, delta) => {
-    if (modelRef.current) {
-      // modelRef.current.rotation.y += delta * 0.2;
+  // Reproducir la animación por defecto en bucle
+  React.useEffect(() => {
+    if (actions && Object.keys(actions).length > 0) {
+      const firstActionName = Object.keys(actions)[0];
+      const action = actions[firstActionName];
+      if (action) {
+        action.reset().fadeIn(0.5).play();
+      }
     }
-  });
+  }, [actions]);
 
   // Arreglar materiales (a veces los ojos se vuelven invisibles por problemas de alpha/transparencia)
   React.useEffect(() => {
@@ -39,13 +44,13 @@ const AIModel = () => {
     <Float
       speed={2} // Animation speed
       rotationIntensity={0.1} // XYZ rotation intensity (solo el balanceo de Float)
-      floatIntensity={0.5} // Up/down float intensity
+      floatIntensity={0.2} // Up/down float intensity (reducido para que no flote demasiado alto)
     >
       <primitive 
         ref={modelRef} 
         object={scene} 
-        position={[0, -1, 0]} 
-        scale={0.015} // Escala muy reducida porque los modelos de Wii suelen venir en cm/mm
+        position={[0, -1.8, 0]} 
+        scale={1.8} // Ajuste estándar para modelos de Mixamo (suele ser 1, pero 1.8 lo hace un buen tamaño)
       />
     </Float>
   );
