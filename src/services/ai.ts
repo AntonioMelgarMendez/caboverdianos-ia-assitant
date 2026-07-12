@@ -64,7 +64,7 @@ export async function generateTravelResponse(history: ChatMessage[]): Promise<AI
     }
 
     const configuredModel = genAI.getGenerativeModel({ 
-      model: "gemini-1.5-flash", // Utilizando un modelo robusto que soporta Structured Outputs
+      model: "gemini-3.5-flash", // Utilizando un modelo robusto que soporta Structured Outputs
       systemInstruction: SYSTEM_PROMPT,
       generationConfig: {
         responseMimeType: "application/json",
