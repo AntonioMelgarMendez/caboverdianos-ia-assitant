@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MessageSquare, Compass, Loader2, LogIn, LogOut, Ticket, Star, MapPin, Search, X } from 'lucide-react';
+import { MessageSquare, Loader2, LogIn, LogOut, Ticket, Star, MapPin, Search, X } from 'lucide-react';
 import Assistant3D from '../components/Assistant3D';
 import type { CipitioAnimation } from '../components/Assistant3D';
 import InteractiveMap from '../components/InteractiveMap';
@@ -16,6 +16,7 @@ import OnboardingSurvey from '../components/OnboardingSurvey';
 import type { User } from '@supabase/supabase-js';
 import { SupabaseEventProvider } from '../services/events/SupabaseEventProvider';
 import type { AppEvent } from '../services/events/EventProvider';
+import logoCipitour from '../assets/Logo_Cipitour.svg';
 
 type Message = {
   id: string;
@@ -161,8 +162,7 @@ const Home: React.FC = () => {
         {/* ROW 1: Logo + User Info (Solo en móvil actúan como fila 1, en desktop todo es una fila) */}
         <div className="flex w-full md:w-auto items-center justify-between">
           <div className="flex items-center gap-2">
-            <Compass className="w-6 h-6 text-purple-400 shrink-0" />
-            <h1 className="text-xl font-medium tracking-tight text-white hidden md:block">AI Travel Assistant</h1>
+            <img src={logoCipitour} alt="Cipitour Logo" className="h-8 md:h-10 shrink-0" />
           </div>
           
           {/* USER INFO (Mobile version only. We hide this on desktop and show it at the end to keep the DOM logical, or we just render it once here and use CSS to order it? Actually, it's easier to just keep it in DOM order and let CSS flex-col handle mobile, and on desktop, order-3 moves it to the right!) */}
