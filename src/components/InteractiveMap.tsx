@@ -214,12 +214,18 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
         {events.length === 0 && (
           <>
             {[
-              [13.6929, -89.2182],
-              [13.7029, -89.2082],
-              [13.6829, -89.2282],
-              [13.7129, -89.2482],
-              [13.6729, -89.1982],
-              [13.6989, -89.2382]
+              [13.6929, -89.2182], // San Salvador
+              [13.9941, -89.5597], // Santa Ana
+              [13.4833, -88.1750], // San Miguel
+              [13.4883, -89.3166], // La Libertad (Costa)
+              [14.0416, -88.9377], // Chalatenango
+              [13.3438, -88.4391], // Usulután
+              [13.7188, -89.7241], // Sonsonate
+              [13.8291, -88.1066], // Morazán
+              [13.9213, -89.8450], // Ahuachapán
+              [13.3369, -87.8438], // La Unión
+              [13.6444, -88.7841], // San Vicente
+              [13.8666, -88.8666]  // Cabañas
             ].map((pos, idx) => (
               <Marker 
                 key={`skeleton-${idx}`} 
